@@ -1,0 +1,126 @@
+<svg height="114pt" viewBox="0.00 0.00 506.50 114.00" width="507pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 110)">
+<title>%3</title>
+<polygon fill="white" points="-4,4 -4,-110 502.5,-110 502.5,4 -4,4" stroke="none"/>
+<!-- Protocol -->
+<g class="node" id="node1"><title>Protocol</title>
+<g id="a_node1"><a xlink:title="protocol             ------------------------------→ ProtocolTypeprotocol_desc=&quot;&quot;     ">
+<polygon fill="#000000" fill-opacity="0.125490" points="71,-106 18,-106 18,-71 71,-71 71,-106" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="start" text-decoration="underline" x="26" y="-87">Protocol</text>
+</a>
+</g>
+</g>
+<!-- Subject.Protocol -->
+<g class="node" id="node6"><title>Subject.Protocol</title>
+<g id="a_node6"><a xlink:title="→ Subject→ Protocol">
+<polygon fill="none" points="89,-27 0,-27 0,-8 89,-8 89,-27" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="middle" x="44.5" y="-15">Subject.Protocol</text>
+</a>
+</g>
+</g>
+<!-- Protocol&#45;&gt;Subject.Protocol -->
+<g class="edge" id="edge1"><title>Protocol-&gt;Subject.Protocol</title>
+<path d="M44.5,-70.797C44.5,-57.0768 44.5,-38.1854 44.5,-27.2652" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Subject.Source -->
+<g class="node" id="node2"><title>Subject.Source</title>
+<g id="a_node2"><a xlink:title="→ Subject------------------------------→ Source">
+<polygon fill="none" points="190,-27 107,-27 107,-8 190,-8 190,-27" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="middle" x="148.5" y="-15">Subject.Source</text>
+</a>
+</g>
+</g>
+<!-- Cage -->
+<g class="node" id="node3"><title>Cage</title>
+<g id="a_node3"><a xlink:title="cage                 ------------------------------cage_purpose=&quot;&quot;      ">
+<polygon fill="#000000" fill-opacity="0.125490" points="471,-106 432,-106 432,-71 471,-71 471,-106" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="start" text-decoration="underline" x="440" y="-87">Cage</text>
+</a>
+</g>
+</g>
+<!-- SubjectCaging -->
+<g class="node" id="node8"><title>SubjectCaging</title>
+<g id="a_node8"><a xlink:title="→ Subjectcaging_datetime      ------------------------------→ Cage→ User">
+<polygon fill="#00ff00" fill-opacity="0.188235" points="498.5,-35 404.5,-35 404.5,-0 498.5,-0 498.5,-35" stroke="#00ff00" stroke-opacity="0.188235"/>
+<text fill="darkgreen" font-family="arial" font-size="12.00" text-anchor="start" text-decoration="underline" x="412.5" y="-15.4">SubjectCaging</text>
+</a>
+</g>
+</g>
+<!-- Cage&#45;&gt;SubjectCaging -->
+<g class="edge" id="edge2"><title>Cage-&gt;SubjectCaging</title>
+<path d="M451.5,-70.797C451.5,-59.9485 451.5,-45.8669 451.5,-35.0492" fill="none" stroke="#000000" stroke-dasharray="5,2" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Subject.User -->
+<g class="node" id="node4"><title>Subject.User</title>
+<g id="a_node4"><a xlink:title="→ Subject→ User">
+<polygon fill="none" points="386,-27 313,-27 313,-8 386,-8 386,-27" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="middle" x="349.5" y="-15">Subject.User</text>
+</a>
+</g>
+</g>
+<!-- User -->
+<g class="node" id="node5"><title>User</title>
+<g id="a_node5"><a xlink:title="user                 ------------------------------user_email=&quot;&quot;        user_cellphone=&quot;&quot;    ">
+<polygon fill="#000000" fill-opacity="0.125490" points="391,-106 354,-106 354,-71 391,-71 391,-106" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="start" text-decoration="underline" x="362" y="-87">User</text>
+</a>
+</g>
+</g>
+<!-- User&#45;&gt;Subject.User -->
+<g class="edge" id="edge3"><title>User-&gt;Subject.User</title>
+<path d="M366.932,-70.797C362.359,-57.0768 356.062,-38.1854 352.422,-27.2652" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- User&#45;&gt;SubjectCaging -->
+<g class="edge" id="edge4"><title>User-&gt;SubjectCaging</title>
+<path d="M391.222,-71.148C403.633,-60.3082 419.869,-46.127 432.364,-35.214" fill="none" stroke="#000000" stroke-dasharray="5,2" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- SubjectDeath -->
+<g class="node" id="node7"><title>SubjectDeath</title>
+<g id="a_node7"><a xlink:title="→ Subject------------------------------death_date           ">
+<polygon fill="#00ff00" fill-opacity="0.188235" points="295,-35 208,-35 208,-0 295,-0 295,-35" stroke="#00ff00" stroke-opacity="0.188235"/>
+<text fill="darkgreen" font-family="arial" font-size="12.00" text-anchor="middle" x="251.5" y="-14.4">SubjectDeath</text>
+</a>
+</g>
+</g>
+<!-- Source -->
+<g class="node" id="node9"><title>Source</title>
+<g id="a_node9"><a xlink:title="source               ------------------------------source_name          contact_details=&quot;&quot;   source_desc=&quot;&quot;       ">
+<polygon fill="#000000" fill-opacity="0.125490" points="154,-106 107,-106 107,-71 154,-71 154,-106" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="start" text-decoration="underline" x="115" y="-87">Source</text>
+</a>
+</g>
+</g>
+<!-- Source&#45;&gt;Subject.Source -->
+<g class="edge" id="edge5"><title>Source-&gt;Subject.Source</title>
+<path d="M134.857,-70.797C138.436,-57.0768 143.365,-38.1854 146.213,-27.2652" fill="none" stroke="#000000" stroke-dasharray="5,2" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Subject -->
+<g class="node" id="node10"><title>Subject</title>
+<g id="a_node10"><a xlink:title="subject              ------------------------------sex                  subject_birth_date   subject_desc=&quot;&quot;      ">
+<polygon fill="#00ff00" fill-opacity="0.188235" points="228.5,-106 172.5,-106 172.5,-71 228.5,-71 228.5,-106" stroke="#00ff00" stroke-opacity="0.188235"/>
+<text fill="darkgreen" font-family="arial" font-size="12.00" text-anchor="start" text-decoration="underline" x="180.5" y="-86.4">Subject</text>
+</a>
+</g>
+</g>
+<!-- Subject&#45;&gt;Subject.Source -->
+<g class="edge" id="edge6"><title>Subject-&gt;Subject.Source</title>
+<path d="M187.912,-70.797C177.572,-57.0768 163.335,-38.1854 155.106,-27.2652" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="2"/>
+</g>
+<!-- Subject&#45;&gt;Subject.User -->
+<g class="edge" id="edge7"><title>Subject-&gt;Subject.User</title>
+<path d="M228.526,-74.5216C258.537,-60.624 305.3,-38.9686 331.01,-27.0625" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Subject&#45;&gt;Subject.Protocol -->
+<g class="edge" id="edge8"><title>Subject-&gt;Subject.Protocol</title>
+<path d="M172.25,-75.0046C140.992,-61.1791 91.4402,-39.262 64.1464,-27.1898" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Subject&#45;&gt;SubjectDeath -->
+<g class="edge" id="edge9"><title>Subject-&gt;SubjectDeath</title>
+<path d="M212.846,-70.797C220.864,-59.9485 231.272,-45.8669 239.268,-35.0492" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="2"/>
+</g>
+<!-- Subject&#45;&gt;SubjectCaging -->
+<g class="edge" id="edge10"><title>Subject-&gt;SubjectCaging</title>
+<path d="M228.816,-80.0034C266.635,-69.9526 335.701,-51.4652 394.5,-35 397.675,-34.1111 400.946,-33.1865 404.241,-32.2492" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+</g>
+</svg>

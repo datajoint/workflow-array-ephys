@@ -1,0 +1,4 @@
+datajoint
+elements-ephys @ git+https://github.com/datajoint/elements-ephys.git
+elements-lab @ git+https://github.com/datajoint/elements-lab.git
+elements-animal @ git+https://github.com/datajoint/elements-animal.git

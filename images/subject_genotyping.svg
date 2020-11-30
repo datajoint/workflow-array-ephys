@@ -1,0 +1,150 @@
+<svg height="114pt" viewBox="0.00 0.00 552.00 114.00" width="552pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g class="graph" id="graph0" transform="scale(1 1) rotate(0) translate(4 110)">
+<title>%3</title>
+<polygon fill="white" points="-4,4 -4,-110 548,-110 548,4 -4,4" stroke="none"/>
+<!-- Zygosity -->
+<g class="node" id="node1"><title>Zygosity</title>
+<g id="a_node1"><a xlink:title="→ Subject→ Allele------------------------------zygosity             ">
+<polygon fill="#00ff00" fill-opacity="0.188235" points="358.5,-35 299.5,-35 299.5,-0 358.5,-0 358.5,-35" stroke="#00ff00" stroke-opacity="0.188235"/>
+<text fill="darkgreen" font-family="arial" font-size="12.00" text-anchor="middle" x="329" y="-14.4">Zygosity</text>
+</a>
+</g>
+</g>
+<!-- Sequence -->
+<g class="node" id="node2"><title>Sequence</title>
+<g id="a_node2"><a xlink:title="sequence             ------------------------------base_pairs=&quot;&quot;        sequence_desc=&quot;&quot;     ">
+<polygon fill="#000000" fill-opacity="0.125490" points="60,-106 0,-106 0,-71 60,-71 60,-106" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="start" text-decoration="underline" x="8" y="-87">Sequence</text>
+</a>
+</g>
+</g>
+<!-- Allele.Sequence -->
+<g class="node" id="node3"><title>Allele.Sequence</title>
+<g id="a_node3"><a xlink:title="→ Allele→ Sequence">
+<polygon fill="none" points="108.5,-27 21.5,-27 21.5,-8 108.5,-8 108.5,-27" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="middle" x="65" y="-15">Allele.Sequence</text>
+</a>
+</g>
+</g>
+<!-- Sequence&#45;&gt;Allele.Sequence -->
+<g class="edge" id="edge1"><title>Sequence-&gt;Allele.Sequence</title>
+<path d="M38.4725,-70.797C45.432,-57.0768 55.0146,-38.1854 60.5539,-27.2652" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Line -->
+<g class="node" id="node4"><title>Line</title>
+<g id="a_node4"><a xlink:title="line                 ------------------------------line_desc=&quot;&quot;         target_phenotype=&quot;&quot;  is_active            ">
+<polygon fill="#000000" fill-opacity="0.125490" points="267.5,-106 232.5,-106 232.5,-71 267.5,-71 267.5,-106" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="start" text-decoration="underline" x="240.5" y="-87">Line</text>
+</a>
+</g>
+</g>
+<!-- Subject.Line -->
+<g class="node" id="node8"><title>Subject.Line</title>
+<g id="a_node8"><a xlink:title="→ Subject------------------------------→ Line">
+<polygon fill="none" points="447.5,-27 376.5,-27 376.5,-8 447.5,-8 447.5,-27" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="middle" x="412" y="-15">Subject.Line</text>
+</a>
+</g>
+</g>
+<!-- Line&#45;&gt;Subject.Line -->
+<g class="edge" id="edge2"><title>Line-&gt;Subject.Line</title>
+<path d="M267.645,-79.9844C297.987,-67.061 359.862,-40.7068 391.85,-27.0826" fill="none" stroke="#000000" stroke-dasharray="5,2" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Line.Allele -->
+<g class="node" id="node9"><title>Line.Allele</title>
+<g id="a_node9"><a xlink:title="→ Line→ Allele">
+<polygon fill="none" points="281,-27 219,-27 219,-8 281,-8 281,-27" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="middle" x="250" y="-15">Line.Allele</text>
+</a>
+</g>
+</g>
+<!-- Line&#45;&gt;Line.Allele -->
+<g class="edge" id="edge3"><title>Line-&gt;Line.Allele</title>
+<path d="M250,-70.797C250,-57.0768 250,-38.1854 250,-27.2652" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Allele.Source -->
+<g class="node" id="node5"><title>Allele.Source</title>
+<g id="a_node5"><a xlink:title="→ Allele------------------------------→ Sourcesource_identifier=&quot;&quot; source_url=&quot;&quot;        expression_data_url=&quot;&quot; ">
+<polygon fill="none" points="201,-27 127,-27 127,-8 201,-8 201,-27" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="middle" x="164" y="-15">Allele.Source</text>
+</a>
+</g>
+</g>
+<!-- Strain -->
+<g class="node" id="node6"><title>Strain</title>
+<g id="a_node6"><a xlink:title="strain               ------------------------------strain_standard_name strain_desc=&quot;&quot;       ">
+<polygon fill="#000000" fill-opacity="0.125490" points="526,-106 484,-106 484,-71 526,-71 526,-106" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="start" text-decoration="underline" x="492" y="-87">Strain</text>
+</a>
+</g>
+</g>
+<!-- Subject.Strain -->
+<g class="node" id="node7"><title>Subject.Strain</title>
+<g id="a_node7"><a xlink:title="→ Subject------------------------------→ Strain">
+<polygon fill="none" points="544,-27 466,-27 466,-8 544,-8 544,-27" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="middle" x="505" y="-15">Subject.Strain</text>
+</a>
+</g>
+</g>
+<!-- Strain&#45;&gt;Subject.Strain -->
+<g class="edge" id="edge4"><title>Strain-&gt;Subject.Strain</title>
+<path d="M505,-70.797C505,-57.0768 505,-38.1854 505,-27.2652" fill="none" stroke="#000000" stroke-dasharray="5,2" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Allele -->
+<g class="node" id="node10"><title>Allele</title>
+<g id="a_node10"><a xlink:title="allele               ------------------------------allele_standard_name=&quot;&quot; ">
+<polygon fill="#000000" fill-opacity="0.125490" points="184.5,-106 143.5,-106 143.5,-71 184.5,-71 184.5,-106" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="start" text-decoration="underline" x="151.5" y="-87">Allele</text>
+</a>
+</g>
+</g>
+<!-- Allele&#45;&gt;Zygosity -->
+<g class="edge" id="edge5"><title>Allele-&gt;Zygosity</title>
+<path d="M184.529,-78.9865C209.48,-68.63 252.855,-50.5961 290,-35 292.983,-33.7477 296.092,-32.4385 299.197,-31.1288" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Allele&#45;&gt;Allele.Sequence -->
+<g class="edge" id="edge6"><title>Allele-&gt;Allele.Sequence</title>
+<path d="M143.487,-73.2032C123.551,-59.3084 93.9297,-38.6632 77.3632,-27.1168" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Allele&#45;&gt;Allele.Source -->
+<g class="edge" id="edge7"><title>Allele-&gt;Allele.Source</title>
+<path d="M164,-70.797C164,-57.0768 164,-38.1854 164,-27.2652" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="2"/>
+</g>
+<!-- Allele&#45;&gt;Line.Allele -->
+<g class="edge" id="edge8"><title>Allele-&gt;Line.Allele</title>
+<path d="M184.818,-70.797C201.919,-57.0768 225.465,-38.1854 239.075,-27.2652" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Source -->
+<g class="node" id="node11"><title>Source</title>
+<g id="a_node11"><a xlink:title="source               ------------------------------source_name          contact_details=&quot;&quot;   source_desc=&quot;&quot;       ">
+<polygon fill="#000000" fill-opacity="0.125490" points="125.5,-106 78.5,-106 78.5,-71 125.5,-71 125.5,-106" stroke="none"/>
+<text font-family="arial" font-size="10.00" text-anchor="start" text-decoration="underline" x="86.5" y="-87">Source</text>
+</a>
+</g>
+</g>
+<!-- Source&#45;&gt;Allele.Source -->
+<g class="edge" id="edge9"><title>Source-&gt;Allele.Source</title>
+<path d="M117.008,-70.797C129.337,-57.0768 146.312,-38.1854 156.124,-27.2652" fill="none" stroke="#000000" stroke-dasharray="5,2" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Subject -->
+<g class="node" id="node12"><title>Subject</title>
+<g id="a_node12"><a xlink:title="subject              ------------------------------sex                  subject_birth_date   subject_desc=&quot;&quot;      ">
+<polygon fill="#00ff00" fill-opacity="0.188235" points="440,-106 384,-106 384,-71 440,-71 440,-106" stroke="#00ff00" stroke-opacity="0.188235"/>
+<text fill="darkgreen" font-family="arial" font-size="12.00" text-anchor="start" text-decoration="underline" x="392" y="-86.4">Subject</text>
+</a>
+</g>
+</g>
+<!-- Subject&#45;&gt;Zygosity -->
+<g class="edge" id="edge10"><title>Subject-&gt;Zygosity</title>
+<path d="M391.908,-70.797C378.858,-59.9485 361.92,-45.8669 348.907,-35.0492" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="0.75"/>
+</g>
+<!-- Subject&#45;&gt;Subject.Strain -->
+<g class="edge" id="edge11"><title>Subject-&gt;Subject.Strain</title>
+<path d="M434.513,-70.797C453.113,-56.9971 478.764,-37.9656 493.442,-27.0755" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="2"/>
+</g>
+<!-- Subject&#45;&gt;Subject.Line -->
+<g class="edge" id="edge12"><title>Subject-&gt;Subject.Line</title>
+<path d="M412,-70.797C412,-57.0768 412,-38.1854 412,-27.2652" fill="none" stroke="#000000" stroke-opacity="0.250980" stroke-width="2"/>
+</g>
+</g>
+</svg>
