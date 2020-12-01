@@ -1,6 +1,6 @@
 import json
 
-from my_project import subject, ephys
+from workflow_ephys.pipeline import subject, ephys
 
 # ========== Insert new "Subject" ===========
 

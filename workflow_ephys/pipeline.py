@@ -1,8 +1,10 @@
 import datajoint as dj
-from djsubject import subject
-from djlab import lab
-from djephys import ephys
-from utils.path_utils import get_ephys_probe_data_dir, get_ks_data_dir, get_paramset_idx
+from elements_animal import subject
+from elements_lab import lab
+from elements_ephys import probe, ephys
+
+from workflow_ephys.utils.paths import get_ephys_probe_data_dir, get_ks_data_dir, get_paramset_idx
+
 
 if 'custom' not in dj.config:
     dj.config['custom'] = {}
@@ -10,12 +12,12 @@ if 'custom' not in dj.config:
 db_prefix = dj.config['custom'].get('database.prefix', '')
 
 
-# ============== Declare "lab" and "subject" schema ==============
+# ============== Activate "lab" and "subject" schema ==============
 
-lab.declare(db_prefix + 'lab')
+lab.activate(db_prefix + 'lab')
 
-subject.declare(db_prefix + 'subject',
-                dependencies={'Source': lab.Source,
+subject.activate(db_prefix + 'subject',
+                 add_objects={'Source': lab.Source,
                               'Lab': lab.Lab,
                               'Protocol': lab.Protocol,
                               'User': lab.User})
@@ -42,18 +44,16 @@ class Session(dj.Manual):
     """
 
 
-# ============== Declare "ephys" schema ==============
-
-ephys.declare(dj.schema(db_prefix + 'ephys'),
-              dependencies={'Subject': subject.Subject,
-                            'Session': Session,
+# ============== Activate "ephys" schema ==============
+probe.activate(db_prefix + 'ephys')
+ephys.activate(db_prefix + 'ephys',
+               add_objects={'Session': Session,
                             'SkullReference': SkullReference,
-                            'get_npx_data_dir': get_ephys_probe_data_dir,
+                            'get_neuropixels_data_directory': get_ephys_probe_data_dir,
                             'get_paramset_idx': get_paramset_idx,
-                            'get_ks_data_dir': get_ks_data_dir})
+                            'get_kilosort_output_directory': get_ks_data_dir})
 
 # ---- Add neuropixels probes ----
-
 for probe_type in ('neuropixels 1.0 - 3A', 'neuropixels 1.0 - 3B',
                    'neuropixels 2.0 - SS', 'neuropixels 2.0 - MS'):
-    ephys.ProbeType.create_neuropixels_probe(probe_type)
+    probe.ProbeType.create_neuropixels_probe(probe_type)

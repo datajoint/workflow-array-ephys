@@ -6,10 +6,10 @@ Build a full ephys pipeline using the canonical pipeline elements
 + [ephys](https://github.com/vathes/canonical-ephys)
 
 This repository provides demonstrations for: 
-1. Set up a pipeline using different pipeline modules (see [here](./my_project/__init__.py))
+1. Set up a pipeline using different pipeline modules (see [here](workflow_ephys/__init__.py))
 2. Ingestion of data/metadata based on:
     + predefined file/folder structure and naming convention
-    + predefined directory lookup methods (see [here](utils/path_utils.py))
+    + predefined directory lookup methods (see [here](workflow_ephys/utils/paths.py))
 3. Ingestion of clustering results (built-in routine from the ephys pipeline module)
 
 
@@ -165,14 +165,17 @@ root_data_dir/
 Once you have your data directory configured with the above convention,
  populating the pipeline with your data amounts to these 3 steps:
  
-1. Insert meta information - modify and run this [script](my_project/insert_lookup.py) to insert meta information (e.g. subject, equipment, etc.)
+1. Insert meta information (e.g. subject, equipment, etc.) - modify and run:
+
+    python workflow_ephys/prepare.py
+
 2. Import session data - run:
 
-    python my_project/ingestion.py
+    python workflow_ephys/ingestion.py
     
 3. Import clustering data and populate downstream analyses - run:
 
-    python my_project/populate.py
+    python workflow_ephys/populate.py
     
 Rerun step 2 and 3 every time new subjects, sessions or clustering data become available.
 In fact, step 2 and 3 can be executed as scheduled jobs
