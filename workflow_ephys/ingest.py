@@ -1,8 +1,8 @@
 import re
 
-from ephys_loaders import neuropixels
-from my_project import subject, ephys, Session
-from utils.path_utils import get_ephys_root_data_dir
+from elements_ephys.readers import neuropixels
+from workflow_ephys.pipeline import subject, ephys, probe, Session
+from workflow_ephys.utils.paths import get_ephys_root_data_dir
 
 
 def ingest():
@@ -32,14 +32,14 @@ def ingest():
             for meta_filepath in subj_dir.rglob('*.ap.meta'):
                 npx_meta = neuropixels.NeuropixelsMeta(meta_filepath)
 
-                probe = {'probe_type': npx_meta.probe_model, 'probe': npx_meta.probe_SN}
-                ephys.Probe.insert1(probe, skip_duplicates=True)
+                prb = {'probe_type': npx_meta.probe_model, 'probe': npx_meta.probe_SN}
+                probe.Probe.insert1(prb, skip_duplicates=True)
 
                 probe_dir = meta_filepath.parent
                 probe_number = re.search('(imec)?\d{1}$', probe_dir.name).group()
                 probe_number = int(probe_number.replace('imec', '')) if 'imec' in probe_number else int(probe_number)
 
-                probe_insertions.append({**sess_key, **probe, 'insertion_number': int(probe_number)})
+                probe_insertions.append({**sess_key, **prb, 'insertion_number': int(probe_number)})
 
     print(f'Inserting {len(probe_insertions)} probe_insertion(s)')
     ephys.ProbeInsertion.insert(probe_insertions, ignore_extra_fields=True, skip_duplicates=True)

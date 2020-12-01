@@ -1,7 +1,5 @@
-#!/usr/bin/env python
 from setuptools import setup, find_packages
 from os import path
-import sys
 
 here = path.abspath(path.dirname(__file__))
 
@@ -18,7 +16,7 @@ with open(path.join(here, 'requirements.txt')) as f:
     requirements = f.read().splitlines()
 
 setup(
-    name='workflow-ephys',
+    name='workflow_ephys-ephys',
     version='0.0.1',
     description="Extracellular electrophysiology pipeline using the DataJoint elements",
     long_description=long_description,
