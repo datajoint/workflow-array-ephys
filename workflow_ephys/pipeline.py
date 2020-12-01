@@ -3,7 +3,10 @@ from elements_animal import subject
 from elements_lab import lab
 from elements_ephys import probe, ephys
 
-from workflow_ephys.utils.paths import get_ephys_probe_data_dir, get_ks_data_dir, get_paramset_idx
+from .paths import get_ephys_probe_data_dir, get_ks_data_dir, get_paramset_idx
+
+
+import
 
 
 if 'custom' not in dj.config:
@@ -45,13 +48,16 @@ class Session(dj.Manual):
 
 
 # ============== Activate "ephys" schema ==============
-probe.activate(db_prefix + 'ephys')
-ephys.activate(db_prefix + 'ephys',
-               add_objects={'Session': Session,
-                            'SkullReference': SkullReference,
-                            'get_neuropixels_data_directory': get_ephys_probe_data_dir,
-                            'get_paramset_idx': get_paramset_idx,
-                            'get_kilosort_output_directory': get_ks_data_dir})
+
+ephys.activate(db_prefix + 'ephys', db_prefix + 'probe',
+               add_objects=dict(
+                   # upstream tables
+                   Session=Session,
+                   SkullReference=SkullReference,
+                   # functions
+                   get_neuropixels_data_directory=get_ephys_probe_data_dir,
+                   get_paramset_idx=get_paramset_idx,
+                   get_kilosort_output_directory=get_ks_data_dir))
 
 # ---- Add neuropixels probes ----
 for probe_type in ('neuropixels 1.0 - 3A', 'neuropixels 1.0 - 3B',

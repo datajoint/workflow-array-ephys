@@ -9,7 +9,7 @@ This repository provides demonstrations for:
 1. Set up a pipeline using different pipeline modules (see [here](workflow_ephys/__init__.py))
 2. Ingestion of data/metadata based on:
     + predefined file/folder structure and naming convention
-    + predefined directory lookup methods (see [here](workflow_ephys/utils/paths.py))
+    + predefined directory lookup methods (see [here](workflow_ephys/paths.py))
 3. Ingestion of clustering results (built-in routine from the ephys pipeline module)
 
 
