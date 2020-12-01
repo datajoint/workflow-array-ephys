@@ -2,7 +2,7 @@ import re
 
 from elements_ephys.readers import neuropixels
 from workflow_ephys.pipeline import subject, ephys, probe, Session
-from workflow_ephys.utils.paths import get_ephys_root_data_dir
+from workflow_ephys.paths import get_ephys_root_data_dir
 
 
 def ingest():
