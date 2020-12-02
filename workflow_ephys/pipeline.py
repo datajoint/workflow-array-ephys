@@ -6,9 +6,6 @@ from elements_ephys import probe, ephys
 from .paths import get_ephys_probe_data_dir, get_ks_data_dir, get_paramset_idx
 
 
-import
-
-
 if 'custom' not in dj.config:
     dj.config['custom'] = {}
 
@@ -48,7 +45,7 @@ class Session(dj.Manual):
 
 
 # ============== Activate "ephys" schema ==============
-
+probe.activate(db_prefix + 'probe')
 ephys.activate(db_prefix + 'ephys', db_prefix + 'probe',
                add_objects=dict(
                    # upstream tables
