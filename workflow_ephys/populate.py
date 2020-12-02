@@ -5,13 +5,11 @@ populate_settings = {'reserve_jobs': True, 'suppress_errors': True, 'display_pro
 
 
 def populate():
-    # populate "dj.Imported" and "dj.Computed" tables
-    for name in dir(ephys):
-        attr = getattr(ephys, name)
-        if isinstance(attr, dj.user_tables.OrderedClass):
-            if isinstance(attr(), (dj.Imported, dj.Computed)):
-                print('\n--- Populating {} ---'.format(attr.__name__))
-                attr.populate(**populate_settings)
+    ephys.EphysRecording.populate(**populate_settings)
+    ephys.LFP.populate(**populate_settings)
+    ephys.ClusteringTask.populate(**populate_settings)
+    ephys.Clustering.populate(**populate_settings)
+    ephys.Waveform.populate(**populate_settings)
 
 
 if __name__ == '__main__':
