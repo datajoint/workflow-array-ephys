@@ -8,6 +8,7 @@ subjects = [{'subject': 'dl56', 'sex': 'F', 'subject_birth_date': '2019-12-11 03
             {'subject': 'SC035', 'sex': 'F', 'subject_birth_date': '2019-02-16 03:20:01'},
             {'subject': 'SC038', 'sex': 'F', 'subject_birth_date': '2019-04-26 03:20:01'}]
 
+print(f'Inserting {len(subjects)} subject(s)')
 subject.Subject.insert(subjects, skip_duplicates=True)
 
 # ========== Insert new "ClusteringParamSet" for Suite2p ===========

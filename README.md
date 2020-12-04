@@ -1,12 +1,12 @@
 # Pipeline for extracellular electrophysiology using Neuropixels probe and kilosort clustering method
 
 Build a full ephys pipeline using the canonical pipeline elements
-+ [lab-management](https://github.com/vathes/canonical-lab-management)
-+ [colony-management](https://github.com/vathes/canonical-colony-management)
-+ [ephys](https://github.com/vathes/canonical-ephys)
++ [elements-lab](https://github.com/datajoint/elements-lab)
++ [elements-animal](https://github.com/datajoint/elements-animal)
++ [elements-ephys](https://github.com/datajoint/elements-ephys)
 
 This repository provides demonstrations for: 
-1. Set up a pipeline using different pipeline modules (see [here](workflow_ephys/__init__.py))
+1. Set up a pipeline using different pipeline modules (see [here](workflow_ephys/pipeline.py))
 2. Ingestion of data/metadata based on:
     + predefined file/folder structure and naming convention
     + predefined directory lookup methods (see [here](workflow_ephys/paths.py))
@@ -34,7 +34,7 @@ The electrophysiology pipeline presented here uses pipeline components from 3 Da
 
 ### Step 1 - clone this project
 
-Clone this repository from [here](https://github.com/vathes/canonical-full-ephys-pipeline)
+Clone this repository from [here](https://github.com/datajoint/workflow-ephys)
 
 + Launch a new terminal and change directory to where you want to clone the repository to
     ```
@@ -42,11 +42,11 @@ Clone this repository from [here](https://github.com/vathes/canonical-full-ephys
     ```
 + Clone the repository:
     ```
-    git clone https://github.com/vathes/canonical-full-ephys-pipeline 
+    git clone https://github.com/datajoint/workflow-ephys 
     ```
-+ Change directory to ***canonical-full-ephys-pipeline***
++ Change directory to ***workflow-ephys***
     ```
-    cd canonical-full-ephys-pipeline
+    cd workflow-ephys
     ```
 
 ### Step 2 - setup virtual environment
@@ -112,7 +112,7 @@ Create a kernel for the virtual environment
 
     pip install ipykernel
     
-    ipython kernel install --name=full-ephys
+    ipython kernel install --name=workflow-ephys
 
 At this point the setup/installation of this pipeline is completed. Users can start browsing the example jupyter notebooks for demo usage of the pipeline.
 
@@ -171,7 +171,7 @@ Once you have your data directory configured with the above convention,
 
 2. Import session data - run:
 
-    python workflow_ephys/ingestion.py
+    python workflow_ephys/ingest.py
     
 3. Import clustering data and populate downstream analyses - run:
 
