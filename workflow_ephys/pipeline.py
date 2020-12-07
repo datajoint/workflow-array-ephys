@@ -22,17 +22,9 @@ lab.activate(db_prefix + 'lab')
 subject.activate(db_prefix + 'subject', required_module=__name__)
 
 
-# ------------- Declare new Session and SkullReference tables -------------
+# ------------- Declare tables Session and SkullReference for use in elements_ephys -------------
 
 schema = dj.schema(db_prefix + 'experiment')
-
-
-@schema
-class SkullReference(dj.Lookup):
-    definition = """
-    skull_reference   : varchar(60)
-    """
-    contents = zip(['Bregma', 'Lambda'])
 
 
 @schema
@@ -41,6 +33,14 @@ class Session(dj.Manual):
     -> subject.Subject
     session_datetime: datetime
     """
+
+
+@schema
+class SkullReference(dj.Lookup):
+    definition = """
+    skull_reference   : varchar(60)
+    """
+    contents = zip(['Bregma', 'Lambda'])
 
 
 # ------------- Activate "ephys" schema -------------
