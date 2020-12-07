@@ -22,17 +22,17 @@ lab.activate(db_prefix + 'lab')
 subject.activate(db_prefix + 'subject', required_module=__name__)
 
 
-@lab.schema
+# ------------- Declare new Session and SkullReference tables -------------
+
+schema = dj.schema(db_prefix + 'experiment')
+
+
+@schema
 class SkullReference(dj.Lookup):
     definition = """
     skull_reference   : varchar(60)
     """
     contents = zip(['Bregma', 'Lambda'])
-
-
-# ------------- Declare Session table -------------
-
-schema = dj.schema(db_prefix + 'experiment')
 
 
 @schema
