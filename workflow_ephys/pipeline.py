@@ -3,6 +3,8 @@ from elements_animal import subject
 from elements_lab import lab
 from elements_ephys import probe, ephys
 
+from elements_lab.lab import Source, Lab, Protocol, User
+
 from .paths import get_ephys_probe_data_dir as get_neuropixels_data_directory
 from .paths import get_ks_data_dir as get_kilosort_output_directory
 from .paths import get_paramset_idx as get_paramset_idx
@@ -17,11 +19,7 @@ db_prefix = dj.config['custom'].get('database.prefix', '')
 
 lab.activate(db_prefix + 'lab')
 
-subject.activate(db_prefix + 'subject',
-                 add_objects={'Source': lab.Source,
-                              'Lab': lab.Lab,
-                              'Protocol': lab.Protocol,
-                              'User': lab.User})
+subject.activate(db_prefix + 'subject', required_module=__name__)
 
 
 @lab.schema
