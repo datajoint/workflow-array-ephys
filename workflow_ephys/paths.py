@@ -3,7 +3,7 @@ import pathlib
 
 
 def get_ephys_root_data_dir():
-    data_dir = dj.config.get('custom', {}).get('ephys_data_dir', None)
+    data_dir = dj.config.get('custom', {}).get('ephys_root_data_dir', None)
     return pathlib.Path(data_dir) if data_dir else None
 
 

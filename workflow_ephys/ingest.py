@@ -1,11 +1,29 @@
 import re
+import pandas as pd
 
 from elements_ephys.readers import neuropixels
 from workflow_ephys.pipeline import subject, ephys, probe, Session
 from workflow_ephys.paths import get_ephys_root_data_dir
 
 
-def ingest():
+def ingest_subjects():
+    # -------------- Insert new "Subject" --------------
+    subjects_pd = pd.read_csv('./user_data/subjects.csv')
+    subjects_dict = subjects_pd.to_dict('records')
+
+    print(f'\n---- Insert {len(subjects_dict)} entry(s) into subject.Subject ----')
+    subject.Subject.insert(subjects_dict, skip_duplicates=True)
+
+
+def ingest_sessions():
+
+    # ---------- Insert new "Session" and "Scan" ---------
+    sessions_dict = pd.read_csv('./user_data/sessions.csv', delimiter=',').to_dict('records')
+
+    # Folder structure: root / subject / session / .tif (raw)
+    sessions, scans, scanners = [], [], []
+    session_directories, processing_tasks = [], []
+
     # ========== Insert new "Session" ===========
     data_dir = get_ephys_root_data_dir()
 
@@ -46,4 +64,5 @@ def ingest():
 
 
 if __name__ == '__main__':
-    ingest()
+    ingest_subjects()
+    ingest_sessions()

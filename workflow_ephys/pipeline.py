@@ -19,7 +19,7 @@ db_prefix = dj.config['custom'].get('database.prefix', '')
 
 lab.activate(db_prefix + 'lab')
 
-subject.activate(db_prefix + 'subject', required_module=__name__)
+subject.activate(db_prefix + 'subject', linking_module=__name__)
 
 
 # ------------- Declare tables Session and SkullReference for use in elements_ephys -------------
@@ -34,6 +34,12 @@ class Session(dj.Manual):
     session_datetime: datetime
     """
 
+    class Directory(dj.Part):
+        definition = """
+        -> master
+        session_dir: varchar(256)       # Relative path w.r.t "ephys_root_data_dir"
+        """
+
 
 @schema
 class SkullReference(dj.Lookup):
@@ -45,7 +51,7 @@ class SkullReference(dj.Lookup):
 
 # ------------- Activate "ephys" schema -------------
 
-ephys.activate(db_prefix + 'ephys', db_prefix + 'probe', required_module=__name__)
+ephys.activate(db_prefix + 'ephys', db_prefix + 'probe', linking_module=__name__)
 
 # ------------- Add neuropixels probes -------------
 for probe_type in ('neuropixels 1.0 - 3A', 'neuropixels 1.0 - 3B',
