@@ -1,5 +1,6 @@
 import re
 import pandas as pd
+import pathlib
 
 from elements_ephys.readers import neuropixels
 from workflow_ephys.pipeline import subject, ephys, probe, Session
@@ -16,51 +17,57 @@ def ingest_subjects():
 
 
 def ingest_sessions():
+    root_data_dir = get_ephys_root_data_dir()
 
-    # ---------- Insert new "Session" and "Scan" ---------
+    # ---------- Insert new "Session" and "ProbeInsertion" ---------
     sessions_dict = pd.read_csv('./user_data/sessions.csv', delimiter=',').to_dict('records')
 
-    # Folder structure: root / subject / session / .tif (raw)
-    sessions, scans, scanners = [], [], []
-    session_directories, processing_tasks = [], []
-
-    # ========== Insert new "Session" ===========
-    data_dir = get_ephys_root_data_dir()
-
     # Folder structure: root / subject / session / probe / .ap.meta
-    sessions, sess_folder_names = [], []
-    for subj_key in subject.Subject.fetch('KEY'):
-        subj_dir = data_dir / subj_key['subject']
-        if subj_dir.exists():
-            for meta_filepath in subj_dir.rglob('*.ap.meta'):
-                sess_folder = meta_filepath.parent.parent.name
-                if sess_folder not in sess_folder_names:
-                    npx_meta = neuropixels.NeuropixelsMeta(meta_filepath)
-                    sessions.append({**subj_key, 'session_datetime': npx_meta.recording_time})
-                    sess_folder_names.append(sess_folder)
+    session_list, session_dir_list, probe_insertion_list, probe_list = [], [], [], []
 
-    print(f'Inserting {len(sessions)} session(s)')
-    Session.insert(sessions, skip_duplicates=True)
+    for sess in sessions_dict:
+        sess_dir = pathlib.Path(sess['session_dir'])
+        session_datetimes, insertions = [], []
 
-    # ========== Insert new "ProbeInsertion" ===========
-    probe_insertions = []
-    for sess_key in Session.fetch('KEY'):
-        subj_dir = data_dir / sess_key['subject']
-        if subj_dir.exists():
-            for meta_filepath in subj_dir.rglob('*.ap.meta'):
-                npx_meta = neuropixels.NeuropixelsMeta(meta_filepath)
+        meta_filepaths = list(sess_dir.rglob('*.ap.meta'))
 
-                prb = {'probe_type': npx_meta.probe_model, 'probe': npx_meta.probe_SN}
-                probe.Probe.insert1(prb, skip_duplicates=True)
+        if len(meta_filepaths) == 0:
+            print(f'Session data not found! No ".ap.meta" files found in {sess_dir}. Skipping...')
+            continue
 
-                probe_dir = meta_filepath.parent
-                probe_number = re.search('(imec)?\d{1}$', probe_dir.name).group()
-                probe_number = int(probe_number.replace('imec', '')) if 'imec' in probe_number else int(probe_number)
+        for meta_filepath in meta_filepaths:
+            npx_meta = neuropixels.NeuropixelsMeta(meta_filepath)
 
-                probe_insertions.append({**sess_key, **prb, 'insertion_number': int(probe_number)})
+            prb = {'probe_type': npx_meta.probe_model, 'probe': npx_meta.probe_SN}
+            if prb not in probe.Probe.proj() and prb['probe'] not in [p['probe'] for p in probe_list]:
+                probe_list.append(prb)
 
-    print(f'Inserting {len(probe_insertions)} probe_insertion(s)')
-    ephys.ProbeInsertion.insert(probe_insertions, ignore_extra_fields=True, skip_duplicates=True)
+            probe_dir = meta_filepath.parent
+            probe_number = re.search('(imec)?\d{1}$', probe_dir.name).group()
+            probe_number = int(probe_number.replace('imec', '')) if 'imec' in probe_number else int(probe_number)
+
+            insertions.append({**prb, 'insertion_number': int(probe_number)})
+            session_datetimes.append(npx_meta.recording_time)
+
+        sess_key = {'subject': sess['subject'], 'session_datetime': min(session_datetimes)}
+        if sess_key not in Session.proj():
+            session_list.append(sess_key)
+            session_dir_list.append({**sess_key, 'session_dir': sess_dir.relative_to(root_data_dir).as_posix()})
+            probe_insertion_list.extend([{**sess_key, **insertion} for insertion in insertions])
+
+    print(f'\n---- Insert {len(session_list)} entry(s) into experiment.Session ----')
+    Session.insert(session_list)
+
+    print(f'\n---- Insert {len(session_dir_list)} entry(s) into experiment.Session.Directory ----')
+    Session.Directory.insert(session_dir_list)
+
+    print(f'\n---- Insert {len(probe_list)} entry(s) into probe.Probe ----')
+    probe.Probe.insert(probe_list)
+
+    print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
+    ephys.ProbeInsertion.insert(probe_insertion_list)
+
+    print('\n---- Successfully completed workflow_imaging/ingest.py ----')
 
 
 if __name__ == '__main__':
