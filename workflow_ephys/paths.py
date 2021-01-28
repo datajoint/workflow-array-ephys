@@ -27,7 +27,7 @@ def get_ephys_probe_data_dir(probe_key):
     try:
         npx_meta_fp = next(sess_dir.rglob(search_pattern))
     except StopIteration:
-        raise FileNotFoundError(f'Unable to find probe directory matching: {search_pattern}')
+        raise FileNotFoundError(f'Unable to find probe directory matching: {search_pattern} (in {sess_dir})')
 
     return npx_meta_fp.parent
 

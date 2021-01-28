@@ -191,6 +191,36 @@ populating the pipeline with your data amounts to these 3 steps:
 
 + In fact, step 2 and 3 can be executed as scheduled jobs that will automatically process any data newly placed into the `imaging_root_data_dir`.
 
+## Interacting with the DataJoint pipeline and exploring data
+
++ Connect to database and import tables
+    ```
+    from workflow_ephys.pipeline import *
+    ```
+
++ View ingested/processed data
+    ```
+    subject.Subject()
+    Session()
+    ephys.ProbeInsertion()
+    ephys.EphysRecording()
+    ephys.Clustering()
+    ephys.Clustering.Unit()
+    ```
+
++ If required to drop all schemas, the following is the dependency order. 
+    ```
+    from workflow_ephys.pipeline import *
+
+    ephys.schema.drop()
+    probe.schema.drop()
+    schema.drop()
+    subject.schema.drop()
+    lab.schema.drop()
+    ```
+
++ For a more in-depth exploration of ingested data, please refer to the example [notebook](notebooks/explore_workflow.ipynb).
+
  
 ## Development mode installation
 
