@@ -46,7 +46,7 @@ def ingest_sessions():
             probe_number = re.search('(imec)?\d{1}$', probe_dir.name).group()
             probe_number = int(probe_number.replace('imec', '')) if 'imec' in probe_number else int(probe_number)
 
-            insertions.append({**prb, 'insertion_number': int(probe_number)})
+            insertions.append({'probe': npx_meta.probe_SN, 'insertion_number': int(probe_number)})
             session_datetimes.append(npx_meta.recording_time)
 
         sess_key = {'subject': sess['subject'], 'session_datetime': min(session_datetimes)}
