@@ -2,9 +2,10 @@ import re
 import pandas as pd
 import pathlib
 
+from .pipeline import subject, ephys, probe, Session
+from .paths import get_ephys_root_data_dir
+
 from elements_ephys.readers import neuropixels
-from workflow_ephys.pipeline import subject, ephys, probe, Session
-from workflow_ephys.paths import get_ephys_root_data_dir
 
 
 def ingest_subjects():
@@ -49,11 +50,11 @@ def ingest_sessions():
             insertions.append({'probe': npx_meta.probe_SN, 'insertion_number': int(probe_number)})
             session_datetimes.append(npx_meta.recording_time)
 
-        sess_key = {'subject': sess['subject'], 'session_datetime': min(session_datetimes)}
-        if sess_key not in Session.proj():
-            session_list.append(sess_key)
-            session_dir_list.append({**sess_key, 'session_dir': sess_dir.relative_to(root_data_dir).as_posix()})
-            probe_insertion_list.extend([{**sess_key, **insertion} for insertion in insertions])
+        session_key = {'subject': sess['subject'], 'session_datetime': min(session_datetimes)}
+        if session_key not in Session.proj():
+            session_list.append(session_key)
+            session_dir_list.append({**session_key, 'session_dir': sess_dir.relative_to(root_data_dir).as_posix()})
+            probe_insertion_list.extend([{**session_key, **insertion} for insertion in insertions])
 
     print(f'\n---- Insert {len(session_list)} entry(s) into experiment.Session ----')
     Session.insert(session_list)
