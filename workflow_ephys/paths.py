@@ -8,20 +8,24 @@ def get_ephys_root_data_dir():
 
 
 def get_ephys_probe_data_dir(probe_key):
-    subj = probe_key['subject']
+    # Folder structure: root / subject / session / probe / .ap.meta
+    data_dir = get_ephys_root_data_dir()
+
+    from .pipeline import Session
+    sess_dir = data_dir / (Session.Directory & probe_key).fetch1('session_dir')
+
+    if not sess_dir.exists():
+        raise FileNotFoundError(f'Session directory not found ({sess_dir})')
+
     probe_no = probe_key['insertion_number']
-    sess_datetime_string = probe_key['session_datetime'].strftime('%m%d%y_%H%M%S')
 
-    subj_dir = get_ephys_root_data_dir() / subj
+    probe_dir_pattern = f'*{probe_no}'
+    npx_meta_pattern = f'*{probe_no}.ap.meta'
 
-    sess_dir_pattern = f'*{subj}_{sess_datetime_string}*'
-    probe_dir_pattern = f'*imec{probe_no}'
-    npx_meta_pattern = f'*imec{probe_no}.ap.meta'
-
-    search_pattern = '/'.join([sess_dir_pattern, probe_dir_pattern, npx_meta_pattern])
+    search_pattern = '/'.join([probe_dir_pattern, npx_meta_pattern])
 
     try:
-        npx_meta_fp = next(subj_dir.rglob(search_pattern))
+        npx_meta_fp = next(sess_dir.rglob(search_pattern))
     except StopIteration:
         raise FileNotFoundError(f'Unable to find probe directory matching: {search_pattern}')
 
