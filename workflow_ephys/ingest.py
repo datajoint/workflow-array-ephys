@@ -1,6 +1,6 @@
 import re
-import pandas as pd
 import pathlib
+import csv
 
 from .pipeline import subject, ephys, probe, Session
 from .paths import get_ephys_root_data_dir
@@ -10,8 +10,8 @@ from elements_ephys.readers import neuropixels
 
 def ingest_subjects():
     # -------------- Insert new "Subject" --------------
-    subjects_pd = pd.read_csv('./user_data/subjects.csv')
-    subjects_dict = subjects_pd.to_dict('records')
+    with open('./user_data/subjects.csv', newline='') as f:
+        subjects_dict = list(csv.DictReader(f, delimiter=','))
 
     print(f'\n---- Insert {len(subjects_dict)} entry(s) into subject.Subject ----')
     subject.Subject.insert(subjects_dict, skip_duplicates=True)
@@ -21,7 +21,8 @@ def ingest_sessions():
     root_data_dir = get_ephys_root_data_dir()
 
     # ---------- Insert new "Session" and "ProbeInsertion" ---------
-    sessions_dict = pd.read_csv('./user_data/sessions.csv', delimiter=',').to_dict('records')
+    with open('./user_data/sessions.csv', newline='') as f:
+        sessions_dict = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
     session_list, session_dir_list, probe_insertion_list, probe_list = [], [], [], []
