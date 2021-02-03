@@ -16,7 +16,7 @@ with open(path.join(here, 'requirements.txt')) as f:
     requirements = f.read().splitlines()
 
 setup(
-    name='workflow_ephys-ephys',
+    name='workflow-ephys',
     version='0.0.1',
     description="Extracellular electrophysiology pipeline using the DataJoint elements",
     long_description=long_description,

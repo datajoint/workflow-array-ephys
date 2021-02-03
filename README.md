@@ -239,8 +239,8 @@ This method allows you to modify the source code for `workflow-imaging`, `elemen
     ```
 + Install each package with the `-e` option
     ```
-    pip install -e ./elements-lab
-    pip install -e ./elements-animal
-    pip install -e ./elements-imaging
-    pip install -e ./workflow-imaging
+    pip install -e ./elements-lab --no-dependencies
+    pip install -e ./elements-animal --no-dependencies
+    pip install -e ./elements-ephys --no-dependencies
+    pip install -e ./workflow-ephys --no-dependencies
     ```

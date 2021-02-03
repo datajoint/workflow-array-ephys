@@ -1,4 +1,3 @@
-import datajoint as dj
 from workflow_ephys.pipeline import ephys
 
 

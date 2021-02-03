@@ -2,8 +2,8 @@ import re
 import pathlib
 import csv
 
-from .pipeline import subject, ephys, probe, Session
-from .paths import get_ephys_root_data_dir
+from workflow_ephys.pipeline import subject, ephys, probe, Session
+from workflow_ephys.paths import get_ephys_root_data_dir
 
 from elements_ephys.readers import neuropixels
 
