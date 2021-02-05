@@ -11,10 +11,10 @@ from elements_ephys.readers import neuropixels
 def ingest_subjects():
     # -------------- Insert new "Subject" --------------
     with open('./user_data/subjects.csv', newline='') as f:
-        subjects_dict = list(csv.DictReader(f, delimiter=','))
+        input_subjects = list(csv.DictReader(f, delimiter=','))
 
-    print(f'\n---- Insert {len(subjects_dict)} entry(s) into subject.Subject ----')
-    subject.Subject.insert(subjects_dict, skip_duplicates=True)
+    print(f'\n---- Insert {len(input_subjects)} entry(s) into subject.Subject ----')
+    subject.Subject.insert(input_subjects, skip_duplicates=True)
 
 
 def ingest_sessions():
@@ -22,12 +22,12 @@ def ingest_sessions():
 
     # ---------- Insert new "Session" and "ProbeInsertion" ---------
     with open('./user_data/sessions.csv', newline='') as f:
-        sessions_dict = list(csv.DictReader(f, delimiter=','))
+        input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
     session_list, session_dir_list, probe_insertion_list, probe_list = [], [], [], []
 
-    for sess in sessions_dict:
+    for sess in input_sessions:
         sess_dir = pathlib.Path(sess['session_dir'])
         session_datetimes, insertions = [], []
 
