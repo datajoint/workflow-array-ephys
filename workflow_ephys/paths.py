@@ -7,6 +7,16 @@ def get_ephys_root_data_dir():
     return pathlib.Path(data_dir) if data_dir else None
 
 
+def get_session_directory(session_key: dict) -> str:
+    # Folder structure: root / subject / session
+    data_dir = get_ephys_root_data_dir()
+
+    from .pipeline import Session
+    sess_dir = data_dir / (Session.Directory & session_key).fetch1('session_dir')
+
+    return sess_dir.as_posix()
+
+
 def get_ephys_probe_data_dir(probe_key):
     # Folder structure: root / subject / session / probe / .ap.meta
     data_dir = get_ephys_root_data_dir()
