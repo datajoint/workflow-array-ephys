@@ -234,13 +234,13 @@ This method allows you to modify the source code for `workflow-imaging`, `elemen
     ```
     git clone https://github.com/datajoint/elements-lab
     git clone https://github.com/datajoint/elements-animal
-    git clone https://github.com/datajoint/elements-imaging
-    git clone https://github.com/datajoint/workflow-imaging
+    git clone https://github.com/datajoint/elements-ephys
+    git clone https://github.com/datajoint/workflow-ephys
     ```
 + Install each package with the `-e` option
     ```
-    pip install -e ./elements-lab --no-dependencies
-    pip install -e ./elements-animal --no-dependencies
-    pip install -e ./elements-ephys --no-dependencies
-    pip install -e ./workflow-ephys --no-dependencies
+    pip install -e ./workflow-ephys
+    pip install -e ./elements-lab
+    pip install -e ./elements-animal
+    pip install -e ./elements-ephys
     ```
