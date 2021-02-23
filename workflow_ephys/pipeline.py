@@ -7,8 +7,6 @@ from elements_lab.lab import Source, Lab, Protocol, User
 
 from .paths import get_ephys_root_data_dir
 from .paths import get_session_directory
-from .paths import get_ks_data_dir as get_kilosort_output_directory
-from .paths import get_paramset_idx
 
 if 'custom' not in dj.config:
     dj.config['custom'] = {}
