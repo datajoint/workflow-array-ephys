@@ -5,7 +5,7 @@ import csv
 from workflow_ephys.pipeline import subject, ephys, probe, Session
 from workflow_ephys.paths import get_ephys_root_data_dir
 
-from elements_ephys.readers import neuropixels
+from elements_ephys.readers import spikeglx, openephys
 
 
 def ingest_subjects():
@@ -25,32 +25,49 @@ def ingest_sessions():
         input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
-    session_list, session_dir_list, probe_insertion_list, probe_list = [], [], [], []
+    session_list, session_dir_list, probe_list = [], [], []
+    probe_insertion_list, clustering_task_list = [], []
 
     for sess in input_sessions:
         sess_dir = pathlib.Path(sess['session_dir'])
         session_datetimes, insertions = [], []
 
-        meta_filepaths = list(sess_dir.rglob('*.ap.meta'))
+        # search session dir and determine acquisition software
+        acq_software = None
+        for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'], ['SpikeGLX', 'OpenEphys']):
+            ephys_meta_filepaths = [fp for fp in sess_dir.rglob(ephys_pattern)]
+            if len(ephys_meta_filepaths):
+                acq_software = ephys_acq_type
+                break
 
-        if len(meta_filepaths) == 0:
-            print(f'Session data not found! No ".ap.meta" files found in {sess_dir}. Skipping...')
-            continue
+        if acq_software is None:
+            raise FileNotFoundError(f'Ephys recording data not found! Neither SpikeGLX nor OpenEphys recording files found')
 
-        for meta_filepath in meta_filepaths:
-            npx_meta = neuropixels.NeuropixelsMeta(meta_filepath)
+        if acq_software == 'SpikeGLX':
+            for meta_filepath in ephys_meta_filepaths:
+                spikeglx_meta = spikeglx.SpikeGLXMeta(meta_filepath)
 
-            prb = {'probe_type': npx_meta.probe_model, 'probe': npx_meta.probe_SN}
-            if prb not in probe.Probe.proj() and prb['probe'] not in [p['probe'] for p in probe_list]:
-                probe_list.append(prb)
+                prb = {'probe_type': spikeglx_meta.probe_model, 'probe': spikeglx_meta.probe_SN}
+                if prb not in probe.Probe.proj() and prb['probe'] not in [p['probe'] for p in probe_list]:
+                    probe_list.append(prb)
 
-            probe_dir = meta_filepath.parent
-            probe_number = re.search('(imec)?\d{1}$', probe_dir.name).group()
-            probe_number = int(probe_number.replace('imec', '')) if 'imec' in probe_number else int(probe_number)
+                probe_dir = meta_filepath.parent
+                probe_number = re.search('(imec)?\d{1}$', probe_dir.name).group()
+                probe_number = int(probe_number.replace('imec', '')) if 'imec' in probe_number else int(probe_number)
 
-            insertions.append({'probe': npx_meta.probe_SN, 'insertion_number': int(probe_number)})
-            session_datetimes.append(npx_meta.recording_time)
+                insertions.append({'probe': spikeglx_meta.probe_SN, 'insertion_number': int(probe_number)})
+                session_datetimes.append(spikeglx_meta.recording_time)
 
+        elif acq_software == 'OpenEphys':
+            loaded_oe = openephys.OpenEphys(sess_dir)
+            session_datetimes.append(loaded_oe.experiment.datetime)
+            for prb_idx, oe_probe in enumerate(loaded_oe.probes):
+                prb = {'probe_type': oe_probe['probe_model'], 'probe': oe_probe['probe_SN']}
+                if prb not in probe.Probe.proj() and prb['probe'] not in [p['probe'] for p in probe_list]:
+                    probe_list.append(prb)
+                insertions.append({'probe': oe_probe['probe_SN'], 'insertion_number': prb_idx})
+
+        # new session/probe-insertion
         session_key = {'subject': sess['subject'], 'session_datetime': min(session_datetimes)}
         if session_key not in Session.proj():
             session_list.append(session_key)
