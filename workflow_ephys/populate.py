@@ -11,9 +11,6 @@ def populate(display_progress=True):
     print('\n---- Populate ephys.LFP ----')
     ephys.LFP.populate(**populate_settings)
 
-    print('\n---- Populate ephys.ClusteringTask ----')
-    ephys.ClusteringTask.populate(**populate_settings)
-
     print('\n---- Populate ephys.Clustering ----')
     ephys.Clustering.populate(**populate_settings)
 
