@@ -32,14 +32,12 @@ def ingest_sessions():
         session_datetimes, insertions = [], []
 
         # search session dir and determine acquisition software
-        acq_software = None
         for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'], ['SpikeGLX', 'OpenEphys']):
             ephys_meta_filepaths = [fp for fp in sess_dir.rglob(ephys_pattern)]
             if len(ephys_meta_filepaths):
                 acq_software = ephys_acq_type
                 break
-
-        if acq_software is None:
+        else:
             raise FileNotFoundError(f'Ephys recording data not found! Neither SpikeGLX nor OpenEphys recording files found in: {sess_dir}')
 
         if acq_software == 'SpikeGLX':
