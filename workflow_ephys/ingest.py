@@ -63,7 +63,7 @@ def ingest_sessions():
                     probe_list.append(probe_key)
                 insertions.append({'probe': oe_probe['probe_SN'], 'insertion_number': probe_idx})
         else:
-            NotImplementedError(f'Unknown acquisition software: {acq_software}')
+            raise NotImplementedError(f'Unknown acquisition software: {acq_software}')
 
         # new session/probe-insertion
         session_key = {'subject': sess['subject'], 'session_datetime': min(session_datetimes)}
