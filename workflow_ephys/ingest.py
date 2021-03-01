@@ -47,7 +47,7 @@ def ingest_sessions():
                 spikeglx_meta = spikeglx.SpikeGLXMeta(meta_filepath)
 
                 probe_key = {'probe_type': spikeglx_meta.probe_model, 'probe': spikeglx_meta.probe_SN}
-                if probe_key not in probe.Probe.proj() and probe_key['probe'] not in [p['probe'] for p in probe_list]:
+                if probe_key['probe'] not in [p['probe'] for p in probe_list] and probe_key not in probe.Probe():
                     probe_list.append(probe_key)
 
                 probe_dir = meta_filepath.parent
