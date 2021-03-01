@@ -25,8 +25,7 @@ def ingest_sessions():
         input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
-    session_list, session_dir_list, probe_list = [], [], []
-    probe_insertion_list, clustering_task_list = [], []
+    session_list, session_dir_list, probe_list, probe_insertion_list = [], [], [], []
 
     for sess in input_sessions:
         sess_dir = pathlib.Path(sess['session_dir'])
