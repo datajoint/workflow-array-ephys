@@ -41,19 +41,19 @@ def ingest_sessions():
                 break
 
         if acq_software is None:
-            raise FileNotFoundError(f'Ephys recording data not found! Neither SpikeGLX nor OpenEphys recording files found')
+            raise FileNotFoundError(f'Ephys recording data not found! Neither SpikeGLX nor OpenEphys recording files found in: {sess_dir}')
 
         if acq_software == 'SpikeGLX':
             for meta_filepath in ephys_meta_filepaths:
                 spikeglx_meta = spikeglx.SpikeGLXMeta(meta_filepath)
 
-                prb = {'probe_type': spikeglx_meta.probe_model, 'probe': spikeglx_meta.probe_SN}
-                if prb not in probe.Probe.proj() and prb['probe'] not in [p['probe'] for p in probe_list]:
-                    probe_list.append(prb)
+                probe_key = {'probe_type': spikeglx_meta.probe_model, 'probe': spikeglx_meta.probe_SN}
+                if probe_key not in probe.Probe.proj() and probe_key['probe'] not in [p['probe'] for p in probe_list]:
+                    probe_list.append(probe_key)
 
                 probe_dir = meta_filepath.parent
                 probe_number = re.search('(imec)?\d{1}$', probe_dir.name).group()
-                probe_number = int(probe_number.replace('imec', '')) if 'imec' in probe_number else int(probe_number)
+                probe_number = int(probe_number.replace('imec', ''))
 
                 insertions.append({'probe': spikeglx_meta.probe_SN, 'insertion_number': int(probe_number)})
                 session_datetimes.append(spikeglx_meta.recording_time)
@@ -61,15 +61,15 @@ def ingest_sessions():
         elif acq_software == 'OpenEphys':
             loaded_oe = openephys.OpenEphys(sess_dir)
             session_datetimes.append(loaded_oe.experiment.datetime)
-            for prb_idx, oe_probe in enumerate(loaded_oe.probes):
-                prb = {'probe_type': oe_probe['probe_model'], 'probe': oe_probe['probe_SN']}
-                if prb not in probe.Probe.proj() and prb['probe'] not in [p['probe'] for p in probe_list]:
-                    probe_list.append(prb)
-                insertions.append({'probe': oe_probe['probe_SN'], 'insertion_number': prb_idx})
+            for probe_idx, oe_probe in enumerate(loaded_oe.probes):
+                probe_key = {'probe_type': oe_probe['probe_model'], 'probe': oe_probe['probe_SN']}
+                if probe_key['probe'] not in [p['probe'] for p in probe_list] and probe_key not in probe.Probe():
+                    probe_list.append(probe_key)
+                insertions.append({'probe': oe_probe['probe_SN'], 'insertion_number': probe_idx})
 
         # new session/probe-insertion
         session_key = {'subject': sess['subject'], 'session_datetime': min(session_datetimes)}
-        if session_key not in Session.proj():
+        if session_key not in Session():
             session_list.append(session_key)
             session_dir_list.append({**session_key, 'session_dir': sess_dir.relative_to(root_data_dir).as_posix()})
             probe_insertion_list.extend([{**session_key, **insertion} for insertion in insertions])
