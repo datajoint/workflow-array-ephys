@@ -28,7 +28,7 @@ The electrophysiology pipeline presented here uses pipeline components from 3 Da
 
 ### assembled with elements-ephys
 
-![elements-ephys](images/ephys_ERD-full_ephys.png)
+![elements-ephys](images/attached_ephys_element.png)
 
 ## Installation instruction
 
