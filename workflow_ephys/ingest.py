@@ -54,7 +54,6 @@ def ingest_sessions():
 
                 insertions.append({'probe': spikeglx_meta.probe_SN, 'insertion_number': int(probe_number)})
                 session_datetimes.append(spikeglx_meta.recording_time)
-
         elif acq_software == 'OpenEphys':
             loaded_oe = openephys.OpenEphys(sess_dir)
             session_datetimes.append(loaded_oe.experiment.datetime)
@@ -63,6 +62,8 @@ def ingest_sessions():
                 if probe_key['probe'] not in [p['probe'] for p in probe_list] and probe_key not in probe.Probe():
                     probe_list.append(probe_key)
                 insertions.append({'probe': oe_probe['probe_SN'], 'insertion_number': probe_idx})
+        else:
+            NotImplementedError(f'Unknown acquisition software: {acq_software}')
 
         # new session/probe-insertion
         session_key = {'subject': sess['subject'], 'session_datetime': min(session_datetimes)}
