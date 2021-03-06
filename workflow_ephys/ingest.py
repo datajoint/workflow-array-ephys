@@ -57,11 +57,11 @@ def ingest_sessions():
         elif acq_software == 'OpenEphys':
             loaded_oe = openephys.OpenEphys(sess_dir)
             session_datetimes.append(loaded_oe.experiment.datetime)
-            for probe_idx, oe_probe in enumerate(loaded_oe.probes):
-                probe_key = {'probe_type': oe_probe['probe_model'], 'probe': oe_probe['probe_SN']}
+            for probe_idx, oe_probe in enumerate(loaded_oe.probes.values()):
+                probe_key = {'probe_type': oe_probe.probe_model, 'probe': oe_probe.probe_SN}
                 if probe_key['probe'] not in [p['probe'] for p in probe_list] and probe_key not in probe.Probe():
                     probe_list.append(probe_key)
-                insertions.append({'probe': oe_probe['probe_SN'], 'insertion_number': probe_idx})
+                insertions.append({'probe': oe_probe.probe_SN, 'insertion_number': probe_idx})
         else:
             raise NotImplementedError(f'Unknown acquisition software: {acq_software}')
 
