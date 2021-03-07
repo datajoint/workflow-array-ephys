@@ -1,14 +1,20 @@
-import datajoint as dj
 from workflow_ephys.pipeline import ephys
 
-populate_settings = {'reserve_jobs': True, 'suppress_errors': True, 'display_progress': True}
 
+def populate(display_progress=True):
 
-def populate():
+    populate_settings = {'display_progress': display_progress, 'reserve_jobs': False, 'suppress_errors': False}
+
+    print('\n---- Populate ephys.EphysRecording ----')
     ephys.EphysRecording.populate(**populate_settings)
+
+    print('\n---- Populate ephys.LFP ----')
     ephys.LFP.populate(**populate_settings)
-    ephys.ClusteringTask.populate(**populate_settings)
+
+    print('\n---- Populate ephys.Clustering ----')
     ephys.Clustering.populate(**populate_settings)
+
+    print('\n---- Populate ephys.Waveform ----')
     ephys.Waveform.populate(**populate_settings)
 
 
