@@ -66,7 +66,9 @@ def testdata_paths():
     return {
         'npx3A-p0-ks': 'rich_neuropixels/2018-07-03_19-10-39/probe_1/ks2.1_01',
         'npx3A-p1-ks': 'rich_neuropixels/2018-07-03_19-10-39/probe_1/ks2.1_01',
-        'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks'
+        'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks',
+        'npx3A-p0': 'rich_neuropixels/2018-07-03_19-10-39/probe_1',
+        'oe_npx3B': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0',
     }
 
 
