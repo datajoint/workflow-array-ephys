@@ -1,3 +1,5 @@
+# run tests: pytest -sv --cov-report term-missing --cov=workflow-ephys -p no:warnings
+
 import os
 import pytest
 import pandas as pd
