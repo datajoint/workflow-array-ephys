@@ -4,7 +4,7 @@ from workflow_ephys.ingest import (ingest_subjects, ingest_sessions)
 from workflow_ephys.pipeline import (subject, lab, ephys, probe, Session,
                                      get_ephys_root_data_dir)
 
-from . import subjects_csv, sessions_csv, kilosort_paramset
+from . import dj_config, subjects_csv, sessions_csv, kilosort_paramset
 
 
 def test_ingest_subjects(subjects_csv):

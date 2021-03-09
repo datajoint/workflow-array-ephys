@@ -3,29 +3,12 @@ import numpy as np
 from workflow_ephys.pipeline import (subject, lab, ephys, probe, Session,
                                      get_ephys_root_data_dir)
 
-from . import kilosort_paramset, clustering_tasks, curations, testdata_paths
+from . import (dj_config, kilosort_paramset, clustering_tasks, curations, testdata_paths)
 
 
 def test_ephys_recording_populate():
     ephys.EphysRecording.populate()
     assert len(ephys.EphysRecording()) == 12
-
-
-def test_clustering_populate(clustering_tasks):
-    ephys.Clustering.populate()
-    assert len(ephys.Clustering()) == 12
-
-
-def test_unit_populate(curations, testdata_paths):
-    rel_path = testdata_paths['npx3A-p0-ks']
-    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
-    ephys.Unit.populate(curation_key)
-    assert len(ephys.Unit & curation_key & 'cluster_quality_label = "good"') == 76
-
-    rel_path = testdata_paths['oe_npx3B-ks']
-    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
-    ephys.Unit.populate(curation_key)
-    assert len(ephys.Unit & curation_key & 'cluster_quality_label = "good"') == 68
 
 
 def test_LFP_populate_npx3B_OpenEphys(testdata_paths):
@@ -62,3 +45,20 @@ def test_LFP_populate_npx3A_SpikeGLX(testdata_paths):
                   122, 131, 140, 149, 158, 167, 176, 185, 194, 203, 212, 221, 230,
                   239, 248, 257, 266, 275, 284, 293, 302, 311, 320, 329, 338, 347,
                   356, 365, 374, 383]))
+
+
+def test_clustering_populate(clustering_tasks):
+    ephys.Clustering.populate()
+    assert len(ephys.Clustering()) == 12
+
+
+def test_unit_populate(curations, testdata_paths):
+    rel_path = testdata_paths['npx3A-p0-ks']
+    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
+    ephys.Unit.populate(curation_key)
+    assert len(ephys.Unit & curation_key & 'cluster_quality_label = "good"') == 76
+
+    rel_path = testdata_paths['oe_npx3B-ks']
+    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
+    ephys.Unit.populate(curation_key)
+    assert len(ephys.Unit & curation_key & 'cluster_quality_label = "good"') == 68

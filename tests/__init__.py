@@ -50,7 +50,7 @@ def sessions_csv():
                                   r'F:\U24\workflow_ephys_data\subject2\session2',
                                   r'F:\U24\workflow_ephys_data\subject3\session1',
                                   r'F:\U24\workflow_ephys_data\subject4\experiment1',
-                                  r'F:\Moser\rich_neuropixels\2018-07-03_19-10-39']
+                                  r'F:\U24\workflow_ephys_data\subject5\2018-07-03_19-10-39']
 
     sessions_csv_fp = pathlib.Path('./tests/user_data/sessions.csv')
 
@@ -64,10 +64,10 @@ def sessions_csv():
 @pytest.fixture
 def testdata_paths():
     return {
-        'npx3A-p0-ks': 'rich_neuropixels/2018-07-03_19-10-39/probe_1/ks2.1_01',
-        'npx3A-p1-ks': 'rich_neuropixels/2018-07-03_19-10-39/probe_1/ks2.1_01',
+        'npx3A-p0-ks': 'subject5/2018-07-03_19-10-39/probe_1/ks2.1_01',
+        'npx3A-p1-ks': 'subject5/2018-07-03_19-10-39/probe_1/ks2.1_01',
         'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks',
-        'npx3A-p0': 'rich_neuropixels/2018-07-03_19-10-39/probe_1',
+        'npx3A-p0': 'subject5/2018-07-03_19-10-39/probe_1',
         'oe_npx3B': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0',
     }
 
@@ -123,6 +123,8 @@ def clustering_tasks(kilosort_paramset):
         ephys.ClusteringTask.insert1({**ephys_rec_key,
                                       'paramset_idx': 0,
                                       'clustering_output_dir': kilosort_dir.as_posix()})
+
+    ephys.Clustering.populate()
 
     yield
 

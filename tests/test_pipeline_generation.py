@@ -1,3 +1,4 @@
+from . import dj_config
 
 
 def test_generate_pipeline():
