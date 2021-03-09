@@ -52,13 +52,13 @@ def test_clustering_populate(clustering_tasks):
     assert len(ephys.Clustering()) == 12
 
 
-def test_unit_populate(curations, testdata_paths):
+def test_curated_clustering_populate(curations, testdata_paths):
     rel_path = testdata_paths['npx3A-p0-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
-    ephys.Unit.populate(curation_key)
-    assert len(ephys.Unit & curation_key & 'cluster_quality_label = "good"') == 76
+    ephys.CuratedClustering.populate(curation_key)
+    assert len(ephys.CuratedClustering.Unit & curation_key & 'cluster_quality_label = "good"') == 76
 
     rel_path = testdata_paths['oe_npx3B-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
-    ephys.Unit.populate(curation_key)
-    assert len(ephys.Unit & curation_key & 'cluster_quality_label = "good"') == 68
+    ephys.CuratedClustering.populate(curation_key)
+    assert len(ephys.CuratedClustering.Unit & curation_key & 'cluster_quality_label = "good"') == 68
