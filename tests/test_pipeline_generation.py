@@ -1,8 +1,8 @@
-from . import dj_config
+from . import dj_config, pipeline
 
 
-def test_generate_pipeline():
-    from workflow_ephys.pipeline import subject, lab, ephys, probe, Session
+def test_generate_pipeline(pipeline):
+    subject, _, ephys, probe, Session, _ = pipeline
 
     subject_tbl, *_ = Session.parents(as_objects=True)
 

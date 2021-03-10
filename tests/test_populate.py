@@ -1,17 +1,15 @@
 import numpy as np
 
-from workflow_ephys.pipeline import (subject, lab, ephys, probe, Session,
-                                     get_ephys_root_data_dir)
-
-from . import (dj_config, kilosort_paramset, clustering_tasks, curations, testdata_paths)
+from . import *
 
 
-def test_ephys_recording_populate():
-    ephys.EphysRecording.populate()
+def test_ephys_recording_populate(pipeline, ephys_recordings):
+    _, _, ephys, _, _, _ = pipeline
     assert len(ephys.EphysRecording()) == 12
 
 
-def test_LFP_populate_npx3B_OpenEphys(testdata_paths):
+def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings):
+    _, _, ephys, _, _, _ = pipeline
     rel_path = testdata_paths['oe_npx3B']
     rec_key = (ephys.EphysRecording & (ephys.EphysRecording.EphysFile
                                        & f'file_path LIKE "%{rel_path}"')).fetch1('KEY')
@@ -29,7 +27,9 @@ def test_LFP_populate_npx3B_OpenEphys(testdata_paths):
                   356, 365, 374, 383]))
 
 
-def test_LFP_populate_npx3A_SpikeGLX(testdata_paths):
+def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline, ephys_recordings):
+    _, _, ephys, _, _, _ = pipeline
+
     rel_path = testdata_paths['npx3A-p0']
     rec_key = (ephys.EphysRecording & (ephys.EphysRecording.EphysFile
                                        & f'file_path LIKE "%{rel_path}%"')).fetch1('KEY')
@@ -47,12 +47,14 @@ def test_LFP_populate_npx3A_SpikeGLX(testdata_paths):
                   356, 365, 374, 383]))
 
 
-def test_clustering_populate(clustering_tasks):
-    ephys.Clustering.populate()
+def test_clustering_populate(clustering, pipeline):
+    _, _, ephys, _, _, _ = pipeline
     assert len(ephys.Clustering()) == 12
 
 
-def test_curated_clustering_populate(curations, testdata_paths):
+def test_curated_clustering_populate(curations, pipeline, testdata_paths):
+    _, _, ephys, _, _, _ = pipeline
+
     rel_path = testdata_paths['npx3A-p0-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
     ephys.CuratedClustering.populate(curation_key)

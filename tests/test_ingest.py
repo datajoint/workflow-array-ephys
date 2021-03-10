@@ -1,19 +1,15 @@
 import pathlib
 
-from workflow_ephys.ingest import (ingest_subjects, ingest_sessions)
-from workflow_ephys.pipeline import (subject, lab, ephys, probe, Session,
-                                     get_ephys_root_data_dir)
-
-from . import dj_config, subjects_csv, sessions_csv, kilosort_paramset
+from . import *
 
 
-def test_ingest_subjects(subjects_csv):
-    ingest_subjects()
+def test_ingest_subjects(pipeline, ingest_subjects):
+    subject, _, _, _, _, _ = pipeline
     assert len(subject.Subject()) == 5
 
 
-def test_ingest_sessions(sessions_csv):
-    ingest_sessions()
+def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
+    _, _, ephys, probe, Session, get_ephys_root_data_dir = pipeline
     assert len(Session()) == 6
     assert len(probe.Probe()) == 8
     assert len(ephys.ProbeInsertion()) == 12
@@ -23,7 +19,8 @@ def test_ingest_sessions(sessions_csv):
     assert (Session.Directory & {'subject': sess.subject}).fetch1('session_dir') == sess_dir.as_posix()
 
 
-def test_paramset_insert(kilosort_paramset):
+def test_paramset_insert(kilosort_paramset, pipeline):
+    _, _, ephys, _, _, _ = pipeline
     from elements_ephys.ephys import dict_to_uuid
 
     method, desc, paramset_hash = (ephys.ClusteringParamSet & {'paramset_idx': 0}).fetch1(
