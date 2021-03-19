@@ -8,20 +8,20 @@ from workflow_ephys.paths import get_ephys_root_data_dir
 from elements_ephys.readers import spikeglx, openephys
 
 
-def ingest_subjects():
+def ingest_subjects(subject_csv_fp='./user_data/subjects.csv'):
     # -------------- Insert new "Subject" --------------
-    with open('./user_data/subjects.csv', newline='') as f:
+    with open(subject_csv_fp, newline='') as f:
         input_subjects = list(csv.DictReader(f, delimiter=','))
 
     print(f'\n---- Insert {len(input_subjects)} entry(s) into subject.Subject ----')
     subject.Subject.insert(input_subjects, skip_duplicates=True)
 
 
-def ingest_sessions():
+def ingest_sessions(session_csv_fp='./user_data/sessions.csv'):
     root_data_dir = get_ephys_root_data_dir()
 
     # ---------- Insert new "Session" and "ProbeInsertion" ---------
-    with open('./user_data/sessions.csv', newline='') as f:
+    with open(session_csv_fp, newline='') as f:
         input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
