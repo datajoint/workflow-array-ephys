@@ -1,6 +1,10 @@
 import numpy as np
 
-from . import *
+from . import (dj_config, pipeline,
+               subjects_csv, ingest_subjects,
+               sessions_csv, ingest_sessions,
+               testdata_paths, kilosort_paramset,
+               ephys_recordings, clustering_tasks, clustering, curations)
 
 
 def test_ephys_recording_populate(pipeline, ephys_recordings):
@@ -58,9 +62,11 @@ def test_curated_clustering_populate(curations, pipeline, testdata_paths):
     rel_path = testdata_paths['npx3A-p0-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
     ephys.CuratedClustering.populate(curation_key)
-    assert len(ephys.CuratedClustering.Unit & curation_key & 'cluster_quality_label = "good"') == 76
+    assert len(ephys.CuratedClustering.Unit & curation_key
+               & 'cluster_quality_label = "good"') == 76
 
     rel_path = testdata_paths['oe_npx3B-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
     ephys.CuratedClustering.populate(curation_key)
-    assert len(ephys.CuratedClustering.Unit & curation_key & 'cluster_quality_label = "good"') == 68
+    assert len(ephys.CuratedClustering.Unit & curation_key
+               & 'cluster_quality_label = "good"') == 68

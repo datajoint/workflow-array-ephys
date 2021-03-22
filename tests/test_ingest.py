@@ -1,6 +1,10 @@
 import pathlib
 
-from . import *
+from . import (dj_config, pipeline,
+               subjects_csv, ingest_subjects,
+               sessions_csv, ingest_sessions,
+               testdata_paths, kilosort_paramset,
+               ephys_recordings, clustering_tasks, clustering, curations)
 
 
 def test_ingest_subjects(pipeline, ingest_subjects):
@@ -21,7 +25,8 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
     sess_dir = pathlib.Path(sess.session_dir).relative_to(get_ephys_root_data_dir())
-    assert (Session.Directory & {'subject': sess.name}).fetch1('session_dir') == sess_dir.as_posix()
+    assert (Session.Directory
+            & {'subject': sess.name}).fetch1('session_dir') == sess_dir.as_posix()
 
 
 def test_paramset_insert(kilosort_paramset, pipeline):

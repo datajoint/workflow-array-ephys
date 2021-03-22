@@ -5,7 +5,6 @@ import pytest
 import pandas as pd
 import pathlib
 import datajoint as dj
-import importlib
 
 from workflow_ephys.paths import get_ephys_root_data_dir
 
@@ -15,8 +14,10 @@ def dj_config():
     dj.config.load('./dj_local_conf.json')
     dj.config['safemode'] = False
     dj.config['custom'] = {
-        'database.prefix': os.environ.get('DATABASE_PREFIX', dj.config['custom']['database.prefix']),
-        'ephys_root_data_dir': os.environ.get('EPHYS_ROOT_DATA_DIR', dj.config['custom']['ephys_root_data_dir'])
+        'database.prefix': os.environ.get('DATABASE_PREFIX',
+                                          dj.config['custom']['database.prefix']),
+        'ephys_root_data_dir': os.environ.get('EPHYS_ROOT_DATA_DIR',
+                                              dj.config['custom']['ephys_root_data_dir'])
     }
     return
 
@@ -38,11 +39,14 @@ def pipeline():
 @pytest.fixture
 def subjects_csv():
     """ Create a 'subjects.csv' file"""
-    input_subjects = pd.DataFrame(columns=['subject', 'sex', 'subject_birth_date', 'subject_description'])
+    input_subjects = pd.DataFrame(columns=['subject', 'sex',
+                                           'subject_birth_date',
+                                           'subject_description'])
     input_subjects.subject = ['subject1', 'subject2', 'subject3', 'subject4', 'subject5']
     input_subjects.sex = ['F', 'M', 'M', 'M', 'F']
     input_subjects.subject_birth_date = ['2020-01-01 00:00:01', '2020-01-01 00:00:01',
-                                         '2020-01-01 00:00:01', '2020-01-01 00:00:01', '2020-01-01 00:00:01']
+                                         '2020-01-01 00:00:01', '2020-01-01 00:00:01',
+                                         '2020-01-01 00:00:01']
     input_subjects.subject_description = ['dl56', 'SC035', 'SC038', 'oe_talab', 'rich']
     input_subjects = input_subjects.set_index('subject')
 
@@ -81,7 +85,8 @@ def sessions_csv():
                               'subject3',
                               'subject4',
                               'subject5']
-    input_sessions.session_dir = [(root_dir / sess_dir).as_posix() for sess_dir in sessions_dirs]
+    input_sessions.session_dir = [(root_dir / sess_dir).as_posix()
+                                  for sess_dir in sessions_dirs]
     input_sessions = input_sessions.set_index('subject')
 
     sessions_csv_fp = pathlib.Path('./tests/user_data/sessions.csv')
@@ -167,7 +172,8 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
 
     root_dir = pathlib.Path(get_ephys_root_data_dir())
     for ephys_rec_key in (ephys.EphysRecording - ephys.ClusteringTask).fetch('KEY'):
-        ephys_file = root_dir / (ephys.EphysRecording.EphysFile & ephys_rec_key).fetch('file_path')[0]
+        ephys_file = root_dir / (ephys.EphysRecording.EphysFile
+                                 & ephys_rec_key).fetch('file_path')[0]
         recording_dir = ephys_file.parent
         kilosort_dir = next(recording_dir.rglob('spike_times.npy')).parent
         ephys.ClusteringTask.insert1({**ephys_rec_key,
