@@ -2,7 +2,10 @@ from . import dj_config, pipeline
 
 
 def test_generate_pipeline(pipeline):
-    subject, _, ephys, probe, Session, _ = pipeline
+    subject = pipeline['subject']
+    ephys = pipeline['ephys']
+    probe = pipeline['probe']
+    Session = pipeline['Session']
 
     subject_tbl, *_ = Session.parents(as_objects=True)
 

@@ -4,12 +4,16 @@ from . import *
 
 
 def test_ingest_subjects(pipeline, ingest_subjects):
-    subject, _, _, _, _, _ = pipeline
+    subject = pipeline['subject']
     assert len(subject.Subject()) == 5
 
 
 def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
-    _, _, ephys, probe, Session, get_ephys_root_data_dir = pipeline
+    ephys = pipeline['ephys']
+    probe = pipeline['probe']
+    Session = pipeline['Session']
+    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
+
     assert len(Session()) == 6
     assert len(probe.Probe()) == 8
     assert len(ephys.ProbeInsertion()) == 12
@@ -21,7 +25,7 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
 
 
 def test_paramset_insert(kilosort_paramset, pipeline):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
     from elements_ephys.ephys import dict_to_uuid
 
     method, desc, paramset_hash = (ephys.ClusteringParamSet & {'paramset_idx': 0}).fetch1(

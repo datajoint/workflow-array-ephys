@@ -4,12 +4,12 @@ from . import *
 
 
 def test_ephys_recording_populate(pipeline, ephys_recordings):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
     assert len(ephys.EphysRecording()) == 12
 
 
 def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
     rel_path = testdata_paths['oe_npx3B']
     rec_key = (ephys.EphysRecording & (ephys.EphysRecording.EphysFile
                                        & f'file_path LIKE "%{rel_path}"')).fetch1('KEY')
@@ -28,7 +28,7 @@ def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings
 
 
 def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline, ephys_recordings):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
 
     rel_path = testdata_paths['npx3A-p0']
     rec_key = (ephys.EphysRecording & (ephys.EphysRecording.EphysFile
@@ -48,12 +48,12 @@ def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline, ephys_recordings)
 
 
 def test_clustering_populate(clustering, pipeline):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
     assert len(ephys.Clustering()) == 12
 
 
 def test_curated_clustering_populate(curations, pipeline, testdata_paths):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
 
     rel_path = testdata_paths['npx3A-p0-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
