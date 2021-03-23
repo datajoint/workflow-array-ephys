@@ -15,23 +15,23 @@ def test_ingest_subjects(pipeline, ingest_subjects):
 def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
     ephys = pipeline['ephys']
     probe = pipeline['probe']
-    Session = pipeline['Session']
+    session = pipeline['session']
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
-    assert len(Session()) == 6
+    assert len(session.Session()) == 6
     assert len(probe.Probe()) == 8
     assert len(ephys.ProbeInsertion()) == 12
 
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
     sess_dir = pathlib.Path(sess.session_dir).relative_to(get_ephys_root_data_dir())
-    assert (Session.Directory
+    assert (session.SessionDirectory
             & {'subject': sess.name}).fetch1('session_dir') == sess_dir.as_posix()
 
 
 def test_paramset_insert(kilosort_paramset, pipeline):
     ephys = pipeline['ephys']
-    from elements_ephys.ephys import dict_to_uuid
+    from element_array_ephys.ephys import dict_to_uuid
 
     method, desc, paramset_hash = (ephys.ClusteringParamSet & {'paramset_idx': 0}).fetch1(
         'clustering_method', 'paramset_desc', 'param_set_hash')

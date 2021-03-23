@@ -1,5 +1,6 @@
-datajoint==0.13.dev2
-elements-ephys @ git+https://github.com/datajoint/elements-ephys.git
-elements-lab @ git+https://github.com/datajoint/elements-lab.git
-elements-animal @ git+https://github.com/datajoint/elements-animal.git
+datajoint>=0.13.dev7
+element-array-ephys @ git+https://github.com/datajoint/element-array-ephys.git
+element-lab @ git+https://github.com/datajoint/element-lab.git
+element-animal @ git+https://github.com/datajoint/element-animal.git
+element-session @ git+https://github.com/datajoint/element-session.git
 ipykernel

@@ -1,4 +1,4 @@
-from workflow_ephys.pipeline import ephys
+from workflow_array_ephys.pipeline import ephys
 
 
 def populate(display_progress=True):

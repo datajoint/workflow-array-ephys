@@ -1,40 +1,41 @@
 # Pipeline for extracellular electrophysiology using Neuropixels probe and kilosort clustering method
 
 Build a full ephys pipeline using the canonical pipeline elements
-+ [elements-lab](https://github.com/datajoint/elements-lab)
-+ [elements-animal](https://github.com/datajoint/elements-animal)
-+ [elements-ephys](https://github.com/datajoint/elements-ephys)
++ [element-lab](https://github.com/datajoint/element-lab)
++ [element-animal](https://github.com/datajoint/element-animal)
++ [element-session](https://github.com/datajoint/element-session)
++ [element-array-ephys](https://github.com/datajoint/element-array-ephys)
 
 This repository provides demonstrations for: 
-1. Set up a workflow using different elements (see [workflow_ephys/pipeline.py](workflow_ephys/pipeline.py))
+1. Set up a workflow using different elements (see [workflow_array_ephys/pipeline.py](workflow_array_ephys/pipeline.py))
 2. Ingestion of data/metadata based on:
     + predefined file/folder structure and naming convention
-    + predefined directory lookup methods (see [workflow_ephys/paths.py](workflow_ephys/paths.py))
+    + predefined directory lookup methods (see [workflow_array_ephys/paths.py](workflow_array_ephys/paths.py))
 3. Ingestion of clustering results (built-in routine from the ephys element)
 
 
 ## Pipeline Architecture
 
-The electrophysiology pipeline presented here uses pipeline components from 3 DataJoint pipeline elements, 
-`elements-lab`, `elements-animal` and `elements-ephys`, assembled together to form a fully functional workflow. 
+The electrophysiology pipeline presented here uses pipeline components from 4 DataJoint Elements, 
+`element-lab`, `element-animal`, `element-session` and `element-array-ephys`, assembled together to form a fully functional workflow. 
 
-### elements-lab
+### element-lab
 
-![elements-lab](images/lab_erd.svg)
+![element-lab](images/lab_erd.svg)
 
-### elements-animal
+### element-animal
 
-![elements-animal](images/subject_erd.svg)
+![element-animal](images/subject_erd.svg)
 
-### assembled with elements-ephys
+### assembled with element-array-ephys
 
-![elements-ephys](images/attached_ephys_element.svg)
+![element-array-ephys](images/attached_ephys_element.svg)
 
 ## Installation instruction
 
 ### Step 1 - clone this project
 
-Clone this repository from [here](https://github.com/datajoint/workflow-ephys)
+Clone this repository from [here](https://github.com/datajoint/workflow-array-ephys)
 
 + Launch a new terminal and change directory to where you want to clone the repository to
     ```
@@ -42,11 +43,11 @@ Clone this repository from [here](https://github.com/datajoint/workflow-ephys)
     ```
 + Clone the repository:
     ```
-    git clone https://github.com/datajoint/workflow-ephys 
+    git clone https://github.com/datajoint/workflow-array-ephys 
     ```
-+ Change directory to `workflow-ephys`
++ Change directory to `workflow-array-ephys`
     ```
-    cd workflow-ephys
+    cd workflow-array-ephys
     ```
 
 ### Step 2 - Setup virtual environment
@@ -86,7 +87,7 @@ If no such modification required, using `pip install .` is sufficient
 ### Step 4 - Jupyter Notebook
 + Register an IPython kernel with Jupyter
     ```
-    ipython kernel install --name=workflow-ephys
+    ipython kernel install --name=workflow-array-ephys
     ```
 
 ### Step 5 - Configure the `dj_local_conf.json`
@@ -177,12 +178,12 @@ populating the pipeline with your data amounts to these 3 steps:
 
 2. Import session data - run:
     ```
-    python workflow_ephys/ingest.py
+    python workflow_array_ephys/ingest.py
     ```
     
 3. Import clustering data and populate downstream analyses - run:
     ```
-    python workflow_ephys/populate.py
+    python workflow_array_ephys/populate.py
     ```
     
 + For inserting new subjects, sessions or new analysis parameters, step 1 needs to be re-executed.
@@ -195,13 +196,13 @@ populating the pipeline with your data amounts to these 3 steps:
 
 + Connect to database and import tables
     ```
-    from workflow_ephys.pipeline import *
+    from workflow_array_ephys.pipeline import *
     ```
 
 + View ingested/processed data
     ```
     subject.Subject()
-    Session()
+    session.Session()
     ephys.ProbeInsertion()
     ephys.EphysRecording()
     ephys.Clustering()
@@ -210,11 +211,11 @@ populating the pipeline with your data amounts to these 3 steps:
 
 + If required to drop all schemas, the following is the dependency order. 
     ```
-    from workflow_ephys.pipeline import *
+    from workflow_array_ephys.pipeline import *
 
     ephys.schema.drop()
     probe.schema.drop()
-    schema.drop()
+    session.schema.drop()
     subject.schema.drop()
     lab.schema.drop()
     ```
@@ -224,7 +225,7 @@ populating the pipeline with your data amounts to these 3 steps:
  
 ## Development mode installation
 
-This method allows you to modify the source code for `workflow-imaging`, `elements-imaging`, `elements-animal`, and `elements-lab`.
+This method allows you to modify the source code for `workflow-array-ephys`, `element-array-ephys`, `element-animal`, `element-session`, and `element-lab`.
 
 + Launch a new terminal and change directory to where you want to clone the repositories
     ```
@@ -232,15 +233,17 @@ This method allows you to modify the source code for `workflow-imaging`, `elemen
     ```
 + Clone the repositories
     ```
-    git clone https://github.com/datajoint/elements-lab
-    git clone https://github.com/datajoint/elements-animal
-    git clone https://github.com/datajoint/elements-ephys
-    git clone https://github.com/datajoint/workflow-ephys
+    git clone https://github.com/datajoint/element-lab
+    git clone https://github.com/datajoint/element-animal
+    git clone https://github.com/datajoint/element-session
+    git clone https://github.com/datajoint/element-array-ephys
+    git clone https://github.com/datajoint/workflow-array-ephys
     ```
 + Install each package with the `-e` option
     ```
-    pip install -e ./workflow-ephys
-    pip install -e ./elements-lab
-    pip install -e ./elements-animal
-    pip install -e ./elements-ephys
+    pip install -e ./workflow-array-ephys
+    pip install -e ./element-session
+    pip install -e ./element-lab
+    pip install -e ./element-animal
+    pip install -e ./element-array-ephys
     ```

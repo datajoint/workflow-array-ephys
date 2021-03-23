@@ -1,4 +1,4 @@
-# run tests: pytest -sv --cov-report term-missing --cov=workflow-ephys -p no:warnings
+# run tests: pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings
 
 import os
 import pytest
@@ -6,7 +6,7 @@ import pandas as pd
 import pathlib
 import datajoint as dj
 
-from workflow_ephys.paths import get_ephys_root_data_dir
+from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 
 @pytest.fixture(autouse=True)
@@ -24,13 +24,13 @@ def dj_config():
 
 @pytest.fixture
 def pipeline():
-    from workflow_ephys import pipeline
+    from workflow_array_ephys import pipeline
 
     yield {'subject': pipeline.subject,
            'lab': pipeline.lab,
            'ephys': pipeline.ephys,
            'probe': pipeline.probe,
-           'Session': pipeline.Session,
+           'session': pipeline.session,
            'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
 
     pipeline.subject.Subject.delete()
@@ -60,7 +60,7 @@ def subjects_csv():
 
 @pytest.fixture
 def ingest_subjects(pipeline, subjects_csv):
-    from workflow_ephys.ingest import ingest_subjects
+    from workflow_array_ephys.ingest import ingest_subjects
     _, subjects_csv_path = subjects_csv
     ingest_subjects(subjects_csv_path)
     return
@@ -89,19 +89,19 @@ def sessions_csv():
                                   for sess_dir in sessions_dirs]
     input_sessions = input_sessions.set_index('subject')
 
-    sessions_csv_fp = pathlib.Path('./tests/user_data/sessions.csv')
-    input_sessions.to_csv(sessions_csv_fp)  # write csv file
+    sessions_csv_path = pathlib.Path('./tests/user_data/sessions.csv')
+    input_sessions.to_csv(sessions_csv_path)  # write csv file
 
-    yield input_sessions, sessions_csv_fp
+    yield input_sessions, sessions_csv_path
 
-    sessions_csv_fp.unlink()  # delete csv file after use
+    sessions_csv_path.unlink()  # delete csv file after use
 
 
 @pytest.fixture
 def ingest_sessions(ingest_subjects, sessions_csv):
-    from workflow_ephys.ingest import ingest_sessions
-    _, sessions_csv_fp = sessions_csv
-    ingest_sessions(sessions_csv_fp)
+    from workflow_array_ephys.ingest import ingest_sessions
+    _, sessions_csv_path = sessions_csv
+    ingest_sessions(sessions_csv_path)
     return
 
 
