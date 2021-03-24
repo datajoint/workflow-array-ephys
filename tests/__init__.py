@@ -1,13 +1,12 @@
-# run tests: pytest -sv --cov-report term-missing --cov=workflow-ephys -p no:warnings
+# run tests: pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings
 
 import os
 import pytest
 import pandas as pd
 import pathlib
 import datajoint as dj
-import importlib
 
-from workflow_ephys.paths import get_ephys_root_data_dir
+from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 
 @pytest.fixture(autouse=True)
@@ -15,18 +14,24 @@ def dj_config():
     dj.config.load('./dj_local_conf.json')
     dj.config['safemode'] = False
     dj.config['custom'] = {
-        'database.prefix': os.environ.get('DATABASE_PREFIX', dj.config['custom']['database.prefix']),
-        'ephys_root_data_dir': os.environ.get('EPHYS_ROOT_DATA_DIR', dj.config['custom']['ephys_root_data_dir'])
+        'database.prefix': os.environ.get('DATABASE_PREFIX',
+                                          dj.config['custom']['database.prefix']),
+        'ephys_root_data_dir': os.environ.get('EPHYS_ROOT_DATA_DIR',
+                                              dj.config['custom']['ephys_root_data_dir'])
     }
     return
 
 
 @pytest.fixture
 def pipeline():
-    from workflow_ephys import pipeline
+    from workflow_array_ephys import pipeline
 
-    yield (pipeline.subject, pipeline.lab, pipeline.ephys,
-           pipeline.probe, pipeline.Session, pipeline.get_ephys_root_data_dir)
+    yield {'subject': pipeline.subject,
+           'lab': pipeline.lab,
+           'ephys': pipeline.ephys,
+           'probe': pipeline.probe,
+           'session': pipeline.session,
+           'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
 
     pipeline.subject.Subject.delete()
 
@@ -34,26 +39,30 @@ def pipeline():
 @pytest.fixture
 def subjects_csv():
     """ Create a 'subjects.csv' file"""
-    input_subjects = pd.DataFrame(columns=['subject', 'sex', 'subject_birth_date', 'subject_description'])
+    input_subjects = pd.DataFrame(columns=['subject', 'sex',
+                                           'subject_birth_date',
+                                           'subject_description'])
     input_subjects.subject = ['subject1', 'subject2', 'subject3', 'subject4', 'subject5']
     input_subjects.sex = ['F', 'M', 'M', 'M', 'F']
     input_subjects.subject_birth_date = ['2020-01-01 00:00:01', '2020-01-01 00:00:01',
-                                         '2020-01-01 00:00:01', '2020-01-01 00:00:01', '2020-01-01 00:00:01']
+                                         '2020-01-01 00:00:01', '2020-01-01 00:00:01',
+                                         '2020-01-01 00:00:01']
     input_subjects.subject_description = ['dl56', 'SC035', 'SC038', 'oe_talab', 'rich']
+    input_subjects = input_subjects.set_index('subject')
 
-    subjects_csv_fp = pathlib.Path('./tests/user_data/subjects.csv')
+    subjects_csv_path = pathlib.Path('./tests/user_data/subjects.csv')
+    input_subjects.to_csv(subjects_csv_path)  # write csv file
 
-    input_subjects.to_csv(subjects_csv_fp)  # write csv file
+    yield input_subjects, subjects_csv_path
 
-    yield input_subjects
-
-    subjects_csv_fp.unlink()  # delete csv file after use
+    subjects_csv_path.unlink()  # delete csv file after use
 
 
 @pytest.fixture
 def ingest_subjects(pipeline, subjects_csv):
-    from workflow_ephys.ingest import ingest_subjects
-    ingest_subjects()
+    from workflow_array_ephys.ingest import ingest_subjects
+    _, subjects_csv_path = subjects_csv
+    ingest_subjects(subjects_csv_path)
     return
 
 
@@ -76,21 +85,23 @@ def sessions_csv():
                               'subject3',
                               'subject4',
                               'subject5']
-    input_sessions.session_dir = [(root_dir / sess_dir).as_posix() for sess_dir in sessions_dirs]
+    input_sessions.session_dir = [(root_dir / sess_dir).as_posix()
+                                  for sess_dir in sessions_dirs]
+    input_sessions = input_sessions.set_index('subject')
 
-    sessions_csv_fp = pathlib.Path('./tests/user_data/sessions.csv')
+    sessions_csv_path = pathlib.Path('./tests/user_data/sessions.csv')
+    input_sessions.to_csv(sessions_csv_path)  # write csv file
 
-    input_sessions.to_csv(sessions_csv_fp)  # write csv file
+    yield input_sessions, sessions_csv_path
 
-    yield input_sessions
-
-    sessions_csv_fp.unlink()  # delete csv file after use
+    sessions_csv_path.unlink()  # delete csv file after use
 
 
 @pytest.fixture
 def ingest_sessions(ingest_subjects, sessions_csv):
-    from workflow_ephys.ingest import ingest_sessions
-    ingest_sessions()
+    from workflow_array_ephys.ingest import ingest_sessions
+    _, sessions_csv_path = sessions_csv
+    ingest_sessions(sessions_csv_path)
     return
 
 
@@ -107,7 +118,7 @@ def testdata_paths():
 
 @pytest.fixture
 def kilosort_paramset(pipeline):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
 
     params_ks = {
         "fs": 30000,
@@ -140,12 +151,12 @@ def kilosort_paramset(pipeline):
 
     yield params_ks
 
-    ephys.ClusteringParamSet.delete()
+    (ephys.ClusteringParamSet & 'paramset_idx = 0').delete()
 
 
 @pytest.fixture
 def ephys_recordings(pipeline, ingest_sessions):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
 
     ephys.EphysRecording.populate()
 
@@ -156,18 +167,18 @@ def ephys_recordings(pipeline, ingest_sessions):
 
 @pytest.fixture
 def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
-    _, _, ephys, _, _, get_ephys_root_data_dir = pipeline
+    ephys = pipeline['ephys']
+    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
     root_dir = pathlib.Path(get_ephys_root_data_dir())
     for ephys_rec_key in (ephys.EphysRecording - ephys.ClusteringTask).fetch('KEY'):
-        ephys_file = root_dir / (ephys.EphysRecording.EphysFile & ephys_rec_key).fetch('file_path')[0]
+        ephys_file = root_dir / (ephys.EphysRecording.EphysFile
+                                 & ephys_rec_key).fetch('file_path')[0]
         recording_dir = ephys_file.parent
         kilosort_dir = next(recording_dir.rglob('spike_times.npy')).parent
         ephys.ClusteringTask.insert1({**ephys_rec_key,
                                       'paramset_idx': 0,
                                       'clustering_output_dir': kilosort_dir.as_posix()})
-
-    ephys.Clustering.populate()
 
     yield
 
@@ -176,7 +187,7 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
 
 @pytest.fixture
 def clustering(clustering_tasks, pipeline):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
 
     ephys.Clustering.populate()
 
@@ -187,7 +198,7 @@ def clustering(clustering_tasks, pipeline):
 
 @pytest.fixture
 def curations(clustering, pipeline):
-    _, _, ephys, _, _, _ = pipeline
+    ephys = pipeline['ephys']
 
     for key in (ephys.ClusteringTask - ephys.Curation).fetch('KEY'):
         ephys.Curation().create1_from_clustering_task(key)

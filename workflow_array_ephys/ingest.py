@@ -2,26 +2,26 @@ import re
 import pathlib
 import csv
 
-from workflow_ephys.pipeline import subject, ephys, probe, Session
-from workflow_ephys.paths import get_ephys_root_data_dir
+from workflow_array_ephys.pipeline import subject, ephys, probe, session
+from workflow_array_ephys.paths import get_ephys_root_data_dir
 
-from elements_ephys.readers import spikeglx, openephys
+from element_array_ephys.readers import spikeglx, openephys
 
 
-def ingest_subjects():
+def ingest_subjects(subject_csv_path='./user_data/subjects.csv'):
     # -------------- Insert new "Subject" --------------
-    with open('./user_data/subjects.csv', newline='') as f:
+    with open(subject_csv_path, newline= '') as f:
         input_subjects = list(csv.DictReader(f, delimiter=','))
 
     print(f'\n---- Insert {len(input_subjects)} entry(s) into subject.Subject ----')
     subject.Subject.insert(input_subjects, skip_duplicates=True)
 
 
-def ingest_sessions():
+def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
     root_data_dir = get_ephys_root_data_dir()
 
     # ---------- Insert new "Session" and "ProbeInsertion" ---------
-    with open('./user_data/sessions.csv', newline='') as f:
+    with open(session_csv_path, newline= '') as f:
         input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
@@ -67,16 +67,14 @@ def ingest_sessions():
 
         # new session/probe-insertion
         session_key = {'subject': sess['subject'], 'session_datetime': min(session_datetimes)}
-        if session_key not in Session():
+        if session_key not in session.Session():
             session_list.append(session_key)
             session_dir_list.append({**session_key, 'session_dir': sess_dir.relative_to(root_data_dir).as_posix()})
             probe_insertion_list.extend([{**session_key, **insertion} for insertion in insertions])
 
-    print(f'\n---- Insert {len(session_list)} entry(s) into experiment.Session ----')
-    Session.insert(session_list)
-
-    print(f'\n---- Insert {len(session_dir_list)} entry(s) into experiment.Session.Directory ----')
-    Session.Directory.insert(session_dir_list)
+    print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
+    session.Session.insert(session_list)
+    session.SessionDirectory.insert(session_dir_list)
 
     print(f'\n---- Insert {len(probe_list)} entry(s) into probe.Probe ----')
     probe.Probe.insert(probe_list)
@@ -84,7 +82,7 @@ def ingest_sessions():
     print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
     ephys.ProbeInsertion.insert(probe_insertion_list)
 
-    print('\n---- Successfully completed workflow_imaging/ingest.py ----')
+    print('\n---- Successfully completed workflow_array_ephys/ingest.py ----')
 
 
 if __name__ == '__main__':
