@@ -1,0 +1,34 @@
+version: "2.4"
+x-net: &net
+  networks:
+      - main
+services:
+  db:
+    <<: *net
+    image: datajoint/mysql:5.7
+    environment:
+      - MYSQL_ROOT_PASSWORD=simple
+  workflow_array_ephys:
+    <<: *net
+    build:
+      context: .
+    image: workflow_array_ephys:v0.0.0
+    env_file: .env_test
+    environment:
+      - DJ_HOST=db
+      - DJ_USER=root
+      - DJ_PASS=simple
+      - EPHYS_ROOT_DATA_DIR=/main/test_data
+      - DATABASE_PREFIX=test_
+    command:
+      - bash
+      - -c
+      - |
+        pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings
+    volumes:
+      - $TEST_DATA_DIR:/main/test_data
+    depends_on:
+      db:
+        condition: service_healthy
+networks:
+  main:
