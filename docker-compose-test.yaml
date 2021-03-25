@@ -13,7 +13,6 @@ services:
     build:
       context: .
     image: workflow_array_ephys:v0.0.0
-    env_file: .env_test
     environment:
       - DJ_HOST=db
       - DJ_USER=root
@@ -25,8 +24,9 @@ services:
       - -c
       - |
         pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings
+        tail -f /dev/null
     volumes:
-      - $TEST_DATA_DIR:/main/test_data
+      - ${TEST_DATA_DIR}:/main/test_data
     depends_on:
       db:
         condition: service_healthy
