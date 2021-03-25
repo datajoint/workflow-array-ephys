@@ -82,7 +82,7 @@ celerybeat-schedule
 *.sage.py
 
 # dotenv
-./.env
+.env
 
 # virtualenv
 .venv
@@ -114,4 +114,4 @@ docker-compose.yml
 Diagram.ipynb
 
 # docker
-.env*
+.env
