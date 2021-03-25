@@ -15,10 +15,10 @@ def dj_config():
         dj.config.load('./dj_local_conf.json')
     dj.config['safemode'] = False
     dj.config['custom'] = {
-        'database.prefix': os.environ.get('DATABASE_PREFIX',
-                                          dj.config['custom']['database.prefix']),
-        'ephys_root_data_dir': os.environ.get('EPHYS_ROOT_DATA_DIR',
-                                              dj.config['custom']['ephys_root_data_dir'])
+        'database.prefix': (os.environ.get('DATABASE_PREFIX')
+                            or dj.config['custom']['database.prefix']),
+        'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR')
+                                or dj.config['custom']['ephys_root_data_dir'])
     }
     return
 
