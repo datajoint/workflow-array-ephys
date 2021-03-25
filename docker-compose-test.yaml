@@ -23,6 +23,7 @@ services:
       - bash
       - -c
       - |
+        echo "------ INTEGRATION TESTS ------"
         pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings
         tail -f /dev/null
     volumes:

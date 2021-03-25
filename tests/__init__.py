@@ -9,6 +9,10 @@ import datajoint as dj
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 
+test_user_data_dir = pathlib.Path('./tests/user_data')
+test_user_data_dir.mkdir(exist_ok=True)
+
+
 @pytest.fixture(autouse=True)
 def dj_config():
     if pathlib.Path('./dj_local_conf.json').exists():
