@@ -1,6 +1,7 @@
 from setuptools import setup, find_packages
 from os import path
 
+pkg_name = 'workflow_array_ephys'
 here = path.abspath(path.dirname(__file__))
 
 long_description = """"
@@ -16,12 +17,9 @@ Build a full ephys pipeline using the DataJoint elements
 with open(path.join(here, 'requirements.txt')) as f:
     requirements = f.read().splitlines()
 
-pkg_name = 'workflow_array_ephys'
-here = path.abspath(path.dirname(__file__))
-
 with open(path.join(here, pkg_name, 'version.py')) as f:
     exec(f.read())
-    
+
 setup(
     name='workflow-array-ephys',
     version=__version__,
