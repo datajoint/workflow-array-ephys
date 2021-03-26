@@ -16,9 +16,15 @@ Build a full ephys pipeline using the DataJoint elements
 with open(path.join(here, 'requirements.txt')) as f:
     requirements = f.read().splitlines()
 
+pkg_name = 'workflow_array_ephys'
+here = path.abspath(path.dirname(__file__))
+
+with open(path.join(here, pkg_name, 'version.py')) as f:
+    exec(f.read())
+    
 setup(
     name='workflow-array-ephys',
-    version='0.0.1',
+    version=__version__,
     description="Extracellular electrophysiology pipeline using the DataJoint elements",
     long_description=long_description,
     author='DataJoint NEURO',
