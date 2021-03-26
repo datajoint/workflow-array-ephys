@@ -253,7 +253,7 @@ This method allows you to modify the source code for `workflow-array-ephys`, `el
 ### Running tests
 
 1. Download the test dataset to your local machine 
-(note the directory where the dataset is saved at: e.g. `/tmp/testset`)
+(note the directory where the dataset is saved at - e.g. `/tmp/testset`)
 
 2. Create an `.env` file with the following content:
 
