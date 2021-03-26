@@ -222,8 +222,10 @@ populating the pipeline with your data amounts to these 3 steps:
 
 + For a more in-depth exploration of ingested data, please refer to the example [notebook](notebooks/explore_workflow.ipynb).
 
+
+## Developer Guide
  
-## Development mode installation
+### Development mode installation
 
 This method allows you to modify the source code for `workflow-array-ephys`, `element-array-ephys`, `element-animal`, `element-session`, and `element-lab`.
 
@@ -247,3 +249,19 @@ This method allows you to modify the source code for `workflow-array-ephys`, `el
     pip install -e ./element-animal
     pip install -e ./element-array-ephys
     ```
+  
+### Running tests
+
+1. Download the test dataset to your local machine 
+(note the directory where the dataset is saved at: e.g. `/tmp/testset`)
+
+2. Create an `.env` file with the following content:
+
+    > TEST_DATA_DIR=/tmp/testset
+    
+    (replace `/tmp/testset` with the directory where you have the test dataset downloaded to)
+    
+3. Run:
+
+    
+    docker-compose -f docker-compose-test.yaml up --build 
