@@ -1,6 +1,6 @@
 import numpy as np
 
-from . import (dj_config, pipeline,
+from . import (dj_config, pipeline, test_data,
                subjects_csv, ingest_subjects,
                sessions_csv, ingest_sessions,
                testdata_paths, kilosort_paramset,
@@ -124,4 +124,3 @@ def test_waveform_populate_npx3B_SpikeGLX(curations, pipeline, testdata_paths):
         'peak_electrode_waveform'))
 
     assert waveforms.shape == (150, 64)
-    

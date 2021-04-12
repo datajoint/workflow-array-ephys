@@ -1,7 +1,7 @@
 import sys
 import pathlib
 
-from . import (dj_config, pipeline,
+from . import (dj_config, pipeline, test_data,
                subjects_csv, ingest_subjects,
                sessions_csv, ingest_sessions,
                testdata_paths, kilosort_paramset,

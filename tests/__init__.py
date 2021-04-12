@@ -5,7 +5,9 @@ import pytest
 import pandas as pd
 import pathlib
 import datajoint as dj
+import numpy as np
 
+import workflow_array_ephys
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 
@@ -25,6 +27,45 @@ def dj_config():
         'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR')
                                 or dj.config['custom']['ephys_root_data_dir'])
     }
+    return
+
+
+@pytest.fixture(autouse=True)
+def test_data(dj_config):
+    test_data_dir = pathlib.Path(dj.config['custom']['ephys_root_data_dir'])
+
+    sessions_dirs = ['subject1/session1',
+                     'subject2/session1',
+                     'subject2/session2',
+                     'subject3/session1',
+                     'subject4/experiment1',
+                     'subject5/session1',
+                     'subject6/session1']
+
+    test_data_exists = np.all([(test_data_dir / p).exists() for p in sessions_dirs])
+
+    if not test_data_exists:
+        try:
+            dj.config['custom'].update({
+                'djarchive.client.endpoint': os.environ['DJARCHIVE_CLIENT_ENDPOINT'],
+                'djarchive.client.bucket': os.environ['DJARCHIVE_CLIENT_BUCKET'],
+                'djarchive.client.access_key': os.environ['DJARCHIVE_CLIENT_ACCESSKEY'],
+                'djarchive.client.secret_key': os.environ['DJARCHIVE_CLIENT_SECRETKEY']
+            })
+        except KeyError as e:
+            raise FileNotFoundError(
+                f'Test data not available at {test_data_dir}.'
+                f'\nAttempting to download from DJArchive,'
+                f' but no credentials found in environment variables.'
+                f'\nError: {str(e)}')
+
+        import djarchive_client
+        client = djarchive_client.client()
+        workflow_version = workflow_array_ephys.version.__version__
+
+        client.download('workflow-array-ephys-test-set',
+                        workflow_version.replace('.', '_'),
+                        test_data_dir, create_target=False)
     return
 
 
@@ -76,17 +117,17 @@ def ingest_subjects(pipeline, subjects_csv):
 
 
 @pytest.fixture
-def sessions_csv():
+def sessions_csv(test_data):
     """ Create a 'sessions.csv' file"""
     root_dir = pathlib.Path(get_ephys_root_data_dir())
 
-    sessions_dirs = ['U24/workflow_ephys_data/subject1/session1',
-                     'U24/workflow_ephys_data/subject2/session1',
-                     'U24/workflow_ephys_data/subject2/session2',
-                     'U24/workflow_ephys_data/subject3/session1',
-                     'U24/workflow_ephys_data/subject4/experiment1',
-                     'U24/workflow_ephys_data/subject5/session1',
-                     'U24/workflow_ephys_data/subject6/session1']
+    sessions_dirs = ['subject1/session1',
+                     'subject2/session1',
+                     'subject2/session2',
+                     'subject3/session1',
+                     'subject4/experiment1',
+                     'subject5/session1',
+                     'subject6/session1']
 
     input_sessions = pd.DataFrame(columns=['subject', 'session_dir'])
     input_sessions.subject = ['subject1', 'subject2', 'subject2',
@@ -115,10 +156,10 @@ def ingest_sessions(ingest_subjects, sessions_csv):
 @pytest.fixture
 def testdata_paths():
     return {
-        'npx3A-p1-ks': 'subject5/2018-07-03_19-10-39/probe_1/ks2.1_01',
-        'npx3A-p2-ks': 'subject5/2018-07-03_19-10-39/probe_2/ks2.1_01',
+        'npx3A-p1-ks': 'subject5/session1/probe_1/ks2.1_01',
+        'npx3A-p2-ks': 'subject5/session1/probe_2/ks2.1_01',
         'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks',
-        'sglx_npx3A-p1': 'subject5/2018-07-03_19-10-39/probe_1',
+        'sglx_npx3A-p1': 'subject5/session1/probe_1',
         'oe_npx3B': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0',
         'sglx_npx3B-p1': 'subject6/session1/towersTask_g0_imec0',
         'npx3B-p1-ks': 'subject6/session1/towersTask_g0_imec0'
