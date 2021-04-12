@@ -1,6 +1,7 @@
 # run tests: pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings
 
 import os
+import sys
 import pytest
 import pandas as pd
 import pathlib
@@ -18,6 +19,7 @@ def dj_config():
     if pathlib.Path('./dj_local_conf.json').exists():
         dj.config.load('./dj_local_conf.json')
     dj.config['safemode'] = False
+
     dj.config['custom'] = {
         'database.prefix': (os.environ.get('DATABASE_PREFIX')
                             or dj.config['custom']['database.prefix']),
@@ -113,10 +115,10 @@ def ingest_sessions(ingest_subjects, sessions_csv):
 @pytest.fixture
 def testdata_paths():
     return {
-        'npx3A-p0-ks': 'subject5/2018-07-03_19-10-39/probe_1/ks2.1_01',
         'npx3A-p1-ks': 'subject5/2018-07-03_19-10-39/probe_1/ks2.1_01',
+        'npx3A-p2-ks': 'subject5/2018-07-03_19-10-39/probe_2/ks2.1_01',
         'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks',
-        'npx3A-p0': 'subject5/2018-07-03_19-10-39/probe_1',
+        'sglx_npx3A-p1': 'subject5/2018-07-03_19-10-39/probe_1',
         'oe_npx3B': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0',
     }
 
