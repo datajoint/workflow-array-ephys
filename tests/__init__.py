@@ -65,7 +65,7 @@ def test_data(dj_config):
 
         client.download('workflow-array-ephys-test-set',
                         workflow_version.replace('.', '_'),
-                        test_data_dir, create_target=False)
+                        str(test_data_dir), create_target=False)
     return
 
 
