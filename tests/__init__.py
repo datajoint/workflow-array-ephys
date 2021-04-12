@@ -48,12 +48,15 @@ def subjects_csv():
     input_subjects = pd.DataFrame(columns=['subject', 'sex',
                                            'subject_birth_date',
                                            'subject_description'])
-    input_subjects.subject = ['subject1', 'subject2', 'subject3', 'subject4', 'subject5']
-    input_subjects.sex = ['F', 'M', 'M', 'M', 'F']
+    input_subjects.subject = ['subject1', 'subject2',
+                              'subject3', 'subject4',
+                              'subject5', 'subject6']
+    input_subjects.sex = ['F', 'M', 'M', 'M', 'F', 'F']
     input_subjects.subject_birth_date = ['2020-01-01 00:00:01', '2020-01-01 00:00:01',
                                          '2020-01-01 00:00:01', '2020-01-01 00:00:01',
-                                         '2020-01-01 00:00:01']
-    input_subjects.subject_description = ['dl56', 'SC035', 'SC038', 'oe_talab', 'rich']
+                                         '2020-01-01 00:00:01', '2020-01-01 00:00:01']
+    input_subjects.subject_description = ['dl56', 'SC035', 'SC038',
+                                          'oe_talab', 'rich', 'manuel']
     input_subjects = input_subjects.set_index('subject')
 
     subjects_csv_path = pathlib.Path('./tests/user_data/subjects.csv')
@@ -82,15 +85,13 @@ def sessions_csv():
                      'U24/workflow_ephys_data/subject2/session2',
                      'U24/workflow_ephys_data/subject3/session1',
                      'U24/workflow_ephys_data/subject4/experiment1',
-                     'U24/workflow_ephys_data/subject5/2018-07-03_19-10-39']
+                     'U24/workflow_ephys_data/subject5/session1',
+                     'U24/workflow_ephys_data/subject6/session1']
 
     input_sessions = pd.DataFrame(columns=['subject', 'session_dir'])
-    input_sessions.subject = ['subject1',
-                              'subject2',
-                              'subject2',
-                              'subject3',
-                              'subject4',
-                              'subject5']
+    input_sessions.subject = ['subject1', 'subject2', 'subject2',
+                              'subject3', 'subject4', 'subject5',
+                              'subject6']
     input_sessions.session_dir = [(root_dir / sess_dir).as_posix()
                                   for sess_dir in sessions_dirs]
     input_sessions = input_sessions.set_index('subject')
@@ -119,6 +120,8 @@ def testdata_paths():
         'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks',
         'sglx_npx3A-p1': 'subject5/2018-07-03_19-10-39/probe_1',
         'oe_npx3B': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0',
+        'sglx_npx3B-p1': 'subject6/session1/towersTask_g0_imec0',
+        'npx3B-p1-ks': 'subject6/session1/towersTask_g0_imec0'
     }
 
 
@@ -174,9 +177,10 @@ def ephys_recordings(pipeline, ingest_sessions):
 @pytest.fixture
 def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
     ephys = pipeline['ephys']
-    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
+    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
     root_dir = pathlib.Path(get_ephys_root_data_dir())
+
     for ephys_rec_key in (ephys.EphysRecording - ephys.ClusteringTask).fetch('KEY'):
         ephys_file = root_dir / (ephys.EphysRecording.EphysFile
                                  & ephys_rec_key).fetch('file_path')[0]

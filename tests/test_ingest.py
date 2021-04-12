@@ -10,7 +10,7 @@ from . import (dj_config, pipeline,
 
 def test_ingest_subjects(pipeline, ingest_subjects):
     subject = pipeline['subject']
-    assert len(subject.Subject()) == 5
+    assert len(subject.Subject()) == 6
 
 
 def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
@@ -19,9 +19,9 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
     session = pipeline['session']
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
-    assert len(session.Session()) == 6
-    assert len(probe.Probe()) == 8
-    assert len(ephys.ProbeInsertion()) == 12
+    assert len(session.Session()) == 7
+    assert len(probe.Probe()) == 9
+    assert len(ephys.ProbeInsertion()) == 13
 
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
@@ -33,7 +33,6 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
 def test_find_valid_full_path(pipeline, sessions_csv):
     from element_array_ephys import find_valid_full_path
 
-    session = pipeline['session']
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
     # add more options for root directories
