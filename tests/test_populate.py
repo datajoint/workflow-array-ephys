@@ -104,9 +104,9 @@ def test_waveform_populate_npx3B_OpenEphys(curations, pipeline, testdata_paths):
     rel_path = testdata_paths['oe_npx3B-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
     ephys.CuratedClustering.populate(curation_key)
-    ephys.Waveform.populate(curation_key)
+    ephys.WaveformSet.populate(curation_key)
 
-    waveforms = np.vstack((ephys.Waveform.Unit & curation_key).fetch(
+    waveforms = np.vstack((ephys.WaveformSet.PeakWaveform & curation_key).fetch(
         'peak_electrode_waveform'))
 
     assert waveforms.shape == (204, 64)
@@ -118,9 +118,9 @@ def test_waveform_populate_npx3B_SpikeGLX(curations, pipeline, testdata_paths):
     rel_path = testdata_paths['npx3B-p1-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
     ephys.CuratedClustering.populate(curation_key)
-    ephys.Waveform.populate(curation_key)
+    ephys.WaveformSet.populate(curation_key)
 
-    waveforms = np.vstack((ephys.Waveform.Unit & curation_key).fetch(
+    waveforms = np.vstack((ephys.WaveformSet.PeakWaveform & curation_key).fetch(
         'peak_electrode_waveform'))
 
     assert waveforms.shape == (150, 64)

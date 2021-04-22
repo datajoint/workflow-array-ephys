@@ -11,9 +11,21 @@ import workflow_array_ephys
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 
+# ------------------- SOME CONSTANTS -------------------
+
 test_user_data_dir = pathlib.Path('./tests/user_data')
 test_user_data_dir.mkdir(exist_ok=True)
 
+sessions_dirs = ['subject1/session1',
+                 'subject2/session1',
+                 'subject2/session2',
+                 'subject3/session1',
+                 'subject4/experiment1',
+                 'subject5/session1',
+                 'subject6/session1']
+
+
+# ------------------- FIXTURES -------------------
 
 @pytest.fixture(autouse=True)
 def dj_config():
@@ -33,14 +45,6 @@ def dj_config():
 @pytest.fixture(autouse=True)
 def test_data(dj_config):
     test_data_dir = pathlib.Path(dj.config['custom']['ephys_root_data_dir'])
-
-    sessions_dirs = ['subject1/session1',
-                     'subject2/session1',
-                     'subject2/session2',
-                     'subject3/session1',
-                     'subject4/experiment1',
-                     'subject5/session1',
-                     'subject6/session1']
 
     test_data_exists = np.all([(test_data_dir / p).exists() for p in sessions_dirs])
 
@@ -120,14 +124,6 @@ def ingest_subjects(pipeline, subjects_csv):
 def sessions_csv(test_data):
     """ Create a 'sessions.csv' file"""
     root_dir = pathlib.Path(get_ephys_root_data_dir())
-
-    sessions_dirs = ['subject1/session1',
-                     'subject2/session1',
-                     'subject2/session2',
-                     'subject3/session1',
-                     'subject4/experiment1',
-                     'subject5/session1',
-                     'subject6/session1']
 
     input_sessions = pd.DataFrame(columns=['subject', 'session_dir'])
     input_sessions.subject = ['subject1', 'subject2', 'subject2',

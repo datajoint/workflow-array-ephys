@@ -31,7 +31,7 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
 
 
 def test_find_valid_full_path(pipeline, sessions_csv):
-    from element_array_ephys import find_valid_full_path
+    from element_array_ephys import find_full_path
 
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
@@ -41,22 +41,37 @@ def test_find_valid_full_path(pipeline, sessions_csv):
     else:
         ephys_root_data_dir = [get_ephys_root_data_dir(), 'mnt/j', 'mnt/m']
 
-    # test 1 - providing full-path: correctly search for the root_dir
+    # test: providing relative-path: correctly search for the full-path
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
     session_full_path = pathlib.Path(sess.session_dir)
 
-    _, root_dir = find_valid_full_path(ephys_root_data_dir, session_full_path)
-
-    assert root_dir == get_ephys_root_data_dir()
-
-    # test 2 - providing relative-path: correctly search for the root_dir and full-path
     rel_path = pathlib.Path(session_full_path).relative_to(
         pathlib.Path(get_ephys_root_data_dir()))
-    full_path, root_dir = find_valid_full_path(ephys_root_data_dir, rel_path)
+    full_path = find_full_path(ephys_root_data_dir, rel_path)
+
+    assert full_path == session_full_path
+
+
+def test_find_root_directory(pipeline, sessions_csv):
+    from element_array_ephys import find_root_directory
+
+    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
+
+    # add more options for root directories
+    if sys.platform == 'win32':
+        ephys_root_data_dir = [get_ephys_root_data_dir(), 'J:/', 'M:/']
+    else:
+        ephys_root_data_dir = [get_ephys_root_data_dir(), 'mnt/j', 'mnt/m']
+
+    # test: providing full-path: correctly search for the root_dir
+    sessions, _ = sessions_csv
+    sess = sessions.iloc[0]
+    session_full_path = pathlib.Path(sess.session_dir)
+
+    root_dir = find_root_directory(ephys_root_data_dir, session_full_path)
 
     assert root_dir == get_ephys_root_data_dir()
-    assert full_path == session_full_path
 
 
 def test_paramset_insert(kilosort_paramset, pipeline):
