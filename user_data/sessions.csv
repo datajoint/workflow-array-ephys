@@ -1,3 +1,7 @@
-subject,session_dir,paramset
-subject1,<ephys_root_data_dir>/subject1/session0,0 1
-subject1,<ephys_root_data_dir>/subject1/session1,0
+subject,session_dir
+subject1,F:\U24\workflow_ephys_data\subject1\session1
+subject2,F:\U24\workflow_ephys_data\subject2\session1
+subject2,F:\U24\workflow_ephys_data\subject2\session2
+subject3,F:\U24\workflow_ephys_data\subject3\session1
+subject4,F:\U24\workflow_ephys_data\subject4\experiment1
+subject5,F:\U24\workflow_ephys_data\subject5\2018-07-03_19-10-39

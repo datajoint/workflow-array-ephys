@@ -38,9 +38,3 @@ class SkullReference(dj.Lookup):
 # ------------- Activate "ephys" schema -------------
 
 ephys.activate(db_prefix + 'ephys', db_prefix + 'probe', linking_module=__name__)
-
-# ------------- Add neuropixels probes -------------
-for probe_type in ('neuropixels 1.0 - 3A', 'neuropixels 1.0 - 3B',
-                   'neuropixels 2.0 - SS', 'neuropixels 2.0 - MS'):
-    probe.ProbeType.create_neuropixels_probe(probe_type)
-
