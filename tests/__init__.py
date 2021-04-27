@@ -5,20 +5,71 @@ import pytest
 import pandas as pd
 import pathlib
 import datajoint as dj
+import numpy as np
 
+import workflow_array_ephys
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 
+# ------------------- SOME CONSTANTS -------------------
+
+test_user_data_dir = pathlib.Path('./tests/user_data')
+test_user_data_dir.mkdir(exist_ok=True)
+
+sessions_dirs = ['subject1/session1',
+                 'subject2/session1',
+                 'subject2/session2',
+                 'subject3/session1',
+                 'subject4/experiment1',
+                 'subject5/session1',
+                 'subject6/session1']
+
+
+# ------------------- FIXTURES -------------------
+
 @pytest.fixture(autouse=True)
 def dj_config():
-    dj.config.load('./dj_local_conf.json')
+    if pathlib.Path('./dj_local_conf.json').exists():
+        dj.config.load('./dj_local_conf.json')
     dj.config['safemode'] = False
+
     dj.config['custom'] = {
-        'database.prefix': os.environ.get('DATABASE_PREFIX',
-                                          dj.config['custom']['database.prefix']),
-        'ephys_root_data_dir': os.environ.get('EPHYS_ROOT_DATA_DIR',
-                                              dj.config['custom']['ephys_root_data_dir'])
+        'database.prefix': (os.environ.get('DATABASE_PREFIX')
+                            or dj.config['custom']['database.prefix']),
+        'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR')
+                                or dj.config['custom']['ephys_root_data_dir'])
     }
+    return
+
+
+@pytest.fixture(autouse=True)
+def test_data(dj_config):
+    test_data_dir = pathlib.Path(dj.config['custom']['ephys_root_data_dir'])
+
+    test_data_exists = np.all([(test_data_dir / p).exists() for p in sessions_dirs])
+
+    if not test_data_exists:
+        try:
+            dj.config['custom'].update({
+                'djarchive.client.endpoint': os.environ['DJARCHIVE_CLIENT_ENDPOINT'],
+                'djarchive.client.bucket': os.environ['DJARCHIVE_CLIENT_BUCKET'],
+                'djarchive.client.access_key': os.environ['DJARCHIVE_CLIENT_ACCESSKEY'],
+                'djarchive.client.secret_key': os.environ['DJARCHIVE_CLIENT_SECRETKEY']
+            })
+        except KeyError as e:
+            raise FileNotFoundError(
+                f'Test data not available at {test_data_dir}.'
+                f'\nAttempting to download from DJArchive,'
+                f' but no credentials found in environment variables.'
+                f'\nError: {str(e)}')
+
+        import djarchive_client
+        client = djarchive_client.client()
+        workflow_version = workflow_array_ephys.version.__version__
+
+        client.download('workflow-array-ephys-test-set',
+                        workflow_version.replace('.', '_'),
+                        str(test_data_dir), create_target=False)
     return
 
 
@@ -42,12 +93,15 @@ def subjects_csv():
     input_subjects = pd.DataFrame(columns=['subject', 'sex',
                                            'subject_birth_date',
                                            'subject_description'])
-    input_subjects.subject = ['subject1', 'subject2', 'subject3', 'subject4', 'subject5']
-    input_subjects.sex = ['F', 'M', 'M', 'M', 'F']
+    input_subjects.subject = ['subject1', 'subject2',
+                              'subject3', 'subject4',
+                              'subject5', 'subject6']
+    input_subjects.sex = ['F', 'M', 'M', 'M', 'F', 'F']
     input_subjects.subject_birth_date = ['2020-01-01 00:00:01', '2020-01-01 00:00:01',
                                          '2020-01-01 00:00:01', '2020-01-01 00:00:01',
-                                         '2020-01-01 00:00:01']
-    input_subjects.subject_description = ['dl56', 'SC035', 'SC038', 'oe_talab', 'rich']
+                                         '2020-01-01 00:00:01', '2020-01-01 00:00:01']
+    input_subjects.subject_description = ['dl56', 'SC035', 'SC038',
+                                          'oe_talab', 'rich', 'manuel']
     input_subjects = input_subjects.set_index('subject')
 
     subjects_csv_path = pathlib.Path('./tests/user_data/subjects.csv')
@@ -67,24 +121,14 @@ def ingest_subjects(pipeline, subjects_csv):
 
 
 @pytest.fixture
-def sessions_csv():
+def sessions_csv(test_data):
     """ Create a 'sessions.csv' file"""
     root_dir = pathlib.Path(get_ephys_root_data_dir())
 
-    sessions_dirs = ['U24/workflow_ephys_data/subject1/session1',
-                     'U24/workflow_ephys_data/subject2/session1',
-                     'U24/workflow_ephys_data/subject2/session2',
-                     'U24/workflow_ephys_data/subject3/session1',
-                     'U24/workflow_ephys_data/subject4/experiment1',
-                     'U24/workflow_ephys_data/subject5/2018-07-03_19-10-39']
-
     input_sessions = pd.DataFrame(columns=['subject', 'session_dir'])
-    input_sessions.subject = ['subject1',
-                              'subject2',
-                              'subject2',
-                              'subject3',
-                              'subject4',
-                              'subject5']
+    input_sessions.subject = ['subject1', 'subject2', 'subject2',
+                              'subject3', 'subject4', 'subject5',
+                              'subject6']
     input_sessions.session_dir = [(root_dir / sess_dir).as_posix()
                                   for sess_dir in sessions_dirs]
     input_sessions = input_sessions.set_index('subject')
@@ -108,11 +152,13 @@ def ingest_sessions(ingest_subjects, sessions_csv):
 @pytest.fixture
 def testdata_paths():
     return {
-        'npx3A-p0-ks': 'subject5/2018-07-03_19-10-39/probe_1/ks2.1_01',
-        'npx3A-p1-ks': 'subject5/2018-07-03_19-10-39/probe_1/ks2.1_01',
+        'npx3A-p1-ks': 'subject5/session1/probe_1/ks2.1_01',
+        'npx3A-p2-ks': 'subject5/session1/probe_2/ks2.1_01',
         'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks',
-        'npx3A-p0': 'subject5/2018-07-03_19-10-39/probe_1',
+        'sglx_npx3A-p1': 'subject5/session1/probe_1',
         'oe_npx3B': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0',
+        'sglx_npx3B-p1': 'subject6/session1/towersTask_g0_imec0',
+        'npx3B-p1-ks': 'subject6/session1/towersTask_g0_imec0'
     }
 
 
@@ -168,9 +214,10 @@ def ephys_recordings(pipeline, ingest_sessions):
 @pytest.fixture
 def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
     ephys = pipeline['ephys']
-    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
+    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
     root_dir = pathlib.Path(get_ephys_root_data_dir())
+
     for ephys_rec_key in (ephys.EphysRecording - ephys.ClusteringTask).fetch('KEY'):
         ephys_file = root_dir / (ephys.EphysRecording.EphysFile
                                  & ephys_rec_key).fetch('file_path')[0]

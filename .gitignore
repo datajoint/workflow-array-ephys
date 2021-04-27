@@ -46,6 +46,7 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+/tests/user_data
 
 # Translations
 *.mo
@@ -82,7 +83,7 @@ celerybeat-schedule
 *.sage.py
 
 # dotenv
-./.env
+.env
 
 # virtualenv
 .venv
@@ -112,3 +113,6 @@ dj_local_conf_old.json
 **/.#*
 docker-compose.yml
 Diagram.ipynb
+
+# docker
+.env

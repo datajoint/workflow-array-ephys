@@ -1,6 +1,7 @@
+import sys
 import pathlib
 
-from . import (dj_config, pipeline,
+from . import (dj_config, pipeline, test_data,
                subjects_csv, ingest_subjects,
                sessions_csv, ingest_sessions,
                testdata_paths, kilosort_paramset,
@@ -9,7 +10,7 @@ from . import (dj_config, pipeline,
 
 def test_ingest_subjects(pipeline, ingest_subjects):
     subject = pipeline['subject']
-    assert len(subject.Subject()) == 5
+    assert len(subject.Subject()) == 6
 
 
 def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
@@ -18,15 +19,59 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
     session = pipeline['session']
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
-    assert len(session.Session()) == 6
-    assert len(probe.Probe()) == 8
-    assert len(ephys.ProbeInsertion()) == 12
+    assert len(session.Session()) == 7
+    assert len(probe.Probe()) == 9
+    assert len(ephys.ProbeInsertion()) == 13
 
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
     sess_dir = pathlib.Path(sess.session_dir).relative_to(get_ephys_root_data_dir())
     assert (session.SessionDirectory
             & {'subject': sess.name}).fetch1('session_dir') == sess_dir.as_posix()
+
+
+def test_find_valid_full_path(pipeline, sessions_csv):
+    from element_array_ephys import find_full_path
+
+    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
+
+    # add more options for root directories
+    if sys.platform == 'win32':
+        ephys_root_data_dir = [get_ephys_root_data_dir(), 'J:/', 'M:/']
+    else:
+        ephys_root_data_dir = [get_ephys_root_data_dir(), 'mnt/j', 'mnt/m']
+
+    # test: providing relative-path: correctly search for the full-path
+    sessions, _ = sessions_csv
+    sess = sessions.iloc[0]
+    session_full_path = pathlib.Path(sess.session_dir)
+
+    rel_path = pathlib.Path(session_full_path).relative_to(
+        pathlib.Path(get_ephys_root_data_dir()))
+    full_path = find_full_path(ephys_root_data_dir, rel_path)
+
+    assert full_path == session_full_path
+
+
+def test_find_root_directory(pipeline, sessions_csv):
+    from element_array_ephys import find_root_directory
+
+    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
+
+    # add more options for root directories
+    if sys.platform == 'win32':
+        ephys_root_data_dir = [get_ephys_root_data_dir(), 'J:/', 'M:/']
+    else:
+        ephys_root_data_dir = [get_ephys_root_data_dir(), 'mnt/j', 'mnt/m']
+
+    # test: providing full-path: correctly search for the root_dir
+    sessions, _ = sessions_csv
+    sess = sessions.iloc[0]
+    session_full_path = pathlib.Path(sess.session_dir)
+
+    root_dir = find_root_directory(ephys_root_data_dir, session_full_path)
+
+    assert root_dir == get_ephys_root_data_dir()
 
 
 def test_paramset_insert(kilosort_paramset, pipeline):
