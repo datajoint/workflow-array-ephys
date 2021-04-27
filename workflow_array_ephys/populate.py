@@ -20,7 +20,7 @@ def populate(display_progress=True):
     ephys.CuratedClustering.populate(**populate_settings)
 
     print('\n---- Populate ephys.Waveform ----')
-    ephys.Waveform.populate(**populate_settings)
+    ephys.WaveformSet.populate(**populate_settings)
 
 
 if __name__ == '__main__':
