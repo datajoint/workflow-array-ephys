@@ -13,14 +13,17 @@
 #     name: bl_dev
 # ---
 
-# To properly run the array ephys workflow, we need to properly set up the DataJoint configuration. The configuration will be saved in a file called `dj_local_conf.json` on each machine and this notebook walks you through the process.
+# To run the array ephys workflow, we need to properly set up the DataJoint configuration. The configuration will be saved in a file called `dj_local_conf.json` on each machine and this notebook walks you through the process.
+#
+#
+# **The configuration only needs to be set up once**, if you have gone through the configuration before, directly go to [02-process](02-process.ipynb).
 
 # # Set up configuration in root directory of this package
 #
-# As a convention, we set the configuration up in the root directory of the package and always starts importing datajoint and pipeline modules from there.
+# As a convention, we set the configuration up in the root directory of the workflow package and always starts importing datajoint and pipeline modules from there.
 
 import os
-os.chdir('../..')
+os.chdir('..')
 
 pwd
 
@@ -41,7 +44,7 @@ dj.conn()
 
 # # Configure the `custom` field in `dj.config` for the Ephys element
 
-# The ephys pipeline is based on the [DataJoint Array Ephys Element](https://github.com/datajoint/element-ephys). Installation of the element into the bl_pipeline requires the following configurations in the field `custom`:
+# The major component of the current workflow is the [DataJoint Array Ephys Element](https://github.com/datajoint/element-ephys). Array Ephys Element requires configurations in the field `custom` in `dj.config`:
 
 # ## Database prefix
 #
@@ -51,23 +54,22 @@ dj.conn()
 
 dj.config['custom'] = {'database.prefix': 'neuro_'}
 
-# ## Root directory for raw ephys data
+# ## Root directories for raw ephys data and kilosort 2 processed results
 #
-# + `ephys_root_data_dir` field indicates the root directory for the ephys raw data from SpikeGLX (e.g. `*imec0.ap.bin`, `*imec0.ap.meta`, `*imec0.lf.bin`, `imec0.lf.meta`)
-# + In the database, every path for the ephys raw data is relative to this root path. The benefit is that the absolute path could be configured for each machine, and when data transfer happens, we just need to change the root directory in the config file.
-# + This path is specific to each machine, as the name of drive mount could be different for each 
-# + In the context of the workflow, all the paths saved into the database or saved in the config file need to be in the POSIX standards (Unix/Linux), with `/`. The path conversion for Windows machines is taken care of inside the elements.
+# + `ephys_root_data_dir` field indicates the root directory for the **ephys raw data** from SpikeGLX or OpenEphys (e.g. `*imec0.ap.bin`, `*imec0.ap.meta`, `*imec0.lf.bin`, `imec0.lf.meta`) or the **clustering results** from kilosort2 (e.g. `spike_times.npy`, `spike_clusters.npy`). The root path typically **do not** contain information of subjects or sessions, all data from subjects/sessions should be subdirectories in the root path.
+# + In the database, every path for the ephys raw data is **relative to this root path**. The benefit is that the absolute path could be configured for each machine, and when data transfer happens, we just need to change the root directory in the config file.
+# + The workflow supports **multiple root directories**. If there are multiple possible root directories, specify the `ephys_root_data_dir` as a list.
+# + The root path(s) are **specific to each machine**, as the name of drive mount could be different for different operating systems or machines.
+# + In the context of the workflow, all the paths saved into the database or saved in the config file need to be in the **POSIX standards** (Unix/Linux), with `/`. The path conversion for machines of any operating system is taken care of inside the elements.
 
-dj.config['custom']['ephys_root_data_dir'] = ['/tmp/archive/brody/RATTER/PhysData/Raw/']
+# If using our example dataset downloaded with [this instruction](00-data-download[optional].ipynb), the root directory will be:
 
-# ## Root directory for kilosort 2 processed results
-#
-# + `clustering_root_data_dir` field indicates the root directory for the ephys raw data from Kilosort2 (e.g. `spikes_clusters.npy`, `spikes_times.npy` etc.)
-# + In the database, every path for the kilosort output data is relative to this root path. The benefit is that the absolute path could be configured for each machine, and when data transfer happens, we just need to change the root directory in the config file.
-# + It could be the same or different from `ephys_root_data_dir`
-# + This path is specific to each machine, and here is an example of the root directory on a linux machine. In brody lab, the raw ephys data are located in the bucket server.
+# If there is only one root path.
+dj.config['custom']['ephys_root_data_dir'] = '/tmp/test_data/workflow-array-ephys-test-set'
+# If there are multiple possible root paths:
+dj.config['custom']['ephys_root_data_dir'] = ['/tmp/test_data/workflow-array-ephys-test-set']
 
-dj.config['custom']['clustering_root_data_dir'] = '/mnt/bucket/labs/brody/RATTER/PhysData/'
+dj.config
 
 # # Save the configuration as a json file
 
