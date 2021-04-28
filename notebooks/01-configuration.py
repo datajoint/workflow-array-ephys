@@ -85,3 +85,8 @@ dj.config.save_local()
 
 # +
 # dj.config.save_global()
+# -
+
+# # Next Step
+
+# After the configuration, we will be able to run through the workflow with [02-process](02-process.ipynb).
