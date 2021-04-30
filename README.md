@@ -6,7 +6,7 @@ Build a full ephys pipeline using the canonical pipeline elements
 + [element-session](https://github.com/datajoint/element-session)
 + [element-array-ephys](https://github.com/datajoint/element-array-ephys)
 
-This repository provides demonstrations for: 
+This repository provides demonstrations for:
 1. Set up a workflow using different elements (see [workflow_array_ephys/pipeline.py](workflow_array_ephys/pipeline.py))
 2. Ingestion of data/metadata based on:
     + predefined file/folder structure and naming convention
@@ -16,8 +16,8 @@ This repository provides demonstrations for:
 
 ## Pipeline Architecture
 
-The electrophysiology pipeline presented here uses pipeline components from 4 DataJoint Elements, 
-`element-lab`, `element-animal`, `element-session` and `element-array-ephys`, assembled together to form a fully functional workflow. 
+The electrophysiology pipeline presented here uses pipeline components from 4 DataJoint Elements,
+`element-lab`, `element-animal`, `element-session` and `element-array-ephys`, assembled together to form a fully functional workflow.
 
 ### element-lab
 
@@ -43,7 +43,7 @@ Clone this repository from [here](https://github.com/datajoint/workflow-array-ep
     ```
 + Clone the repository:
     ```
-    git clone https://github.com/datajoint/workflow-array-ephys 
+    git clone https://github.com/datajoint/workflow-array-ephys
     ```
 + Change directory to `workflow-array-ephys`
     ```
@@ -80,8 +80,8 @@ From the root of the cloned repository directory:
     pip install -e .
     ```
 
-Note: the `-e` flag will install this repository in editable mode, 
-in case there's a need to modify the code (e.g. the `pipeline.py` or `paths.py` scripts). 
+Note: the `-e` flag will install this repository in editable mode,
+in case there's a need to modify the code (e.g. the `pipeline.py` or `paths.py` scripts).
 If no such modification required, using `pip install .` is sufficient
 
 ### Step 4 - Jupyter Notebook
@@ -92,9 +92,11 @@ If no such modification required, using `pip install .` is sufficient
 
 ### Step 5 - Configure the `dj_local_conf.json`
 
-At the root of the repository folder, 
+We provided a tutorial notebook [01-configuration](notebooks/01-configuration.ipynb) to guide the configuration.
+
+At the root of the repository folder,
 create a new file `dj_local_conf.json` with the following template:
- 
+
 ```json
 {
   "database.host": "<hostname>",
@@ -118,6 +120,7 @@ create a new file `dj_local_conf.json` with the following template:
 
 + Setup your data directory (`ephys_root_data_dir`) following the convention described below.
 
+
 ### Installation complete
 
 + At this point the setup of this workflow is complete.
@@ -131,17 +134,17 @@ The workflow presented here is designed to work with the directory structure and
 + The `subject` directory names must match the identifiers of your subjects in the [subjects.csv](./user_data/subjects.csv) script
 
 + The `session` directories can have any naming convention
-    
+
 + Each session can have multiple probes, the `probe` directories must match the following naming convention:
 
-    `*[0-9]` (where `[0-9]` is a one digit number specifying the probe number) 
+    `*[0-9]` (where `[0-9]` is a one digit number specifying the probe number)
 
 + Each `probe` directory should contain:
 
     + One neuropixels meta file, with the following naming convention:
-    
+
         `*[0-9].ap.meta`
-        
+
     + Potentially one Kilosort output folder
 
 ```
@@ -155,7 +158,7 @@ root_data_dir/
 │   │   │       │   templates.npy
 │   │   │       │   ...
 │   │   └───imec1/
-│   │       │   *imec1.ap.meta   
+│   │       │   *imec1.ap.meta
 │   │       └───ksdir/
 │   │           │   spike_times.npy
 │   │           │   templates.npy
@@ -165,13 +168,21 @@ root_data_dir/
 └───subject2/
 │   │   ...
 ```
-    
-    
+
+We provide an example data set to run through this workflow. The instruction of data downloading is in the notebook [00-data-download](notebooks/00-data-download-optional.ipynb).
+
+
 ## Running this workflow
 
-Once you have your data directory configured with the above convention, 
+For new users, we recommend using the following two notebooks to run through the workflow.
++ [03-process](notebooks/03-process.ipynb)
++ [04-automate](notebooks/04-automate-optional.ipynb)
+
+Here is a general instruction:
+
+Once you have your data directory configured with the above convention,
 populating the pipeline with your data amounts to these 3 steps:
- 
+
 1. Insert meta information (e.g. subjects, sessions, etc.) - modify:
     + user_data/subjects.csv
     + user_data/sessions.csv
@@ -180,12 +191,12 @@ populating the pipeline with your data amounts to these 3 steps:
     ```
     python workflow_array_ephys/ingest.py
     ```
-    
+
 3. Import clustering data and populate downstream analyses - run:
     ```
     python workflow_array_ephys/populate.py
     ```
-    
+
 + For inserting new subjects, sessions or new analysis parameters, step 1 needs to be re-executed.
 
 + Rerun step 2 and 3 every time new sessions or clustering data become available.
@@ -193,6 +204,11 @@ populating the pipeline with your data amounts to these 3 steps:
 + In fact, step 2 and 3 can be executed as scheduled jobs that will automatically process any data newly placed into the `imaging_root_data_dir`.
 
 ## Interacting with the DataJoint pipeline and exploring data
+
+For new users, we recommend using our notebook [05-explore](notebooks/05-explore.ipynb) to interact with the pipeline.
+
+Here is a general instruction:
+
 
 + Connect to database and import tables
     ```
@@ -209,7 +225,7 @@ populating the pipeline with your data amounts to these 3 steps:
     ephys.Clustering.Unit()
     ```
 
-+ If required to drop all schemas, the following is the dependency order. 
++ If required to drop all schemas, the following is the dependency order. Also refer to [06-drop](notebooks/06-drop-optional.ipynb)
     ```
     from workflow_array_ephys.pipeline import *
 
@@ -220,11 +236,9 @@ populating the pipeline with your data amounts to these 3 steps:
     lab.schema.drop()
     ```
 
-+ For a more in-depth exploration of ingested data, please refer to the example [notebook](notebooks/explore_workflow.ipynb).
-
 
 ## Developer Guide
- 
+
 ### Development mode installation
 
 This method allows you to modify the source code for `workflow-array-ephys`, `element-array-ephys`, `element-animal`, `element-session`, and `element-lab`.
@@ -249,19 +263,19 @@ This method allows you to modify the source code for `workflow-array-ephys`, `el
     pip install -e ./element-animal
     pip install -e ./element-array-ephys
     ```
-  
+
 ### Running tests
 
-1. Download the test dataset to your local machine 
+1. Download the test dataset to your local machine
 (note the directory where the dataset is saved at - e.g. `/tmp/testset`)
 
 2. Create an `.env` file with the following content:
 
     > TEST_DATA_DIR=/tmp/testset
-    
+
     (replace `/tmp/testset` with the directory where you have the test dataset downloaded to)
-    
+
 3. Run:
 
-    
-    docker-compose -f docker-compose-test.yaml up --build 
+
+    docker-compose -f docker-compose-test.yaml up --build
