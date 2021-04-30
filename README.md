@@ -21,15 +21,15 @@ The electrophysiology pipeline presented here uses pipeline components from 4 Da
 
 ### element-lab
 
-![element-lab](images/lab_erd.svg)
+![element-lab](https://github.com/datajoint/element-lab/raw/main/images/element_lab_diagram.svg)
 
 ### element-animal
 
-![element-animal](images/subject_erd.svg)
+![element-animal](https://github.com/datajoint/element-animal/blob/main/images/subject_diagram.svg)
 
 ### assembled with element-array-ephys
 
-![element-array-ephys](images/attached_ephys_element.svg)
+![element-array-ephys](images/attached_array_ephys_element.svg)
 
 ## Installation instruction
 
