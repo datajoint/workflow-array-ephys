@@ -29,7 +29,7 @@ The electrophysiology pipeline presented here uses pipeline components from 4 Da
 
 ### assembled with element-array-ephys
 
-![element-array-ephys](images/attached_ephys_element.svg)
+![element-array-ephys](images/attached_array_ephys_element.svg)
 
 ## Installation instruction
 
