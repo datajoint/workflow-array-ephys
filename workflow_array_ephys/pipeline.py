@@ -10,17 +10,13 @@ from element_animal.subject import Subject
 from element_lab.lab import Source, Lab, Protocol, User, Project
 from element_session.session_with_datetime import Session
 
-from .paths import get_ephys_root_data_dir, get_session_directory
-
 if 'custom' not in dj.config:
     dj.config['custom'] = {}
 
 db_prefix = dj.config['custom'].get('database.prefix', '')
 
 __all__ = ['subject', 'lab', 'session', 'trial', 'event', 'probe', 'ephys',
-           'Subject', 'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session',
-           'get_ephys_root_data_dir', 'get_session_directory']
-
+           'Subject', 'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session']
 
 # ------------- Import the configured "ephys mode" -------------
 ephys_mode = os.getenv('EPHYS_MODE',
@@ -59,6 +55,6 @@ class SkullReference(dj.Lookup):
 
 # Activate "ephys" schema -----------------------------------------------------
 
-ephys.activate(db_prefix + 'ephys', 
-               db_prefix + 'probe', 
+ephys.activate(db_prefix + 'ephys',
+               db_prefix + 'probe',
                linking_module=__name__)

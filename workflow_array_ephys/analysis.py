@@ -1,7 +1,7 @@
 import datajoint as dj
 import numpy as np
 
-from workflow_array_ephys.pipeline import db_prefix, session, ephys, trial, event
+from .pipeline import db_prefix, ephys, trial, event
 
 
 schema = dj.schema(db_prefix + 'analysis')
@@ -19,7 +19,7 @@ class SpikesAlignmentCondition(dj.Manual):
     """
 
     class Trial(dj.Part):
-        definition = """  # Trials (or subset of trials) to computed event-aligned spikes and PSTH on 
+        definition = """  # Trials on which to compute event-aligned spikes and PSTH
         -> master
         -> trial.Trial
         """
@@ -38,7 +38,7 @@ class SpikesAlignment(dj.Computed):
         -> ephys.CuratedClustering.Unit
         -> SpikesAlignmentCondition.Trial
         ---
-        aligned_spike_times: longblob  # (s) spike times relative to alignment event time
+        aligned_spike_times: longblob # (s) spike times relative to alignment event time
         """
 
     class UnitPSTH(dj.Part):

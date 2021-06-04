@@ -124,14 +124,9 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True,
             probe_insertion_list.extend([{**session_key, **insertion
                                           } for insertion in insertions])
 
-    session.Session.insert(session_list)
-    session.SessionDirectory.insert(session_dir_list)
-    if verbose:
-        print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
-
-    probe.Probe.insert(probe_list)
     if verbose:
         print(f'\n---- Insert {len(probe_list)} entry(s) into probe.Probe ----')
+    probe.Probe.insert(probe_list)
 
     if ephys_mode == 'chronic':
         ephys.ProbeInsertion.insert(probe_insertion_list,
@@ -152,8 +147,8 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True,
                   + 'ephys.ProbeInsertion ----')
             print(f'\n---- Insert {len(session_list)} entry(s) into '
                   + 'session.Session ----')
-
-    print('\n---- Successfully completed workflow_array_ephys/ingest.py ----')
+    if verbose:
+        print('\n---- Successfully completed workflow_array_ephys/ingest.py ----')
 
 
 def ingest_events(recording_csv_path='./user_data/behavior_recordings.csv',

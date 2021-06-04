@@ -286,6 +286,7 @@ def ephys_recordings(pipeline, ingest_sessions):
             with QuietStdOut():
                 ephys.EphysRecording.delete()
 
+
 @pytest.fixture
 def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
     """Insert keys from ephys.EphysRecording into ephys.Clustering"""
