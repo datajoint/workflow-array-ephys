@@ -22,6 +22,7 @@ lab.activate(db_prefix + 'lab')
 
 subject.activate(db_prefix + 'subject', linking_module=__name__)
 
+Experimenter = lab.User
 session.activate(db_prefix + 'session', linking_module=__name__)
 
 # ----------- Declare table SkullReference for use in element-array-ephys ---------
