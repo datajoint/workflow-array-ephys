@@ -257,11 +257,11 @@ This method allows you to modify the source code for `workflow-array-ephys`, `el
     ```
 + Install each package with the `-e` option
     ```
-    pip install -e ./workflow-array-ephys
-    pip install -e ./element-session
     pip install -e ./element-lab
     pip install -e ./element-animal
+    pip install -e ./element-session
     pip install -e ./element-array-ephys
+    pip install -e ./workflow-array-ephys
     ```
 
 ### Running tests
