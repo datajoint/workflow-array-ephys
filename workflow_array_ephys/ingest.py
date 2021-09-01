@@ -21,7 +21,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
     root_data_dir = get_ephys_root_data_dir()
 
     # ---------- Insert new "Session" and "ProbeInsertion" ---------
-    with open(session_csv_path, newline= '') as f:
+    with open(session_csv_path, newline='') as f:
         input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
