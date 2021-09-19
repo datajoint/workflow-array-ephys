@@ -4,6 +4,7 @@ import csv
 
 from workflow_array_ephys.pipeline import subject, ephys, probe, session
 from workflow_array_ephys.paths import get_ephys_root_data_dir
+from workflow_array_ephys.pipeline import ephys_mode
 
 from element_array_ephys.readers import spikeglx, openephys
 
@@ -72,15 +73,22 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
             session_dir_list.append({**session_key, 'session_dir': sess_dir.relative_to(root_data_dir).as_posix()})
             probe_insertion_list.extend([{**session_key, **insertion} for insertion in insertions])
 
-    print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
-    session.Session.insert(session_list)
-    session.SessionDirectory.insert(session_dir_list)
-
     print(f'\n---- Insert {len(probe_list)} entry(s) into probe.Probe ----')
     probe.Probe.insert(probe_list)
 
-    print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
-    ephys.ProbeInsertion.insert(probe_insertion_list)
+    if ephys_mode == 'chronic':
+        print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
+        ephys.ProbeInsertion.insert(probe_insertion_list,
+                                    ignore_extra_fields=True, skip_duplicates=True)
+        print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
+        session.Session.insert(session_list)
+        session.SessionDirectory.insert(session_dir_list)
+    else:
+        print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
+        session.Session.insert(session_list)
+        session.SessionDirectory.insert(session_dir_list)
+        print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
+        ephys.ProbeInsertion.insert(probe_insertion_list)
 
     print('\n---- Successfully completed workflow_array_ephys/ingest.py ----')
 

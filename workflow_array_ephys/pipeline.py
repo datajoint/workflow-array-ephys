@@ -1,8 +1,9 @@
 import datajoint as dj
+import os
 from element_animal import subject
 from element_lab import lab
 from element_session import session
-from element_array_ephys import probe, ephys
+from element_array_ephys import probe
 
 from element_animal.subject import Subject
 from element_lab.lab import Source, Lab, Protocol, User, Project
@@ -15,6 +16,17 @@ if 'custom' not in dj.config:
 
 db_prefix = dj.config['custom'].get('database.prefix', '')
 
+# ------------- Import the configured "ephys mode" -------------
+ephys_mode = os.getenv('EPHYS_MODE',
+                       dj.config['custom'].get('ephys_mode', 'acute'))
+if ephys_mode == 'acute':
+    from element_array_ephys import ephys
+elif ephys_mode == 'chronic':
+    from element_array_ephys import ephys_chronic as ephys
+elif ephys_mode == 'no-curation':
+    from element_array_ephys import ephys_no_curation as ephys
+else:
+    raise ValueError(f'Unknown ephys mode: {ephys_mode}')
 
 # ------------- Activate "lab", "subject", "session" schema -------------
 

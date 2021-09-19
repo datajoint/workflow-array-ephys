@@ -13,7 +13,7 @@ from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 # ------------------- SOME CONSTANTS -------------------
 
-_tear_down = True
+_tear_down = False
 
 test_user_data_dir = pathlib.Path('./tests/user_data')
 test_user_data_dir.mkdir(exist_ok=True)
@@ -84,7 +84,8 @@ def pipeline():
            'ephys': pipeline.ephys,
            'probe': pipeline.probe,
            'session': pipeline.session,
-           'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
+           'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir,
+           'ephys_mode': pipeline.ephys_mode}
 
     if _tear_down:
         pipeline.subject.Subject.delete()
@@ -196,7 +197,10 @@ def kilosort_paramset(pipeline):
 
     # doing the insert here as well, since most of the test will require this paramset inserted
     ephys.ClusteringParamSet.insert_new_params(
-        'kilosort2', 0, 'Spike sorting using Kilosort2', params_ks)
+        processing_method='kilosort2',
+        paramset_desc='Spike sorting using Kilosort2',
+        params=params_ks,
+        paramset_idx=0)
 
     yield params_ks
 
@@ -230,6 +234,7 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
         kilosort_dir = next(recording_dir.rglob('spike_times.npy')).parent
         ephys.ClusteringTask.insert1({**ephys_rec_key,
                                       'paramset_idx': 0,
+                                      'task_mode': 'load',
                                       'clustering_output_dir': kilosort_dir.as_posix()},
                                      skip_duplicates=True)
 
@@ -253,12 +258,17 @@ def clustering(clustering_tasks, pipeline):
 
 @pytest.fixture
 def curations(clustering, pipeline):
-    ephys = pipeline['ephys']
+    ephys_mode = pipeline['ephys_mode']
 
-    for key in (ephys.ClusteringTask - ephys.Curation).fetch('KEY'):
-        ephys.Curation().create1_from_clustering_task(key)
+    if ephys_mode == 'no-curation':
+        return
+    else:
+        ephys = pipeline['ephys']
 
-    yield
+        for key in (ephys.ClusteringTask - ephys.Curation).fetch('KEY'):
+            ephys.Curation().create1_from_clustering_task(key)
 
-    if _tear_down:
-        ephys.Curation.delete()
+        yield
+
+        if _tear_down:
+            ephys.Curation.delete()

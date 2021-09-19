@@ -80,19 +80,19 @@ def test_curated_clustering_populate(curations, pipeline, testdata_paths):
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['npx3A-p1-ks']
-    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
+    curation_key = _get_curation_key(rel_path, pipeline)
     ephys.CuratedClustering.populate(curation_key)
     assert len(ephys.CuratedClustering.Unit & curation_key
                & 'cluster_quality_label = "good"') == 76
 
     rel_path = testdata_paths['oe_npx3B-ks']
-    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
+    curation_key = _get_curation_key(rel_path, pipeline)
     ephys.CuratedClustering.populate(curation_key)
     assert len(ephys.CuratedClustering.Unit & curation_key
                & 'cluster_quality_label = "good"') == 68
 
     rel_path = testdata_paths['npx3B-p1-ks']
-    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
+    curation_key = _get_curation_key(rel_path, pipeline)
     ephys.CuratedClustering.populate(curation_key)
     assert len(ephys.CuratedClustering.Unit & curation_key
                & 'cluster_quality_label = "good"') == 55
@@ -102,7 +102,7 @@ def test_waveform_populate_npx3B_OpenEphys(curations, pipeline, testdata_paths):
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['oe_npx3B-ks']
-    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
+    curation_key = _get_curation_key(rel_path, pipeline)
     ephys.CuratedClustering.populate(curation_key)
     ephys.WaveformSet.populate(curation_key)
 
@@ -116,7 +116,7 @@ def test_waveform_populate_npx3B_SpikeGLX(curations, pipeline, testdata_paths):
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['npx3B-p1-ks']
-    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
+    curation_key = _get_curation_key(rel_path, pipeline)
     ephys.CuratedClustering.populate(curation_key)
     ephys.WaveformSet.populate(curation_key)
 
@@ -124,3 +124,19 @@ def test_waveform_populate_npx3B_SpikeGLX(curations, pipeline, testdata_paths):
         'peak_electrode_waveform'))
 
     assert waveforms.shape == (150, 64)
+
+
+# ---- HELPER FUNCTIONS ----
+
+def _get_curation_key(output_relative_path, pipeline):
+    ephys = pipeline['ephys']
+    ephys_mode = pipeline['ephys_mode']
+
+    if ephys_mode == 'no-curation':
+        EphysCuration = ephys.Clustering
+        output_dir_attr_name = 'clustering_output_dir'
+    else:
+        EphysCuration = ephys.Curation
+        output_dir_attr_name = 'curation_output_dir'
+
+    return (EphysCuration & f'{output_dir_attr_name} LIKE "%{output_relative_path}"').fetch1('KEY')
