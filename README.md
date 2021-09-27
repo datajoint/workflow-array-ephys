@@ -109,7 +109,8 @@ create a new file `dj_local_conf.json` with the following template:
   "display.show_tuple_count": true,
   "custom": {
       "database.prefix": "<neuro_>",
-      "ephys_root_data_dir": "<C:/data/ephys_root_data_dir>"
+      "ephys_root_data_dir": ["Full path to root directory of raw data",
+                              "Full path to root directory of processed data"]
     }
 }
 ```
@@ -201,7 +202,7 @@ populating the pipeline with your data amounts to these 3 steps:
 
 + Rerun step 2 and 3 every time new sessions or clustering data become available.
 
-+ In fact, step 2 and 3 can be executed as scheduled jobs that will automatically process any data newly placed into the `imaging_root_data_dir`.
++ In fact, step 2 and 3 can be executed as scheduled jobs that will automatically process any data newly placed into the `ephys_root_data_dir`.
 
 ## Interacting with the DataJoint pipeline and exploring data
 
