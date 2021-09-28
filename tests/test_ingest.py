@@ -71,7 +71,7 @@ def test_find_root_directory(pipeline, sessions_csv):
 
     root_dir = find_root_directory(ephys_root_data_dir, session_full_path)
 
-    assert root_dir == get_ephys_root_data_dir()
+    assert root_dir.as_posix() == get_ephys_root_data_dir()
 
 
 def test_paramset_insert(kilosort_paramset, pipeline):
