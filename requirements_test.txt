@@ -1,3 +1,4 @@
 pytest
 pytest-cov
 djarchive-client @ git+https://github.com/datajoint/djarchive-client.git
+element-data-loader @ git+https://github.com/datajoint/element-data-loader.git
