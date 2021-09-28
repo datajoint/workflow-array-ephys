@@ -65,8 +65,8 @@ def test_find_root_directory(pipeline, sessions_csv):
     # test: providing full-path: correctly search for the root_dir
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
-    session_full_path = pathlib.Path(sess.session_dir)
-
+    session_full_path = pathlib.Path(get_ephys_root_data_dir) / sess.session_dir
+    print('Find root directory',ephys_root_data_dir,session_full_path)
     root_dir = find_root_directory(ephys_root_data_dir, session_full_path)
 
     assert root_dir.as_posix() == get_ephys_root_data_dir()
