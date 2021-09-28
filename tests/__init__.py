@@ -20,7 +20,7 @@ sessions_dirs = ['subject1/session1',
                  'subject2/session1',
                  'subject2/session2',
                  'subject3/session1',
-                 'subject4/session1/experiment1',
+                 'subject4/session1',
                  'subject5/session1',
                  'subject6/session1']
 
