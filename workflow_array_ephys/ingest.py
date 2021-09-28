@@ -6,7 +6,7 @@ from workflow_array_ephys.pipeline import subject, ephys, probe, session
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 from element_array_ephys.readers import spikeglx, openephys
-
+import element_data_loader.utils
 
 def ingest_subjects(subject_csv_path='./user_data/subjects.csv'):
     # -------------- Insert new "Subject" --------------
@@ -28,7 +28,9 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
     session_list, session_dir_list, probe_list, probe_insertion_list = [], [], [], []
 
     for sess in input_sessions:
-        session_dir = pathlib.Path(sess['session_dir'])
+        session_dir = element_data_loader.utils.find_full_path(
+                                                    get_ephys_root_data_dir(), 
+                                                    sess['session_dir'])
         session_datetimes, insertions = [], []
 
         # search session dir and determine acquisition software
