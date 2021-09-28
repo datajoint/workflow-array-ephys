@@ -44,11 +44,9 @@ def test_find_valid_full_path(pipeline, sessions_csv):
     # test: providing relative-path: correctly search for the full-path
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
-    session_full_path = pathlib.Path(sess.session_dir)
+    session_full_path = pathlib.Path(get_ephys_root_data_dir) / sess.session_dir
 
-    rel_path = pathlib.Path(session_full_path).relative_to(
-        pathlib.Path(get_ephys_root_data_dir()))
-    full_path = find_full_path(ephys_root_data_dir, rel_path)
+    full_path = find_full_path(ephys_root_data_dir, sess.session_dir)
 
     assert full_path == session_full_path
 
