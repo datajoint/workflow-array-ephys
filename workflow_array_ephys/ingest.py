@@ -29,7 +29,6 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
 
     for sess in input_sessions:
         sess_dir = pathlib.Path(sess['session_dir'])
-        print(sess_dir)
         session_datetimes, insertions = [], []
 
         # search session dir and determine acquisition software
