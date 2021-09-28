@@ -153,9 +153,9 @@ def testdata_paths():
     return {
         'npx3A-p1-ks': 'subject5/session1/probe_1/ks2.1_01',
         'npx3A-p2-ks': 'subject5/session1/probe_2/ks2.1_01',
-        'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks',
+        'oe_npx3B-ks': 'subject4/session1/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks',
         'sglx_npx3A-p1': 'subject5/session1/probe_1',
-        'oe_npx3B': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0',
+        'oe_npx3B': 'subject4/session1/experiment1/recording1/continuous/Neuropix-PXI-100.0',
         'sglx_npx3B-p1': 'subject6/session1/towersTask_g0_imec0',
         'npx3B-p1-ks': 'subject6/session1/towersTask_g0_imec0'
     }
