@@ -229,7 +229,8 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
         kilosort_dir = next(recording_dir.rglob('spike_times.npy')).parent
         ephys.ClusteringTask.insert1({**ephys_rec_key,
                                       'paramset_idx': 0,
-                                      'clustering_output_dir': kilosort_dir.as_posix()})
+                                      'clustering_output_dir': kilosort_dir.as_posix()},
+                                      skip_duplicates=True)
 
     yield
 
