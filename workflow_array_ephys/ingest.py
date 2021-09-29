@@ -41,7 +41,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
                 break
         else:
             raise FileNotFoundError(f'Ephys recording data not found! Neither SpikeGLX nor OpenEphys recording files found in: {session_dir}')
-        print(acq_software, session_dir)
+
         if acq_software == 'SpikeGLX':
             for meta_filepath in ephys_meta_filepaths:
                 spikeglx_meta = spikeglx.SpikeGLXMeta(meta_filepath)
