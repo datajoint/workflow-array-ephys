@@ -25,9 +25,9 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
 
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
-    sess_dir = pathlib.Path(sess.session_dir).relative_to(get_ephys_root_data_dir())
+
     assert (session.SessionDirectory
-            & {'subject': sess.name}).fetch1('session_dir') == sess_dir.as_posix()
+            & {'subject': sess.name}).fetch1('session_dir') == sess.session_dir
 
 
 def test_find_valid_full_path(pipeline, sessions_csv):
