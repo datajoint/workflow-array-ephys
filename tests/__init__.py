@@ -13,7 +13,7 @@ from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 # ------------------- SOME CONSTANTS -------------------
 
-_tear_down = False
+_tear_down = True
 
 test_user_data_dir = pathlib.Path('./tests/user_data')
 test_user_data_dir.mkdir(exist_ok=True)
