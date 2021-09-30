@@ -11,7 +11,7 @@ from element_array_ephys.readers import spikeglx, openephys
 
 def ingest_subjects(subject_csv_path='./user_data/subjects.csv'):
     # -------------- Insert new "Subject" --------------
-    with open(subject_csv_path, newline= '') as f:
+    with open(subject_csv_path, newline='') as f:
         input_subjects = list(csv.DictReader(f, delimiter=','))
 
     print(f'\n---- Insert {len(input_subjects)} entry(s) into subject.Subject ----')
@@ -33,7 +33,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
         session_datetimes, insertions = [], []
 
         # search session dir and determine acquisition software
-        for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'], ['SpikeGLX', 'OpenEphys']):
+        for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'], ['SpikeGLX', 'Open Ephys']):
             ephys_meta_filepaths = [fp for fp in sess_dir.rglob(ephys_pattern)]
             if len(ephys_meta_filepaths):
                 acq_software = ephys_acq_type
@@ -55,7 +55,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
 
                 insertions.append({'probe': spikeglx_meta.probe_SN, 'insertion_number': int(probe_number)})
                 session_datetimes.append(spikeglx_meta.recording_time)
-        elif acq_software == 'OpenEphys':
+        elif acq_software == 'Open Ephys':
             loaded_oe = openephys.OpenEphys(sess_dir)
             session_datetimes.append(loaded_oe.experiment.datetime)
             for probe_idx, oe_probe in enumerate(loaded_oe.probes.values()):

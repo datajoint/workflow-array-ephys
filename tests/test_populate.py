@@ -133,7 +133,7 @@ def _get_curation_key(output_relative_path, pipeline):
     ephys_mode = pipeline['ephys_mode']
 
     if ephys_mode == 'no-curation':
-        EphysCuration = ephys.Clustering
+        EphysCuration = ephys.ClusteringTask
         output_dir_attr_name = 'clustering_output_dir'
     else:
         EphysCuration = ephys.Curation

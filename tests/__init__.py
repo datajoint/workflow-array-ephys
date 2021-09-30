@@ -36,6 +36,8 @@ def dj_config():
     dj.config['safemode'] = False
 
     dj.config['custom'] = {
+        'ephys_mode': (os.environ.get('EPHYS_MODE')
+                       or dj.config['custom']['ephys_mode']),
         'database.prefix': (os.environ.get('DATABASE_PREFIX')
                             or dj.config['custom']['database.prefix']),
         'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR')
@@ -261,7 +263,7 @@ def curations(clustering, pipeline):
     ephys_mode = pipeline['ephys_mode']
 
     if ephys_mode == 'no-curation':
-        return
+        yield
     else:
         ephys = pipeline['ephys']
 
