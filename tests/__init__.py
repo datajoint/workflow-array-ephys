@@ -13,7 +13,7 @@ from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 # ------------------- SOME CONSTANTS -------------------
 
-_tear_down = False
+_tear_down = True
 
 test_user_data_dir = pathlib.Path('./tests/user_data')
 test_user_data_dir.mkdir(exist_ok=True)
@@ -135,8 +135,7 @@ def sessions_csv(test_data):
     input_sessions.subject = ['subject1', 'subject2', 'subject2',
                               'subject3', 'subject4', 'subject5',
                               'subject6']
-    input_sessions.session_dir = [(root_dir / sess_dir).as_posix()
-                                  for sess_dir in sessions_dirs]
+    input_sessions.session_dir = sessions_dirs
     input_sessions = input_sessions.set_index('subject')
 
     sessions_csv_path = pathlib.Path('./tests/user_data/sessions.csv')

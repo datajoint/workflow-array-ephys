@@ -25,13 +25,13 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
 
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
-    sess_dir = pathlib.Path(sess.session_dir).relative_to(get_ephys_root_data_dir())
+
     assert (session.SessionDirectory
-            & {'subject': sess.name}).fetch1('session_dir') == sess_dir.as_posix()
+            & {'subject': sess.name}).fetch1('session_dir') == sess.session_dir
 
 
 def test_find_valid_full_path(pipeline, sessions_csv):
-    from element_array_ephys import find_full_path
+    from element_data_loader.utils import find_full_path
 
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
@@ -44,17 +44,15 @@ def test_find_valid_full_path(pipeline, sessions_csv):
     # test: providing relative-path: correctly search for the full-path
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
-    session_full_path = pathlib.Path(sess.session_dir)
+    session_full_path = pathlib.Path(get_ephys_root_data_dir()) / sess.session_dir
 
-    rel_path = pathlib.Path(session_full_path).relative_to(
-        pathlib.Path(get_ephys_root_data_dir()))
-    full_path = find_full_path(ephys_root_data_dir, rel_path)
+    full_path = find_full_path(ephys_root_data_dir, sess.session_dir)
 
     assert full_path == session_full_path
 
 
 def test_find_root_directory(pipeline, sessions_csv):
-    from element_array_ephys import find_root_directory
+    from element_data_loader.utils import find_root_directory
 
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
@@ -67,16 +65,15 @@ def test_find_root_directory(pipeline, sessions_csv):
     # test: providing full-path: correctly search for the root_dir
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
-    session_full_path = pathlib.Path(sess.session_dir)
-
+    session_full_path = pathlib.Path(get_ephys_root_data_dir()) / sess.session_dir
     root_dir = find_root_directory(ephys_root_data_dir, session_full_path)
 
-    assert root_dir == get_ephys_root_data_dir()
+    assert root_dir.as_posix() == get_ephys_root_data_dir()
 
 
 def test_paramset_insert(kilosort_paramset, pipeline):
     ephys = pipeline['ephys']
-    from element_array_ephys.ephys import dict_to_uuid
+    from element_data_loader.utils import dict_to_uuid
 
     method, desc, paramset_hash = (ephys.ClusteringParamSet & {'paramset_idx': 0}).fetch1(
         'clustering_method', 'paramset_desc', 'param_set_hash')
