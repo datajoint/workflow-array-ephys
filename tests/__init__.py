@@ -13,6 +13,8 @@ from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 # ------------------- SOME CONSTANTS -------------------
 
+_tear_down = True
+
 test_user_data_dir = pathlib.Path('./tests/user_data')
 test_user_data_dir.mkdir(exist_ok=True)
 
@@ -84,7 +86,8 @@ def pipeline():
            'session': pipeline.session,
            'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
 
-    pipeline.subject.Subject.delete()
+    if _tear_down:
+        pipeline.subject.Subject.delete()
 
 
 @pytest.fixture
@@ -129,8 +132,7 @@ def sessions_csv(test_data):
     input_sessions.subject = ['subject1', 'subject2', 'subject2',
                               'subject3', 'subject4', 'subject5',
                               'subject6']
-    input_sessions.session_dir = [(root_dir / sess_dir).as_posix()
-                                  for sess_dir in sessions_dirs]
+    input_sessions.session_dir = sessions_dirs
     input_sessions = input_sessions.set_index('subject')
 
     sessions_csv_path = pathlib.Path('./tests/user_data/sessions.csv')
@@ -197,7 +199,8 @@ def kilosort_paramset(pipeline):
 
     yield params_ks
 
-    (ephys.ClusteringParamSet & 'paramset_idx = 0').delete()
+    if _tear_down:
+        (ephys.ClusteringParamSet & 'paramset_idx = 0').delete()
 
 
 @pytest.fixture
@@ -208,7 +211,8 @@ def ephys_recordings(pipeline, ingest_sessions):
 
     yield
 
-    ephys.EphysRecording.delete()
+    if _tear_down:
+        ephys.EphysRecording.delete()
 
 
 @pytest.fixture
@@ -225,11 +229,13 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
         kilosort_dir = next(recording_dir.rglob('spike_times.npy')).parent
         ephys.ClusteringTask.insert1({**ephys_rec_key,
                                       'paramset_idx': 0,
-                                      'clustering_output_dir': kilosort_dir.as_posix()})
+                                      'clustering_output_dir': kilosort_dir.as_posix()},
+                                      skip_duplicates=True)
 
     yield
 
-    ephys.ClusteringTask.delete()
+    if _tear_down:
+        ephys.ClusteringTask.delete()
 
 
 @pytest.fixture
@@ -240,7 +246,8 @@ def clustering(clustering_tasks, pipeline):
 
     yield
 
-    ephys.Clustering.delete()
+    if _tear_down:
+        ephys.Clustering.delete()
 
 
 @pytest.fixture
@@ -252,4 +259,5 @@ def curations(clustering, pipeline):
 
     yield
 
-    ephys.Curation.delete()
+    if _tear_down:
+        ephys.Curation.delete()
