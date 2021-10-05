@@ -1,5 +1,4 @@
 import datajoint as dj
-import pathlib
 
 
 def get_ephys_root_data_dir():
