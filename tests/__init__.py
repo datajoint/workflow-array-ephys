@@ -1,14 +1,17 @@
-# run tests: pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings
+# dependencies: pip install pytest pytest-cov
+# run all tests: pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings tests/
+# run one test, debug: pytest [above options] --pdb tests/tests_name.py -k function_name
 
 import os
 import pytest
 import pandas as pd
 import pathlib
-import datajoint as dj
 import numpy as np
+import datajoint as dj
 
 import workflow_array_ephys
 from workflow_array_ephys.paths import get_ephys_root_data_dir
+import element_data_loader.utils
 
 
 # ------------------- SOME CONSTANTS -------------------
@@ -31,10 +34,10 @@ sessions_dirs = ['subject1/session1',
 
 @pytest.fixture(autouse=True)
 def dj_config():
+    """ If dj_local_config exists, load"""
     if pathlib.Path('./dj_local_conf.json').exists():
         dj.config.load('./dj_local_conf.json')
     dj.config['safemode'] = False
-
     dj.config['custom'] = {
         'database.prefix': (os.environ.get('DATABASE_PREFIX')
                             or dj.config['custom']['database.prefix']),
@@ -46,12 +49,18 @@ def dj_config():
 
 @pytest.fixture(autouse=True)
 def test_data(dj_config):
-    test_data_dir = pathlib.Path(dj.config['custom']['ephys_root_data_dir'])
-
-    test_data_exists = np.all([(test_data_dir / p).exists() for p in sessions_dirs])
+    """If data not exist, attempt download with DJArchive
+    * If no or partial data present, download to first listed root"""
+    test_data_dirs = []; test_data_exists = True
+    for p in sessions_dirs:                                 # For each session
+        try:                                                # Verify existes
+            test_data_dirs.append(element_data_loader.utils.find_full_path(
+                get_ephys_root_data_dir(),p))
+        except:                                             # If not exist
+            test_data_exists = False                        # Flag to false
 
     if not test_data_exists:
-        try:
+        try:                                                # attempt to djArchive dowload
             dj.config['custom'].update({
                 'djarchive.client.endpoint': os.environ['DJARCHIVE_CLIENT_ENDPOINT'],
                 'djarchive.client.bucket': os.environ['DJARCHIVE_CLIENT_BUCKET'],
@@ -60,7 +69,7 @@ def test_data(dj_config):
             })
         except KeyError as e:
             raise FileNotFoundError(
-                f'Test data not available at {test_data_dir}.'
+                f' Full test data not available.'
                 f'\nAttempting to download from DJArchive,'
                 f' but no credentials found in environment variables.'
                 f'\nError: {str(e)}')
@@ -69,7 +78,10 @@ def test_data(dj_config):
         client = djarchive_client.client()
         workflow_version = workflow_array_ephys.version.__version__
 
-        client.download('workflow-array-ephys-test-set',
+        test_data_dir = get_ephys_root_data_dir()   # if multiple root dirs, pick first
+        if isinstance(test_data_dir, list): test_data_dir=test_data_dir[0]
+
+        client.download('workflow-array-ephys-test-set', # Download to first instance
                         workflow_version.replace('.', '_'),
                         str(test_data_dir), create_target=False)
     return
@@ -126,8 +138,6 @@ def ingest_subjects(pipeline, subjects_csv):
 @pytest.fixture
 def sessions_csv(test_data):
     """ Create a 'sessions.csv' file"""
-    root_dir = pathlib.Path(get_ephys_root_data_dir())
-
     input_sessions = pd.DataFrame(columns=['subject', 'session_dir'])
     input_sessions.subject = ['subject1', 'subject2', 'subject2',
                               'subject3', 'subject4', 'subject5',
@@ -153,6 +163,7 @@ def ingest_sessions(ingest_subjects, sessions_csv):
 
 @pytest.fixture
 def testdata_paths():
+    """ Paths for testdata 'subjX/sessY/probeZ/etc'"""
     return {
         'npx3A-p1-ks': 'subject5/session1/probe_1/ks2.1_01',
         'npx3A-p2-ks': 'subject5/session1/probe_2/ks2.1_01',
@@ -166,6 +177,7 @@ def testdata_paths():
 
 @pytest.fixture
 def kilosort_paramset(pipeline):
+    """Insert kilosort params into ephys.ClusteringParamset"""
     ephys = pipeline['ephys']
 
     params_ks = {
@@ -205,6 +217,7 @@ def kilosort_paramset(pipeline):
 
 @pytest.fixture
 def ephys_recordings(pipeline, ingest_sessions):
+    """Populate ephys.EphysRecording"""
     ephys = pipeline['ephys']
 
     ephys.EphysRecording.populate()
@@ -217,14 +230,13 @@ def ephys_recordings(pipeline, ingest_sessions):
 
 @pytest.fixture
 def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
+    """Insert keys from ephys.EphysRecording into ephys.Clustering"""
     ephys = pipeline['ephys']
 
-    get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
-    root_dir = pathlib.Path(get_ephys_root_data_dir())
-
     for ephys_rec_key in (ephys.EphysRecording - ephys.ClusteringTask).fetch('KEY'):
-        ephys_file = root_dir / (ephys.EphysRecording.EphysFile
-                                 & ephys_rec_key).fetch('file_path')[0]
+        ephys_file_path = pathlib.Path(((ephys.EphysRecording.EphysFile & ephys_rec_key).fetch('file_path'))[0])
+        ephys_file = element_data_loader.utils.find_full_path(
+                        get_ephys_root_data_dir(), ephys_file_path)
         recording_dir = ephys_file.parent
         kilosort_dir = next(recording_dir.rglob('spike_times.npy')).parent
         ephys.ClusteringTask.insert1({**ephys_rec_key,
@@ -240,6 +252,7 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
 
 @pytest.fixture
 def clustering(clustering_tasks, pipeline):
+    """Populate ehys.Clustering"""
     ephys = pipeline['ephys']
 
     ephys.Clustering.populate()
@@ -252,6 +265,7 @@ def clustering(clustering_tasks, pipeline):
 
 @pytest.fixture
 def curations(clustering, pipeline):
+    """Insert keys from ephys.ClusteringTask into ephys.Curation"""
     ephys = pipeline['ephys']
 
     for key in (ephys.ClusteringTask - ephys.Curation).fetch('KEY'):

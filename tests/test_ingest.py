@@ -9,6 +9,7 @@ from . import (dj_config, pipeline, test_data,
 
 
 def test_ingest_subjects(pipeline, ingest_subjects):
+    """Check length of subject.Subject"""
     subject = pipeline['subject']
     assert len(subject.Subject()) == 6
 
@@ -29,6 +30,12 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
     assert (session.SessionDirectory
             & {'subject': sess.name}).fetch1('session_dir') == sess.session_dir
 
+''' Delete these?
+CB: I think these tests are depreciated with the update to permit multiple root directories
+    Previously, they tested against known bad roots to make sure root/session matched
+    Now, we have to run find_full_path every on mult roots regardless.
+    To update would result in tautology:
+    > assert find_full_path == find_full_path
 
 def test_find_valid_full_path(pipeline, sessions_csv):
     from element_data_loader.utils import find_full_path
@@ -69,7 +76,7 @@ def test_find_root_directory(pipeline, sessions_csv):
     root_dir = find_root_directory(ephys_root_data_dir, session_full_path)
 
     assert root_dir.as_posix() == get_ephys_root_data_dir()
-
+'''
 
 def test_paramset_insert(kilosort_paramset, pipeline):
     ephys = pipeline['ephys']

@@ -13,6 +13,8 @@ def test_ephys_recording_populate(pipeline, ephys_recordings):
 
 
 def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings):
+    """Populate ephys.LFP with OpenEphys items"""
+
     ephys = pipeline['ephys']
     rel_path = testdata_paths['oe_npx3B']
     rec_key = (ephys.EphysRecording & (ephys.EphysRecording.EphysFile
@@ -32,6 +34,7 @@ def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings
 
 
 def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline, ephys_recordings):
+    """Populate ephys.LFP with SpikeGLX items, recording npx3A"""
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['sglx_npx3A-p1']
@@ -52,6 +55,8 @@ def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline, ephys_recordings)
 
 
 def test_LFP_populate_npx3B_SpikeGLX(testdata_paths, pipeline, ephys_recordings):
+    """Populate ephys.LFP with SpikeGLX items, recording npx3B"""
+
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['sglx_npx3B-p1']
@@ -77,6 +82,7 @@ def test_clustering_populate(clustering, pipeline):
 
 
 def test_curated_clustering_populate(curations, pipeline, testdata_paths):
+    """Populate ephys.CuratedClustering with multiple recordings"""
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['npx3A-p1-ks']
@@ -99,8 +105,8 @@ def test_curated_clustering_populate(curations, pipeline, testdata_paths):
 
 
 def test_waveform_populate_npx3B_OpenEphys(curations, pipeline, testdata_paths):
+    """Populate ephys.WaveformSet with OpenEphys npx3B"""
     ephys = pipeline['ephys']
-
     rel_path = testdata_paths['oe_npx3B-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
     ephys.CuratedClustering.populate(curation_key)
@@ -113,6 +119,8 @@ def test_waveform_populate_npx3B_OpenEphys(curations, pipeline, testdata_paths):
 
 
 def test_waveform_populate_npx3B_SpikeGLX(curations, pipeline, testdata_paths):
+    """Populate ephys.WaveformSet with SpikeGLX npx3B"""
+
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['npx3B-p1-ks']
