@@ -21,6 +21,7 @@ def ingest_subjects(subject_csv_path='./user_data/subjects.csv'):
 
     print('\n---- Successfully completed ingest_subjects ----')
 
+<<<<<<< HEAD
 
 def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
     """
@@ -32,8 +33,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
         input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
-    session_list, session_dir_list = [], []
-    probe_list, probe_insertion_list = [], []
+    session_list, sess_dir_list, probe_list, probe_insertion_list = [], [], [], []
 
     for sess in input_sessions:
         session_dir = find_full_path(get_ephys_root_data_dir(),
@@ -43,15 +43,14 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
         # search session dir and determine acquisition software
         for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'],
                                                  ['SpikeGLX', 'OpenEphys']):
-            ephys_meta_filepaths = [fp for fp in
-                                    session_dir.rglob(ephys_pattern)]
+            ephys_meta_filepaths = [fp for fp in session_dir.rglob(ephys_pattern)]
             if len(ephys_meta_filepaths):
                 acq_software = ephys_acq_type
                 break
         else:
-            raise FileNotFoundError('Ephys recording data not found! Neither '
-                                    + 'SpikeGLX nor OpenEphys recording files '
-                                    + f'found in: {session_dir}')
+            raise FileNotFoundError('Ephys recording data not found! Neither SpikeGLX '
+                                    + 'nor OpenEphys recording files found in: '
+                                    + f'{session_dir}')
 
         if acq_software == 'SpikeGLX':
             for meta_filepath in ephys_meta_filepaths:
@@ -72,7 +71,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
                                    'insertion_number': int(probe_number)})
                 session_datetimes.append(spikeglx_meta.recording_time)
         elif acq_software == 'OpenEphys':
-            loaded_oe = openephys.OpenEphys(session_dir)
+            loaded_oe = openephys.OpenEphys(sess_dir)
             session_datetimes.append(loaded_oe.experiment.datetime)
             for probe_idx, oe_probe in enumerate(loaded_oe.probes.values()):
                 probe_key = {'probe_type': oe_probe.probe_model,
@@ -91,11 +90,9 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
                        'session_datetime': min(session_datetimes)}
         if session_key not in session.Session():
             session_list.append(session_key)
-            root_dir = find_root_directory(get_ephys_root_data_dir(),
-                                           session_dir)
+            root_dir = find_root_directory(get_ephys_root_data_dir(), session_dir)
             session_dir_list.append({**session_key, 'session_dir':
-                                     session_dir.relative_to(root_dir
-                                                             ).as_posix()})
+                                     session_dir.relative_to(root_dir).as_posix()})
             probe_insertion_list.extend([{**session_key, **insertion
                                           } for insertion in insertions])
 
@@ -104,8 +101,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
     session.Session.insert(session_list)
     session.SessionDirectory.insert(session_dir_list)
 
-    print(f'\n---- Insert {len(set(probe_list))} entry(s) into '
-          + 'probe.Probe ----')
+    print(f'\n---- Insert {len(set(probe_list))} entry(s) into probe.Probe ----')
     probe.Probe.insert(probe_list)
 
     print(f'\n---- Insert {len(set(probe_insertion_list))} entry(s) into '

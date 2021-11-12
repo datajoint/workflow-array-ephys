@@ -12,13 +12,11 @@ def test_ephys_recording_populate(pipeline, ephys_recordings):
     assert len(ephys.EphysRecording()) == 13
 
 
-def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline,
-                                      ephys_recordings):
+def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings):
     """
     Populate ephys.LFP with OpenEphys items,
     recording Neuropixels Phase 3B (Neuropixels 1.0) probe
     """
-
     ephys = pipeline['ephys']
     rel_path = testdata_paths['oe_npx3B']
     rec_key = (ephys.EphysRecording & (ephys.EphysRecording.EphysFile
@@ -64,8 +62,7 @@ def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline,
                   329, 338, 347, 356, 365, 374, 383]))
 
 
-def test_LFP_populate_npx3B_SpikeGLX(testdata_paths, pipeline,
-                                     ephys_recordings):
+def test_LFP_populate_npx3B_SpikeGLX(testdata_paths, pipeline, ephys_recordings):
     """
     Populate ephys.LFP with SpikeGLX items,
     recording Neuropixels Phase 3B (Neuropixels 1.0) probe
@@ -122,8 +119,8 @@ def test_curated_clustering_populate(curations, pipeline, testdata_paths):
                & 'cluster_quality_label = "good"') == 55
 
 
-def test_waveform_populate_npx3B_OpenEphys(curations, pipeline,
-                                           testdata_paths):
+<<<<<<< HEAD
+def test_waveform_populate_npx3B_OpenEphys(curations, pipeline, testdata_paths):
     """
     Populate ephys.WaveformSet with OpenEphys
     Neuropixels Phase 3B (Neuropixels 1.0) probe

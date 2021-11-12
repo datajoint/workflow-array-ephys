@@ -49,7 +49,7 @@ def dj_config():
 
 @pytest.fixture(autouse=True)
 def test_data(dj_config):
-    """If data does not exist or partial data is present, 
+    """If data does not exist or partial data is present,
     attempt download with DJArchive to the first listed root directory"""
     test_data_dirs = []
     test_data_exists = True
@@ -243,10 +243,8 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
     """Insert keys from ephys.EphysRecording into ephys.Clustering"""
     ephys = pipeline['ephys']
 
-    for ephys_rec_key in (ephys.EphysRecording - ephys.ClusteringTask
-                          ).fetch('KEY'):
-        ephys_file_path = pathlib.Path(((ephys.EphysRecording.EphysFile
-                                         & ephys_rec_key
+    for ephys_rec_key in (ephys.EphysRecording - ephys.ClusteringTask).fetch('KEY'):
+        ephys_file_path = pathlib.Path(((ephys.EphysRecording.EphysFile & ephys_rec_key
                                          ).fetch('file_path'))[0])
         ephys_file = find_full_path(get_ephys_root_data_dir(), ephys_file_path)
         recording_dir = ephys_file.parent
