@@ -5,7 +5,7 @@ def run(display_progress=True):
 
     populate_settings = {'display_progress': display_progress,
                          'reserve_jobs': False,
-                         'suppress_errors': False}
+                         'suppress_errors': True}
 
     print('\n---- Populate ephys.EphysRecording ----')
     ephys.EphysRecording.populate(**populate_settings)
