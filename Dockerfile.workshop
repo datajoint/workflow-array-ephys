@@ -12,7 +12,7 @@ RUN apt update -y
 RUN apt install python3-pip -y
 ## Install gitpuller for the potential need when exec lifecycle.hooks postStart
 RUN pip install nbgitpuller
-## Install datajoin dependencies
+## Install datajoint dependencies
 RUN apt install graphviz -y
 RUN pip install datajoint matplotlib pydotplus 
 ## Put executables in /usr/local/bin/before-notebook.d
