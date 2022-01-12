@@ -1,3 +1,4 @@
 pytest
 pytest-cov
+element-interface @ git+https://github.com/datajoint/element-interface.git
 djarchive-client @ git+https://github.com/datajoint/djarchive-client.git

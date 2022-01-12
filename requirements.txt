@@ -1,7 +1,7 @@
 datajoint>=0.13.0
 element-array-ephys 
 element-lab 
-element-animal 
+element-subject
 element-session
 element-interface @ git+https://github.com/datajoint/element-interface.git
 ipykernel
