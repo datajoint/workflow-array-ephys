@@ -31,7 +31,7 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
 
 
 def test_find_valid_full_path(pipeline, sessions_csv):
-    from element_data_loader.utils import find_full_path
+    from element_interface.utils import find_full_path
 
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
@@ -52,7 +52,7 @@ def test_find_valid_full_path(pipeline, sessions_csv):
 
 
 def test_find_root_directory(pipeline, sessions_csv):
-    from element_data_loader.utils import find_root_directory
+    from element_interface.utils import find_root_directory
 
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
@@ -73,7 +73,7 @@ def test_find_root_directory(pipeline, sessions_csv):
 
 def test_paramset_insert(kilosort_paramset, pipeline):
     ephys = pipeline['ephys']
-    from element_data_loader.utils import dict_to_uuid
+    from element_interface.utils import dict_to_uuid
 
     method, desc, paramset_hash = (ephys.ClusteringParamSet & {'paramset_idx': 0}).fetch1(
         'clustering_method', 'paramset_desc', 'param_set_hash')

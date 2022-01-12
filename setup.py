@@ -9,7 +9,7 @@ long_description = """"
 
 Build a full ephys pipeline using the DataJoint elements
 + [element-lab](https://github.com/datajoint/element-lab)
-+ [element-animal](https://github.com/datajoint/element-animal)
++ [element-subject](https://github.com/datajoint/element-subject)
 + [element-session](https://github.com/datajoint/element-session)
 + [element-array-ephys](https://github.com/datajoint/element-array-ephys)
 """
