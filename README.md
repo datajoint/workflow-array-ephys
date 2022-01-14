@@ -1,8 +1,8 @@
 # DataJoint Workflow - Array Electrophysiology
 
-Workflow for extracellular array electrophysiology data acquired with a 
-Neuropixels probe using the `SpikeGLX` or `OpenEphys` software and processed 
-with MATLAB- or python-based `Kilosort`.
+Workflow for extracellular array electrophysiology data acquired with a polytrode probe (e.g. 
+Neuropixels, Neuralynx) using the `SpikeGLX` or `OpenEphys` acquisition software and processed 
+with MATLAB- or python-based `Kilosort` spike sorting software.
 
 A complete electrophysiology workflow can be built using the DataJoint Elements.
 + [element-lab](https://github.com/datajoint/element-lab)
