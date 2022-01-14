@@ -6,7 +6,7 @@ with MATLAB- or python-based `Kilosort`.
 
 A complete electrophysiology workflow can be built using the DataJoint Elements.
 + [element-lab](https://github.com/datajoint/element-lab)
-+ [element-subject](https://github.com/datajoint/element-subject)
++ [element-animal](https://github.com/datajoint/element-animal)
 + [element-session](https://github.com/datajoint/element-session)
 + [element-array-ephys](https://github.com/datajoint/element-array-ephys)
 
@@ -21,7 +21,7 @@ convention, and directory lookup methods (see
 ## Workflow architecture
 
 The electrophysiology workflow presented here uses components from 4 DataJoint 
-Elements (`element-lab`, `element-subject`, `element-session`, 
+Elements (`element-lab`, `element-animal`, `element-session`, 
 `element-array-ephys`) assembled together to form a fully functional workflow.
 
 ### element-lab
@@ -29,10 +29,10 @@ Elements (`element-lab`, `element-subject`, `element-session`,
 ![element-lab](
 https://github.com/datajoint/element-lab/raw/main/images/element_lab_diagram.svg)
 
-### element-subject
+### element-animal
 
-![element-subject](
-https://github.com/datajoint/element-subject/blob/main/images/subject_diagram.svg)
+![element-animal](
+https://github.com/datajoint/element-animal/blob/main/images/subject_diagram.svg)
 
 ### assembled with element-array-ephys
 

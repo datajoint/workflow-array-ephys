@@ -1,10 +1,10 @@
 import datajoint as dj
-from element_subject import subject
+from element_animal import subject
 from element_lab import lab
 from element_session import session
 from element_array_ephys import probe, ephys
 
-from element_subject.subject import Subject
+from element_animal.subject import Subject
 from element_lab.lab import Source, Lab, Protocol, User, Project
 from element_session.session import Session
 
