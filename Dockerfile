@@ -1,10 +1,11 @@
-FROM datajoint/djlab:py3.7-debian
+FROM datajoint/djlab:py3.8-debian
 
-RUN mkdir /main/workflow-array-ephys
+USER root
+RUN apt-get update -y
+RUN apt-get install git -y
 
+USER anaconda
 WORKDIR /main/workflow-array-ephys
-
-RUN git clone https://github.com/ttngu207/workflow-array-ephys.git .
-
+RUN git clone https://github.com/datajoint/workflow-array-ephys.git .
 RUN pip install .
 RUN pip install -r requirements_test.txt
