@@ -1,7 +1,10 @@
-FROM datajoint/djlab:py3.7-debian
+FROM datajoint/djlab:py3.8-debian
 
-RUN mkdir /main/workflow-array-ephys
+USER root
+RUN apt-get update -y
+RUN apt-get install git -y
 
+USER anaconda
 WORKDIR /main/workflow-array-ephys
 
 USER root
