@@ -3,12 +3,12 @@ x-net: &net
   networks:
       - main
 services:
-  db:
+  database:
     <<: *net
     image: datajoint/mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=simple
-  workflow_array_ephys:
+  workflow:
     <<: *net
     build:
       context: .
@@ -30,7 +30,7 @@ services:
       - ${TEST_DATA_DIR}:/main/test_data
       - ./apt_requirements.txt:/tmp/apt_requirements.txt
     depends_on:
-      db:
+      database:
         condition: service_healthy
 networks:
   main:
