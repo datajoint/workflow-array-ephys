@@ -20,7 +20,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # Install git
 RUN apt-get install git -y
 
-RUN git clone https://github.com/CBroz1/workflow-array-ephys.git .
+RUN git clone https://github.com/datajoint/workflow-array-ephys.git .
 
 RUN pip install .
 RUN pip install -r requirements_test.txt
