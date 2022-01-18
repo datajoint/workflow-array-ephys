@@ -3,7 +3,7 @@ x-net: &net
   networks:
       - main
 services:
-  database:
+  db:
     <<: *net
     image: datajoint/mysql:5.7
     environment:
@@ -31,7 +31,7 @@ services:
       - ${TEST_DATA_DIR}:/main/test_data
       - ./apt_requirements.txt:/tmp/apt_requirements.txt
     depends_on:
-      database:
+      db:
         condition: service_healthy
 networks:
   main:
