@@ -8,11 +8,12 @@ services:
     image: datajoint/mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=simple
-  workflow_array_ephys:
+  workflow:
     <<: *net
     build:
-      context: .
-    image: workflow_array_ephys:v0.0.0
+      context: ../
+      dockerfile: ./workflow-array-ephys/Dockerfile
+    image: workflow_array_ephys:0.1.0a3
     environment:
       - DJ_HOST=db
       - DJ_USER=root
