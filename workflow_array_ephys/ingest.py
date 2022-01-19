@@ -21,7 +21,6 @@ def ingest_subjects(subject_csv_path='./user_data/subjects.csv'):
 
     print('\n---- Successfully completed ingest_subjects ----')
 
-<<<<<<< HEAD
 
 def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
     """
@@ -33,7 +32,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
         input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
-    session_list, sess_dir_list, probe_list, probe_insertion_list = [], [], [], []
+    session_list, session_dir_list, probe_list, probe_insertion_list = [], [], [], []
 
     for sess in input_sessions:
         session_dir = find_full_path(get_ephys_root_data_dir(),
@@ -96,8 +95,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
             probe_insertion_list.extend([{**session_key, **insertion
                                           } for insertion in insertions])
 
-    print(f'\n---- Insert {len(set(session_list))} entry(s) into '
-          + 'session.Session ----')
+    print(f'\n---- Insert {len(set(session_list))} entry(s) into session.Session ----')
     session.Session.insert(session_list)
     session.SessionDirectory.insert(session_dir_list)
 

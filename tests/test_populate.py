@@ -30,18 +30,14 @@ def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings
     electrodes = (ephys.LFP.Electrode & rec_key).fetch('electrode')
     assert np.array_equal(
         electrodes,
-        np.array([5,  14,  23,  32,  41,  50,  59,  68,  77,  86,  95, 104,
-                  113, 122, 131, 140, 149, 158, 167, 176, 185, 194, 203, 212,
-                  221, 230, 239, 248, 257, 266, 275, 284, 293, 302, 311, 320,
-                  329, 338, 347, 356, 365, 374, 383]))
+        np.array([5,  14,  23,  32,  41,  50,  59,  68,  77,  86,  95, 104, 113,
+                  122, 131, 140, 149, 158, 167, 176, 185, 194, 203, 212, 221, 230,
+                  239, 248, 257, 266, 275, 284, 293, 302, 311, 320, 329, 338, 347,
+                  356, 365, 374, 383]))
 
 
-def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline,
-                                     ephys_recordings):
-    """
-    Populate ephys.LFP with SpikeGLX items,
-    recording Neuropixels Phase 3A probe
-    """
+def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline, ephys_recordings):
+    """Populate ephys.LFP with SpikeGLX items, recording Neuropixels Phase 3A probe"""
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['sglx_npx3A-p1']
@@ -119,7 +115,6 @@ def test_curated_clustering_populate(curations, pipeline, testdata_paths):
                & 'cluster_quality_label = "good"') == 55
 
 
-<<<<<<< HEAD
 def test_waveform_populate_npx3B_OpenEphys(curations, pipeline, testdata_paths):
     """
     Populate ephys.WaveformSet with OpenEphys
