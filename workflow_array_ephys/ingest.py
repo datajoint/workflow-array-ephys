@@ -10,13 +10,12 @@ import element_data_loader.utils
 
 def ingest_subjects(subject_csv_path='./user_data/subjects.csv'):
     """
-    Ingest subjects listed in the subject column of of ./user_data/subjects.csv
+    Ingest subjects listed in the subject column of ./user_data/subjects.csv
     """
     # -------------- Insert new "Subject" --------------
     with open(subject_csv_path, newline= '') as f:
         input_subjects = list(csv.DictReader(f, delimiter=','))
-    # Broz 102821 - this gives full # even if skipped, not # populated
-    print(f'\n---- Insert {len(input_subjects)} entry(s) into subject.Subject ----')
+    print(f'\n---- Insert {len(set(input_subjects))} entry(s) into subject.Subject ----')
     subject.Subject.insert(input_subjects, skip_duplicates=True)
 
     print('\n---- Successfully completed ingest_subjects ----')
@@ -31,10 +30,10 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
         input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
-    session_list, sess_dir_list, probe_list, probe_insertion_list = [], [], [], []
+    session_list, session_dir_list, probe_list, probe_insertion_list = [], [], [], []
 
     for sess in input_sessions:
-        sess_dir = element_data_loader.utils.find_full_path(
+        session_dir = element_data_loader.utils.find_full_path(
                                                     get_ephys_root_data_dir(),
                                                     sess['session_dir'])
         session_datetimes, insertions = [], []
@@ -83,8 +82,6 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
             probe_insertion_list.extend([{**session_key, **insertion} for insertion in insertions])
 
     print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
-    # Broz 102821 - prev, skip_dupes was true for ingest_subj, but not ingest_sess
-    #               I thought they should mirror each other, chose both True
     session.Session.insert(session_list, skip_duplicates=True)
     session.SessionDirectory.insert(sess_dir_list, skip_duplicates=True)
 
@@ -94,7 +91,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
     print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
     ephys.ProbeInsertion.insert(probe_insertion_list, skip_duplicates=True)
 
-    print('\n---- Successfully completed workflow_array_ephys/ingest.py ----')
+    print('\n---- Successfully completed ingest_subjects ----')
 
 
 if __name__ == '__main__':

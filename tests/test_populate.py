@@ -13,7 +13,7 @@ def test_ephys_recording_populate(pipeline, ephys_recordings):
 
 
 def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings):
-    """Populate ephys.LFP with OpenEphys items"""
+    """Populate ephys.LFP with OpenEphys items, recording Neuropixels Phase 3B (Neuropixels 1.0) probe"""
 
     ephys = pipeline['ephys']
     rel_path = testdata_paths['oe_npx3B']
@@ -34,7 +34,7 @@ def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings
 
 
 def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline, ephys_recordings):
-    """Populate ephys.LFP with SpikeGLX items, recording npx3A"""
+    """Populate ephys.LFP with SpikeGLX items, recording Neuropixels Phase 3A probe"""
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['sglx_npx3A-p1']
@@ -55,7 +55,7 @@ def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline, ephys_recordings)
 
 
 def test_LFP_populate_npx3B_SpikeGLX(testdata_paths, pipeline, ephys_recordings):
-    """Populate ephys.LFP with SpikeGLX items, recording npx3B"""
+    """Populate ephys.LFP with SpikeGLX items, recording Neuropixels Phase 3B (Neuropixels 1.0) probe"""
 
     ephys = pipeline['ephys']
 
@@ -105,7 +105,7 @@ def test_curated_clustering_populate(curations, pipeline, testdata_paths):
 
 
 def test_waveform_populate_npx3B_OpenEphys(curations, pipeline, testdata_paths):
-    """Populate ephys.WaveformSet with OpenEphys npx3B"""
+    """Populate ephys.WaveformSet with OpenEphys Neuropixels Phase 3B (Neuropixels 1.0) probe"""
     ephys = pipeline['ephys']
     rel_path = testdata_paths['oe_npx3B-ks']
     curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
@@ -119,7 +119,7 @@ def test_waveform_populate_npx3B_OpenEphys(curations, pipeline, testdata_paths):
 
 
 def test_waveform_populate_npx3B_SpikeGLX(curations, pipeline, testdata_paths):
-    """Populate ephys.WaveformSet with SpikeGLX npx3B"""
+    """Populate ephys.WaveformSet with SpikeGLX Neuropixels Phase 3B (Neuropixels 1.0) probe"""
 
     ephys = pipeline['ephys']
 

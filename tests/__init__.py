@@ -1,4 +1,3 @@
-# dependencies: pip install pytest pytest-cov
 # run all tests: pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings tests/
 # run one test, debug: pytest [above options] --pdb tests/tests_name.py -k function_name
 
@@ -11,7 +10,7 @@ import datajoint as dj
 
 import workflow_array_ephys
 from workflow_array_ephys.paths import get_ephys_root_data_dir
-import element_data_loader.utils
+from element_interface.utils import find_root_directory, find_full_path
 
 
 # ------------------- SOME CONSTANTS -------------------
@@ -49,8 +48,8 @@ def dj_config():
 
 @pytest.fixture(autouse=True)
 def test_data(dj_config):
-    """If data not exist, attempt download with DJArchive
-    * If no or partial data present, download to first listed root"""
+    """If data does not exist or partial data is present, 
+    attempt download with DJArchive to the first listed root directory"""
     test_data_dirs = []; test_data_exists = True
     for p in sessions_dirs:                                 # For each session
         try:                                                # Verify existes
@@ -163,7 +162,7 @@ def ingest_sessions(ingest_subjects, sessions_csv):
 
 @pytest.fixture
 def testdata_paths():
-    """ Paths for testdata 'subjX/sessY/probeZ/etc'"""
+    """ Paths for test data 'subjectX/sessionY/probeZ/etc'"""
     return {
         'npx3A-p1-ks': 'subject5/session1/probe_1/ks2.1_01',
         'npx3A-p2-ks': 'subject5/session1/probe_2/ks2.1_01',
@@ -177,7 +176,7 @@ def testdata_paths():
 
 @pytest.fixture
 def kilosort_paramset(pipeline):
-    """Insert kilosort params into ephys.ClusteringParamset"""
+    """Insert kilosort parameters into ephys.ClusteringParamset"""
     ephys = pipeline['ephys']
 
     params_ks = {
@@ -252,7 +251,7 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
 
 @pytest.fixture
 def clustering(clustering_tasks, pipeline):
-    """Populate ehys.Clustering"""
+    """Populate ephys.Clustering"""
     ephys = pipeline['ephys']
 
     ephys.Clustering.populate()
