@@ -1,16 +1,17 @@
-# run all tests: pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings tests/
-# run one test, debug: pytest [above options] --pdb tests/tests_name.py -k function_name
+# run all tests: pytest -sv --cov-report term-missing \
+#                --cov=workflow-array-ephys -p no:warnings tests/
+# run one test, debug: pytest [above options] --pdb tests/tests_name.py -k \
+#                      function_name
 
 import os
 import pytest
 import pandas as pd
 import pathlib
-import numpy as np
 import datajoint as dj
 
 import workflow_array_ephys
 from workflow_array_ephys.paths import get_ephys_root_data_dir
-from element_interface.utils import find_root_directory, find_full_path
+from element_interface.utils import find_full_path
 
 
 # ------------------- SOME CONSTANTS -------------------
@@ -50,21 +51,25 @@ def dj_config():
 def test_data(dj_config):
     """If data does not exist or partial data is present, 
     attempt download with DJArchive to the first listed root directory"""
-    test_data_dirs = []; test_data_exists = True
-    for p in sessions_dirs:                                 # For each session
-        try:                                                # Verify existes
-            test_data_dirs.append(element_data_loader.utils.find_full_path(
-                get_ephys_root_data_dir(),p))
-        except:                                             # If not exist
-            test_data_exists = False                        # Flag to false
+    test_data_dirs = []
+    test_data_exists = True
+    for p in sessions_dirs:
+        try:
+            test_data_dirs.append(find_full_path(get_ephys_root_data_dir(), p))
+        except FileNotFoundError:
+            test_data_exists = False   # If data not found
 
-    if not test_data_exists:
-        try:                                                # attempt to djArchive dowload
+    if not test_data_exists:           # attempt to djArchive dowload
+        try:
             dj.config['custom'].update({
-                'djarchive.client.endpoint': os.environ['DJARCHIVE_CLIENT_ENDPOINT'],
-                'djarchive.client.bucket': os.environ['DJARCHIVE_CLIENT_BUCKET'],
-                'djarchive.client.access_key': os.environ['DJARCHIVE_CLIENT_ACCESSKEY'],
-                'djarchive.client.secret_key': os.environ['DJARCHIVE_CLIENT_SECRETKEY']
+                'djarchive.client.endpoint':
+                    os.environ['DJARCHIVE_CLIENT_ENDPOINT'],
+                'djarchive.client.bucket':
+                    os.environ['DJARCHIVE_CLIENT_BUCKET'],
+                'djarchive.client.access_key':
+                    os.environ['DJARCHIVE_CLIENT_ACCESSKEY'],
+                'djarchive.client.secret_key':
+                    os.environ['DJARCHIVE_CLIENT_SECRETKEY']
             })
         except KeyError as e:
             raise FileNotFoundError(
@@ -77,10 +82,11 @@ def test_data(dj_config):
         client = djarchive_client.client()
         workflow_version = workflow_array_ephys.version.__version__
 
-        test_data_dir = get_ephys_root_data_dir()   # if multiple root dirs, pick first
-        if isinstance(test_data_dir, list): test_data_dir=test_data_dir[0]
+        test_data_dir = get_ephys_root_data_dir()
+        if isinstance(test_data_dir, list):  # if multiple root dirs, first
+            test_data_dir = test_data_dir[0]
 
-        client.download('workflow-array-ephys-test-set', # Download to first instance
+        client.download('workflow-array-ephys-test-set',
                         workflow_version.replace('.', '_'),
                         str(test_data_dir), create_target=False)
     return
@@ -111,19 +117,22 @@ def subjects_csv():
                               'subject3', 'subject4',
                               'subject5', 'subject6']
     input_subjects.sex = ['F', 'M', 'M', 'M', 'F', 'F']
-    input_subjects.subject_birth_date = ['2020-01-01 00:00:01', '2020-01-01 00:00:01',
-                                         '2020-01-01 00:00:01', '2020-01-01 00:00:01',
-                                         '2020-01-01 00:00:01', '2020-01-01 00:00:01']
+    input_subjects.subject_birth_date = ['2020-01-01 00:00:01',
+                                         '2020-01-01 00:00:01',
+                                         '2020-01-01 00:00:01',
+                                         '2020-01-01 00:00:01',
+                                         '2020-01-01 00:00:01',
+                                         '2020-01-01 00:00:01']
     input_subjects.subject_description = ['dl56', 'SC035', 'SC038',
                                           'oe_talab', 'rich', 'manuel']
     input_subjects = input_subjects.set_index('subject')
 
     subjects_csv_path = pathlib.Path('./tests/user_data/subjects.csv')
-    input_subjects.to_csv(subjects_csv_path)  # write csv file
+    input_subjects.to_csv(subjects_csv_path)    # write csv file
 
     yield input_subjects, subjects_csv_path
 
-    subjects_csv_path.unlink()  # delete csv file after use
+    subjects_csv_path.unlink()                  # delete csv file after use
 
 
 @pytest.fixture
@@ -166,9 +175,11 @@ def testdata_paths():
     return {
         'npx3A-p1-ks': 'subject5/session1/probe_1/ks2.1_01',
         'npx3A-p2-ks': 'subject5/session1/probe_2/ks2.1_01',
-        'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0/ks',
+        'oe_npx3B-ks': 'subject4/experiment1/recording1/continuous/'
+                       + 'Neuropix-PXI-100.0/ks',
         'sglx_npx3A-p1': 'subject5/session1/probe_1',
-        'oe_npx3B': 'subject4/experiment1/recording1/continuous/Neuropix-PXI-100.0',
+        'oe_npx3B': 'subject4/experiment1/recording1/continuous/'
+                    + 'Neuropix-PXI-100.0',
         'sglx_npx3B-p1': 'subject6/session1/towersTask_g0_imec0',
         'npx3B-p1-ks': 'subject6/session1/towersTask_g0_imec0'
     }
@@ -204,7 +215,7 @@ def kilosort_paramset(pipeline):
         "useRAM": 0
     }
 
-    # doing the insert here as well, since most of the test will require this paramset inserted
+    # Insert here, since most of the test will require this paramset inserted
     ephys.ClusteringParamSet.insert_new_params(
         'kilosort2', 0, 'Spike sorting using Kilosort2', params_ks)
 
@@ -232,16 +243,19 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
     """Insert keys from ephys.EphysRecording into ephys.Clustering"""
     ephys = pipeline['ephys']
 
-    for ephys_rec_key in (ephys.EphysRecording - ephys.ClusteringTask).fetch('KEY'):
-        ephys_file_path = pathlib.Path(((ephys.EphysRecording.EphysFile & ephys_rec_key).fetch('file_path'))[0])
-        ephys_file = element_data_loader.utils.find_full_path(
-                        get_ephys_root_data_dir(), ephys_file_path)
+    for ephys_rec_key in (ephys.EphysRecording - ephys.ClusteringTask
+                          ).fetch('KEY'):
+        ephys_file_path = pathlib.Path(((ephys.EphysRecording.EphysFile
+                                         & ephys_rec_key
+                                         ).fetch('file_path'))[0])
+        ephys_file = find_full_path(get_ephys_root_data_dir(), ephys_file_path)
         recording_dir = ephys_file.parent
         kilosort_dir = next(recording_dir.rglob('spike_times.npy')).parent
         ephys.ClusteringTask.insert1({**ephys_rec_key,
                                       'paramset_idx': 0,
-                                      'clustering_output_dir': kilosort_dir.as_posix()},
-                                      skip_duplicates=True)
+                                      'clustering_output_dir':
+                                      kilosort_dir.as_posix()
+                                      }, skip_duplicates=True)
 
     yield
 

@@ -32,12 +32,12 @@ def test_ingest_sessions(pipeline, sessions_csv, ingest_sessions):
 
 
 def test_find_valid_full_path(pipeline, sessions_csv):
-    from element_data_loader.utils import find_full_path
+    from element_interface.utils import find_full_path
 
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
     # add more options for root directories
-    if sys.platform == 'win32':
+    if sys.platform == 'win32':  # win32 even if Windows 64-bit
         ephys_root_data_dir = [get_ephys_root_data_dir(), 'J:/', 'M:/']
     else:
         ephys_root_data_dir = [get_ephys_root_data_dir(), 'mnt/j', 'mnt/m']
@@ -45,7 +45,8 @@ def test_find_valid_full_path(pipeline, sessions_csv):
     # test: providing relative-path: correctly search for the full-path
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
-    session_full_path = pathlib.Path(get_ephys_root_data_dir()) / sess.session_dir
+    session_full_path = pathlib.Path('/main/workflow-array-ephys/tests/',
+                                     'user_data') / sess.session_dir
 
     full_path = find_full_path(ephys_root_data_dir, sess.session_dir)
 
@@ -53,7 +54,7 @@ def test_find_valid_full_path(pipeline, sessions_csv):
 
 
 def test_find_root_directory(pipeline, sessions_csv):
-    from element_data_loader.utils import find_root_directory
+    from element_interface.utils import find_root_directory
 
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
 
@@ -66,20 +67,22 @@ def test_find_root_directory(pipeline, sessions_csv):
     # test: providing full-path: correctly search for the root_dir
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
-    session_full_path = pathlib.Path(get_ephys_root_data_dir()) / sess.session_dir
-    session_full_path = pathlib.Path('/main/workflow-array-ephys/tests/user_data') / sess.session_dir
+    session_full_path = pathlib.Path(get_ephys_root_data_dir()
+                                     ) / sess.session_dir
+    session_full_path = pathlib.Path('/main/workflow-array-ephys/tests/',
+                                     'user_data') / sess.session_dir
     root_dir = find_root_directory(ephys_root_data_dir, session_full_path)
 
     assert root_dir.as_posix() == '/main/workflow-array-ephys/tests/user_data'
-'''
+
 
 def test_paramset_insert(kilosort_paramset, pipeline):
     ephys = pipeline['ephys']
-    from element_data_loader.utils import dict_to_uuid
+    from element_interface.utils import dict_to_uuid
 
-    method, desc, paramset_hash = (ephys.ClusteringParamSet & {'paramset_idx': 0}).fetch1(
+    method, desc, paramset_hash = (ephys.ClusteringParamSet
+                                   & {'paramset_idx': 0}).fetch1(
         'clustering_method', 'paramset_desc', 'param_set_hash')
     assert method == 'kilosort2'
     assert desc == 'Spike sorting using Kilosort2'
     assert dict_to_uuid(kilosort_paramset) == paramset_hash
-

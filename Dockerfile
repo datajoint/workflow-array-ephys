@@ -4,7 +4,20 @@ RUN mkdir /main/workflow-array-ephys
 
 WORKDIR /main/workflow-array-ephys
 
-RUN git clone https://github.com/ttngu207/workflow-array-ephys.git .
+USER root
+
+RUN apt update -y
+
+# Install pip
+RUN apt install python3-pip -y
+
+# Set environment variable for non-interactive installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install git
+RUN apt-get install git -y
+
+RUN git clone https://github.com/CBroz1/workflow-array-ephys.git .
 
 RUN pip install .
 RUN pip install -r requirements_test.txt

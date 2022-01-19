@@ -16,4 +16,5 @@ def test_generate_pipeline(pipeline):
     session_tbl, probe_tbl = ephys.ProbeInsertion.parents(as_objects=True)
     assert session_tbl.full_table_name == session.Session.full_table_name
     assert probe_tbl.full_table_name == probe.Probe.full_table_name
-    assert 'spike_times' in ephys.CuratedClustering.Unit.heading.secondary_attributes
+    assert 'spike_times' in (ephys.CuratedClustering.Unit.heading.
+                             secondary_attributes)
