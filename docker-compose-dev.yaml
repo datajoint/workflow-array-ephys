@@ -17,7 +17,7 @@ services:
       context: ../
       dockerfile: ./workflow-array-ephys/Dockerfile.dev
     env_file: .env
-    image: workflow_array_ephys_dev:0.1.0a3
+    image: workflow_array_ephys_dev:0.1.0a4
     volumes:
       - ${TEST_DATA_DIR}:/main/test_data
       - ./apt_requirements.txt:/tmp/apt_requirements.txt
