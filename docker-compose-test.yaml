@@ -19,7 +19,8 @@ services:
     build:
       context: ../
       dockerfile: ./workflow-array-ephys/Dockerfile.test
-    image: workflow_array_ephys:0.1.0a3
+    env_file: .env
+    image: workflow_array_ephys_test:0.1.0a4
     environment:
       - DJ_HOST=workflow-array-ephys_db_1
       - DJ_USER=root

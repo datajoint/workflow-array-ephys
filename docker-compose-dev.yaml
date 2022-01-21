@@ -15,15 +15,17 @@ services:
     <<: *net
     build:
       context: ../
-      dockerfile: ./workflow-session/Dockerfile.dev
+      dockerfile: ./workflow-array-ephys/Dockerfile.dev
     env_file: .env
-    image: workflow_session_dev:0.0.0b2
+    image: workflow_array_ephys_dev:0.1.0a4
     volumes:
+      - ${TEST_DATA_DIR}:/main/test_data
       - ./apt_requirements.txt:/tmp/apt_requirements.txt
       - ../element-lab:/main/element-lab
       - ../element-animal:/main/element-animal
       - ../element-session:/main/element-session
-      - .:/main/workflow-session
+      - ../element-array-ephys:/main/element-array-ephys
+      - .:/main/workflow-array-ephys
     depends_on:
       db:
         condition: service_healthy

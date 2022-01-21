@@ -74,7 +74,7 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
                                    'insertion_number': int(probe_number)})
                 session_datetimes.append(spikeglx_meta.recording_time)
         elif acq_software == 'OpenEphys':
-            loaded_oe = openephys.OpenEphys(session_dir)
+            loaded_oe = openephys.OpenEphys(sess_dir)
             session_datetimes.append(loaded_oe.experiment.datetime)
             for probe_idx, oe_probe in enumerate(loaded_oe.probes.values()):
                 probe_key = {'probe_type': oe_probe.probe_model,

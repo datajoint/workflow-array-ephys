@@ -40,12 +40,8 @@ def test_LFP_populate_npx3B_OpenEphys(testdata_paths, pipeline, ephys_recordings
                   329, 338, 347, 356, 365, 374, 383]))
 
 
-def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline,
-                                     ephys_recordings):
-    """
-    Populate ephys.LFP with SpikeGLX items,
-    recording Neuropixels Phase 3A probe
-    """
+def test_LFP_populate_npx3A_SpikeGLX(testdata_paths, pipeline, ephys_recordings):
+    """Populate ephys.LFP with SpikeGLX items, recording Neuropixels Phase 3A probe"""
     ephys = pipeline['ephys']
 
     rel_path = testdata_paths['sglx_npx3A-p1']

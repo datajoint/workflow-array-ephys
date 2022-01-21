@@ -1,5 +1,5 @@
 """
 Package metadata
-Update the Docker image tag in `docker-compose-test.yaml` to match
+Update the Docker image tag in `docker-compose.yaml` to match
 """
-__version__ = '0.1.0a3'
+__version__ = '0.1.0a4'
