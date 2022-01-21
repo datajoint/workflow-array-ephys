@@ -8,7 +8,7 @@ USER anaconda
 WORKDIR /main/workflow-array-ephys
 
 # Option 1 - Install DataJoint's remote fork of the workflow and elements
-RUN git clone https://github.com/datajoint/workflow-array-ephys.git .
+RUN git clone https://github.com/datajoint/workflow-array-ephys.git /main/workflow-array-ephys
 
 # Option 2 - Install user's remote fork of element and workflow 
 #            or an unreleased version of the element
@@ -20,7 +20,7 @@ RUN git clone https://github.com/datajoint/workflow-array-ephys.git .
 # COPY --chown=anaconda:anaconda ./element-array-ephys /main/element-array-ephys
 # RUN pip install /main/element-array-ephys
 # COPY --chown=anaconda:anaconda ./workflow-array-ephys /main/workflow-array-ephys
-# RUN rm /main/workflow-array-ephys/dj_local_conf.json
+# RUN rm -f /main/workflow-array-ephys/dj_local_conf.json
 
 # Install the workflow
 RUN pip install /main/workflow-array-ephys
