@@ -1,3 +1,6 @@
+# docker-compose -f docker-compose-test.yaml up --build
+# docker-compose -f docker-compose-test.yaml down
+
 version: "2.4"
 x-net: &net
   networks:
@@ -12,8 +15,9 @@ services:
     <<: *net
     build:
       context: ../
-      dockerfile: ./workflow-array-ephys/Dockerfile
-    image: workflow_array_ephys:0.1.0a3
+      dockerfile: ./workflow-array-ephys/Dockerfile.test
+    env_file: .env
+    image: workflow_array_ephys_test:0.1.0a4
     environment:
       - DJ_HOST=db
       - DJ_USER=root
