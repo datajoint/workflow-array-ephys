@@ -15,9 +15,11 @@ def ingest_subjects(subject_csv_path='./user_data/subjects.csv'):
     # -------------- Insert new "Subject" --------------
     with open(subject_csv_path, newline='') as f:
         input_subjects = list(csv.DictReader(f, delimiter=','))
-    print(f'\n---- Insert {len(set(input_subjects))} entry(s) into '
-          + 'subject.Subject ----')
+    previous_length = len(subject.Subject.fetch())
     subject.Subject.insert(input_subjects, skip_duplicates=True)
+    insert_length = len(subject.Subject.fetch()) - previous_length
+    print(f'\n---- Insert {insert_length} entry(s) into '
+          + 'subject.Subject ----')
 
     print('\n---- Successfully completed ingest_subjects ----')
 
@@ -96,16 +98,22 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv'):
             probe_insertion_list.extend([{**session_key, **insertion
                                           } for insertion in insertions])
 
-    print(f'\n---- Insert {len(set(session_list))} entry(s) into session.Session ----')
+    previous_length = len(session.Session.fetch())
     session.Session.insert(session_list)
     session.SessionDirectory.insert(session_dir_list)
+    insert_length = len(session.Session.fetch()) - previous_length
+    print(f'\n---- Insert {insert_length} entry(s) into session.Session ----')
 
-    print(f'\n---- Insert {len(set(probe_list))} entry(s) into probe.Probe ----')
+    previous_length = len(probe.Probe.fetch())
     probe.Probe.insert(probe_list)
+    insert_length = len(probe.Probe.fetch()) - previous_length
+    print(f'\n---- Insert {insert_length} entry(s) into probe.Probe ----')
 
-    print(f'\n---- Insert {len(set(probe_insertion_list))} entry(s) into '
-          + 'ephys.ProbeInsertion ----')
+    previous_length = len(ephys.ProbeInsertion.fetch())
     ephys.ProbeInsertion.insert(probe_insertion_list)
+    insert_length = len(ephys.ProbeInsertion.fetch()) - previous_length
+    print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into '
+          + 'ephys.ProbeInsertion ----')
 
     print('\n---- Successfully completed ingest_subjects ----')
 

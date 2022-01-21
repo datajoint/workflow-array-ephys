@@ -18,18 +18,20 @@ services:
       - DJ_HOST=db
       - DJ_USER=root
       - DJ_PASS=simple
-      - EPHYS_ROOT_DATA_DIR=/main/test_data
+      - EPHYS_ROOT_DATA_DIR=/main/test_data/workflow_ephys_data1/,/main/test_data/workflow_ephys_data2/
       - DATABASE_PREFIX=test_
     command:
       - bash
       - -c
       - |
         echo "------ INTEGRATION TESTS ------"
-        pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings
+        pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings tests/
         tail -f /dev/null
     volumes:
       - ${TEST_DATA_DIR}:/main/test_data
       - ./apt_requirements.txt:/tmp/apt_requirements.txt
+      - ../element-array-ephys:/main/element-array-ephys
+      - .:/main/workflow-array-ephys
     depends_on:
       db:
         condition: service_healthy
