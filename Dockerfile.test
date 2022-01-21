@@ -8,13 +8,10 @@ USER anaconda
 WORKDIR /main/workflow-array-ephys
 
 # Option 1 - Install DataJoint's remote fork of the workflow and elements
-# RUN git clone https://github.com/datajoint/workflow-array-ephys.git /main/workflow-array-ephys
+RUN git clone https://github.com/datajoint/workflow-array-ephys.git .
 
 # Option 2 - Install user's remote fork of element and workflow
 #            or an unreleased version of the element
-# RUN pip install git+https://github.com/<user>element-lab.git
-# RUN pip install git+https://github.com/<user>/element-animal.git
-# RUN pip install git+https://github.com/<user>/element-session.git
 # RUN pip install git+https://github.com/<user>/element-array-ephys.git
 # RUN git clone https://github.com/<user>/workflow-array-ephys.git /main/workflow-array-ephys
 
