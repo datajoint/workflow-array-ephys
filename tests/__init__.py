@@ -1,9 +1,10 @@
 # run all tests: pytest -sv --cov-report term-missing \
-#                --cov=workflow-array-ephys -p no:warnings tests/
+#                --cov=workflow_array_ephys -p no:warnings tests/
 # run one test, debug: pytest [above options] --pdb tests/tests_name.py -k \
 #                      function_name
 
 import os
+import sys
 import pytest
 import pandas as pd
 import pathlib
@@ -17,6 +18,7 @@ from element_interface.utils import find_full_path
 # ------------------- SOME CONSTANTS -------------------
 
 _tear_down = True
+verbose = False
 
 test_user_data_dir = pathlib.Path('./tests/user_data')
 test_user_data_dir.mkdir(exist_ok=True)
@@ -29,8 +31,21 @@ sessions_dirs = ['subject1/session1',
                  'subject5/session1',
                  'subject6/session1']
 
+# --------------------  HELPER CLASS --------------------
 
-# ------------------- FIXTURES -------------------
+
+class QuietStdOut:
+    """If verbose set to false, used to quiet tear_down table.delete prints"""
+    def __enter__(self):
+        self._original_stdout = sys.stdout
+        sys.stdout = open(os.devnull, 'w')
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        sys.stdout.close()
+        sys.stdout = self._original_stdout
+
+# ---------------------- FIXTURES ----------------------
+
 
 @pytest.fixture(autouse=True)
 def dj_config():
@@ -94,17 +109,31 @@ def test_data(dj_config):
 
 @pytest.fixture
 def pipeline():
-    from workflow_array_ephys import pipeline
+    if verbose:
+        from workflow_array_ephys import pipeline
 
-    yield {'subject': pipeline.subject,
-           'lab': pipeline.lab,
-           'ephys': pipeline.ephys,
-           'probe': pipeline.probe,
-           'session': pipeline.session,
-           'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
+        yield {'subject': pipeline.subject,
+               'lab': pipeline.lab,
+               'ephys': pipeline.ephys,
+               'probe': pipeline.probe,
+               'session': pipeline.session,
+               'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
 
-    if _tear_down:
-        pipeline.subject.Subject.delete()
+        if _tear_down:
+            pipeline.subject.Subject.delete()
+    else:
+        with QuietStdOut():
+            from workflow_array_ephys import pipeline
+
+            yield {'subject': pipeline.subject,
+                   'lab': pipeline.lab,
+                   'ephys': pipeline.ephys,
+                   'probe': pipeline.probe,
+                   'session': pipeline.session,
+                   'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
+
+            if _tear_down:
+                pipeline.subject.Subject.delete()
 
 
 @pytest.fixture
@@ -139,7 +168,7 @@ def subjects_csv():
 def ingest_subjects(pipeline, subjects_csv):
     from workflow_array_ephys.ingest import ingest_subjects
     _, subjects_csv_path = subjects_csv
-    ingest_subjects(subjects_csv_path)
+    ingest_subjects(subjects_csv_path, verbose=verbose)
     return
 
 
@@ -165,7 +194,7 @@ def sessions_csv(test_data):
 def ingest_sessions(ingest_subjects, sessions_csv):
     from workflow_array_ephys.ingest import ingest_sessions
     _, sessions_csv_path = sessions_csv
-    ingest_sessions(sessions_csv_path)
+    ingest_sessions(sessions_csv_path, verbose=verbose)
     return
 
 
@@ -222,7 +251,11 @@ def kilosort_paramset(pipeline):
     yield params_ks
 
     if _tear_down:
-        (ephys.ClusteringParamSet & 'paramset_idx = 0').delete()
+        if verbose:
+            (ephys.ClusteringParamSet & 'paramset_idx = 0').delete()
+        else:
+            with QuietStdOut():
+                (ephys.ClusteringParamSet & 'paramset_idx = 0').delete()
 
 
 @pytest.fixture
@@ -235,7 +268,11 @@ def ephys_recordings(pipeline, ingest_sessions):
     yield
 
     if _tear_down:
-        ephys.EphysRecording.delete()
+        if verbose:
+            ephys.EphysRecording.delete()
+        else:
+            with QuietStdOut():
+                ephys.EphysRecording.delete()
 
 
 @pytest.fixture
@@ -258,8 +295,11 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
     yield
 
     if _tear_down:
-        ephys.ClusteringTask.delete()
-
+        if verbose:
+            ephys.ClusteringTask.delete()
+        else:
+            with QuietStdOut():
+                ephys.ClusteringTask.delete()
 
 @pytest.fixture
 def clustering(clustering_tasks, pipeline):
@@ -271,7 +311,11 @@ def clustering(clustering_tasks, pipeline):
     yield
 
     if _tear_down:
-        ephys.Clustering.delete()
+        if verbose:
+            ephys.Clustering.delete()
+        else:
+            with QuietStdOut():
+                ephys.Clustering.delete()
 
 
 @pytest.fixture
@@ -285,4 +329,9 @@ def curations(clustering, pipeline):
     yield
 
     if _tear_down:
-        ephys.Curation.delete()
+        if verbose:
+            ephys.Curation.delete()
+        else:
+            with QuietStdOut():
+                ephys.Curation.delete()
+

@@ -1,3 +1,9 @@
+# export COMPOSE_DOCKER_CLI_BUILD=0 # some machines need for smooth --build
+# .env file: TEST_DATA_DIR=<local parent directory of workflow_ephys_data{1,2}>
+# docker-compose -f docker-compose-test.yaml up --build
+# docker exec -it workflow-session_workflow_1 /bin/bash
+# docker-compose -f docker-compose-test.yaml down
+
 version: "2.4"
 x-net: &net
   networks:
@@ -12,10 +18,10 @@ services:
     <<: *net
     build:
       context: ../
-      dockerfile: ./workflow-array-ephys/Dockerfile
+      dockerfile: ./workflow-array-ephys/Dockerfile.test
     image: workflow_array_ephys:0.1.0a3
     environment:
-      - DJ_HOST=db
+      - DJ_HOST=workflow-array-ephys_db_1
       - DJ_USER=root
       - DJ_PASS=simple
       - EPHYS_ROOT_DATA_DIR=/main/test_data/workflow_ephys_data1/,/main/test_data/workflow_ephys_data2/
@@ -25,7 +31,7 @@ services:
       - -c
       - |
         echo "------ INTEGRATION TESTS ------"
-        pytest -sv --cov-report term-missing --cov=workflow-array-ephys -p no:warnings tests/
+        pytest -sv --cov-report term-missing --cov=workflow_array_ephys -p no:warnings tests/
         tail -f /dev/null
     volumes:
       - ${TEST_DATA_DIR}:/main/test_data
