@@ -20,9 +20,9 @@ db_prefix = dj.config['custom'].get('database.prefix', '')
 
 lab.activate(db_prefix + 'lab')
 
-Experimenter = lab.User
 subject.activate(db_prefix + 'subject', linking_module=__name__)
 
+Experimenter = lab.User
 session.activate(db_prefix + 'session', linking_module=__name__)
 
 
