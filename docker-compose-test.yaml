@@ -22,7 +22,7 @@ services:
     env_file: .env
     image: workflow_array_ephys_test:0.1.0a4
     environment:
-      - DJ_HOST=workflow-array-ephys_db_1
+      - DJ_HOST=db
       - DJ_USER=root
       - DJ_PASS=simple
       - EPHYS_ROOT_DATA_DIR=/main/test_data/workflow_ephys_data1/,/main/test_data/workflow_ephys_data2/
