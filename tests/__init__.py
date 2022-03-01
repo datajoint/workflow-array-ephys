@@ -18,7 +18,7 @@ from element_interface.utils import find_full_path
 # ------------------- SOME CONSTANTS -------------------
 
 _tear_down = True
-verbose = True
+verbose = False
 
 test_user_data_dir = pathlib.Path('./tests/user_data')
 test_user_data_dir.mkdir(exist_ok=True)
@@ -107,31 +107,18 @@ def test_data(dj_config):
 
 @pytest.fixture
 def pipeline():
-    if verbose:
-        from workflow_array_ephys import pipeline
-
-        yield {'subject': pipeline.subject,
-               'lab': pipeline.lab,
-               'ephys': pipeline.ephys,
-               'probe': pipeline.probe,
-               'session': pipeline.session,
-               'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
-
-        if _tear_down:
-            pipeline.subject.Subject.delete()
-    else:
+    from workflow_array_ephys import pipeline
+    yield {'subject': pipeline.subject,
+           'lab': pipeline.lab,
+           'ephys': pipeline.ephys,
+           'probe': pipeline.probe,
+           'session': pipeline.session,
+           'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
+    if verbose and _tear_down:
+        pipeline.subject.Subject.delete()
+    if _tear_down:
         with QuietStdOut():
-            from workflow_array_ephys import pipeline
-
-            yield {'subject': pipeline.subject,
-                   'lab': pipeline.lab,
-                   'ephys': pipeline.ephys,
-                   'probe': pipeline.probe,
-                   'session': pipeline.session,
-                   'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
-
-            if _tear_down:
-                pipeline.subject.Subject.delete()
+            pipeline.subject.Subject.delete()
 
 
 @pytest.fixture
