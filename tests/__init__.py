@@ -66,11 +66,10 @@ def dj_config():
 def test_data(dj_config):
     """If data does not exist or partial data is present,
     attempt download with DJArchive to the first listed root directory"""
-    test_data_dirs = []
     test_data_exists = True
     for p in sessions_dirs:
         try:
-            test_data_dirs.append(find_full_path(get_ephys_root_data_dir(), p))
+           find_full_path(get_ephys_root_data_dir(), p)
         except FileNotFoundError:
             test_data_exists = False   # If data not found
 
@@ -95,7 +94,6 @@ def test_data(dj_config):
 
         import djarchive_client
         client = djarchive_client.client()
-        workflow_version = 'v2'
 
         test_data_dir = get_ephys_root_data_dir()
         if isinstance(test_data_dir, list):  # if multiple root dirs, first

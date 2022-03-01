@@ -37,6 +37,9 @@ services:
     volumes:
       - ${TEST_DATA_DIR}:/main/test_data
       - ./apt_requirements.txt:/tmp/apt_requirements.txt
+      - ../element-lab:/main/element-lab
+      - ../element-animal:/main/element-animal
+      - ../element-session:/main/element-session
       - ../element-array-ephys:/main/element-array-ephys
       - .:/main/workflow-array-ephys
     depends_on:
