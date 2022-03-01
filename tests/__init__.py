@@ -95,14 +95,14 @@ def test_data(dj_config):
 
         import djarchive_client
         client = djarchive_client.client()
-        workflow_version = workflow_array_ephys.version.__version__
+        workflow_version = 'v2'
 
         test_data_dir = get_ephys_root_data_dir()
         if isinstance(test_data_dir, list):  # if multiple root dirs, first
             test_data_dir = test_data_dir[0]
 
-        client.download('workflow-array-ephys-test-set',
-                        workflow_version.replace('.', '_'),
+        client.download('workflow-array-ephys-benchmark',
+                        'v2',
                         str(test_data_dir), create_target=False)
     return
 
