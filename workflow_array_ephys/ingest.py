@@ -102,11 +102,11 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
     session.Session.insert(session_list)
     session.SessionDirectory.insert(session_dir_list)
     if verbose:
-        print(f'\n---- Insert {session_list} entry(s) into session.Session ----')
+        print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
 
     probe.Probe.insert(probe_list)
     if verbose:
-        print(f'\n---- Insert {probe_list} entry(s) into probe.Probe ----')
+        print(f'\n---- Insert {len(probe_list)} entry(s) into probe.Probe ----')
 
     ephys.ProbeInsertion.insert(probe_insertion_list)
     if verbose:
