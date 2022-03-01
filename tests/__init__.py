@@ -18,7 +18,7 @@ from element_interface.utils import find_full_path
 # ------------------- SOME CONSTANTS -------------------
 
 _tear_down = True
-verbose = False
+verbose = True
 
 test_user_data_dir = pathlib.Path('./tests/user_data')
 test_user_data_dir.mkdir(exist_ok=True)
@@ -69,7 +69,7 @@ def test_data(dj_config):
     test_data_exists = True
     for p in sessions_dirs:
         try:
-           find_full_path(get_ephys_root_data_dir(), p)
+            find_full_path(get_ephys_root_data_dir(), p)
         except FileNotFoundError:
             test_data_exists = False   # If data not found
 
@@ -299,6 +299,7 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
             with QuietStdOut():
                 ephys.ClusteringTask.delete()
 
+
 @pytest.fixture
 def clustering(clustering_tasks, pipeline):
     """Populate ephys.Clustering"""
@@ -332,4 +333,3 @@ def curations(clustering, pipeline):
         else:
             with QuietStdOut():
                 ephys.Curation.delete()
-

@@ -16,6 +16,7 @@ WORKDIR /main/workflow-array-ephys
 # RUN pip install git+https://github.com/<user>/element-animal.git
 # RUN pip install git+https://github.com/<user>/element-session.git
 # RUN pip install git+https://github.com/<user>/element-array-ephys.git
+# RUN git clone https://github.com/<user>/workflow-array-ephys.git /main/workflow-array-ephys
 
 # Option 3 - Install user's local fork of element and workflow
 RUN mkdir /main/element-lab

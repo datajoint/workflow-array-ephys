@@ -39,7 +39,9 @@ def test_find_valid_full_path(pipeline, sessions_csv):
     from element_interface.utils import find_full_path
 
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
-    ephys_root_data_dir = [get_ephys_root_data_dir()] if not isinstance(get_ephys_root_data_dir(), list) else get_ephys_root_data_dir()
+    ephys_root_data_dir = ([get_ephys_root_data_dir()]
+                           if not isinstance(get_ephys_root_data_dir(), list)
+                           else get_ephys_root_data_dir())
 
     # add more options for root directories
     if sys.platform == 'win32':  # win32 even if Windows 64-bit
@@ -50,8 +52,10 @@ def test_find_valid_full_path(pipeline, sessions_csv):
     # test: providing relative-path: correctly search for the full-path
     sessions, _ = sessions_csv
     sess = sessions.iloc[0]
-    docker_full_path = pathlib.Path('/main/test_data/workflow_ephys_data1/') / sess.session_dir
     session_full_path = find_full_path(ephys_root_data_dir, sess.session_dir)
+
+    docker_full_path = pathlib.Path('/main/test_data/workflow_ephys_data1/'
+                                    + 'subject1/session1')
 
     assert docker_full_path == session_full_path, str('Session path does not match '
                                                       + 'docker root: '
@@ -66,8 +70,9 @@ def test_find_root_directory(pipeline, sessions_csv):
     from element_interface.utils import find_root_directory
 
     get_ephys_root_data_dir = pipeline['get_ephys_root_data_dir']
-    ephys_root_data_dir = [get_ephys_root_data_dir()] if not isinstance(get_ephys_root_data_dir(), list) else get_ephys_root_data_dir()
-
+    ephys_root_data_dir = ([get_ephys_root_data_dir()]
+                           if not isinstance(get_ephys_root_data_dir(), list)
+                           else get_ephys_root_data_dir())
     # add more options for root directories
     if sys.platform == 'win32':
         ephys_root_data_dir = ephys_root_data_dir + ['J:/', 'M:/']
