@@ -45,7 +45,7 @@ https://github.com/datajoint/element-animal/blob/main/images/subject_diagram.svg
 
 ## Interacting with the DataJoint workflow
 
-+ Please refer to the following workflow-specific
-workflow ([03-process.ipynb](notebooks/03-process.ipynb)) and explore the data
-[Jupyter notebooks](/notebooks) for an in-depth explanation of how to run the
-([05-explore.ipynb](notebooks/05-explore.ipynb)).
++ Please refer to the following workflow-specific 
+ [Jupyter notebooks](/notebooks) for an in-depth explanation of how to run the 
+ workflow ([03-process.ipynb](notebooks/03-process.ipynb)) and explore the data 
+ ([05-explore.ipynb](notebooks/05-explore.ipynb)).
