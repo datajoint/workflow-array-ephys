@@ -40,8 +40,8 @@ https://github.com/datajoint/element-animal/blob/main/images/subject_diagram.svg
 
 ## Installation instructions
 
-+ The installation instructions can be found at [datajoint-elements/install.md](
-     https://github.com/datajoint/datajoint-elements/blob/main/install.md).
++ The installation instructions can be found at the 
+[datajoint-elements repository](https://github.com/datajoint/datajoint-elements/blob/main/gh-pages/docs/install.md).
 
 ## Interacting with the DataJoint workflow
 
