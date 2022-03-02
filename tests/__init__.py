@@ -116,7 +116,7 @@ def pipeline():
            'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
     if verbose and _tear_down:
         pipeline.subject.Subject.delete()
-    if _tear_down:
+    elif not verbose and _tear_down:
         with QuietStdOut():
             pipeline.subject.Subject.delete()
 

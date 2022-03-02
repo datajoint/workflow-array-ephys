@@ -64,8 +64,7 @@ def test_find_valid_full_path(pipeline, sessions_csv):
 
 def test_find_root_directory(pipeline, sessions_csv):
     """
-    Test that ephys_root_data_dir loaded as docker directory
-        /main/test_data/workflow_ephys_data1/
+    Test that `find_root_directory` works correctly.
     """
     from element_interface.utils import find_root_directory
 
@@ -88,7 +87,7 @@ def test_find_root_directory(pipeline, sessions_csv):
     root_dir = find_root_directory(ephys_root_data_dir, session_full_path)
 
     assert root_dir.as_posix() == '/main/test_data/workflow_ephys_data1',\
-        'Root path does not match docker: /main/test_data/workflow_ephys_data1'
+        'Root path does not match: /main/test_data/workflow_ephys_data1'
 
 
 def test_paramset_insert(kilosort_paramset, pipeline):
