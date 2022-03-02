@@ -26,7 +26,7 @@ RUN pip install -e /main/element-session
 RUN pip install -e /main/element-array-ephys
 RUN pip install -e /main/workflow-array-ephys
 RUN pip install -r /main/workflow-array-ephys/requirements_test.txt
-     
+
 WORKDIR /main/workflow-array-ephys
 
 ENTRYPOINT ["tail", "-f", "/dev/null"]
