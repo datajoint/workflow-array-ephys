@@ -107,8 +107,7 @@ ENV/
 .mypy_cache/
 
 # datajoint
-dj_local_conf.json
-dj_local_conf_old.json
+dj_local_con*.json
 
 # emacs
 **/*~
@@ -122,3 +121,6 @@ Diagram.ipynb
 
 # vscode
 .vscode/settings.json
+
+# notes
+temp*
