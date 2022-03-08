@@ -1,4 +1,4 @@
-FROM datajoint/djlab:py3.8-debian
+FROM datajoint/djbase:py3.9-debian-fcd8909
 
 USER anaconda:anaconda
 
