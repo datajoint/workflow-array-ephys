@@ -1,10 +1,9 @@
 FROM datajoint/djlab:py3.8-debian
 
-USER root
-RUN apt-get update -y
-RUN apt-get install git -y
+USER anaconda:anaconda
 
-USER anaconda
+COPY ./workflow-array-ephys/apt_requirements.txt /tmp/
+RUN /entrypoint.sh echo "Installed dependencies."
 
 RUN mkdir /main/element-lab \
           /main/element-animal \
