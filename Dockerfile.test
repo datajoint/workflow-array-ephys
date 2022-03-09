@@ -1,10 +1,10 @@
-FROM datajoint/djlab:py3.8-debian
+FROM datajoint/djbase:py3.9-debian-fcd8909
 
-USER root
-RUN apt-get update -y
-RUN apt-get install git -y
+USER anaconda:anaconda
 
-USER anaconda
+COPY ./workflow-array-ephys/apt_requirements.txt /tmp/
+RUN /entrypoint.sh echo "Installed dependencies."
+
 WORKDIR /main/workflow-array-ephys
 
 # Option 1 - Install DataJoint's remote fork of the workflow and elements

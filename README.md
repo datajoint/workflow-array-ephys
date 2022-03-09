@@ -27,12 +27,12 @@ Elements (`element-lab`, `element-animal`, `element-session`,
 ### element-lab
 
 ![element-lab](
-https://github.com/datajoint/element-lab/raw/main/images/element_lab_diagram.svg)
+https://github.com/datajoint/element-lab/raw/main/images/lab_diagram.svg)
 
 ### element-animal
 
 ![element-animal](
-https://github.com/datajoint/element-animal/blob/main/images/subject_diagram.svg)
+https://github.com/datajoint/element-animal/raw/main/images/subject_diagram.svg)
 
 ### assembled with element-array-ephys
 
