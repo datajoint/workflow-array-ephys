@@ -2,7 +2,7 @@ FROM datajoint/djbase:py3.9-debian-fcd8909
 
 USER anaconda:anaconda
 
-COPY ./workflow-array-ephys/apt_requirements.txt /tmp/
+COPY ./workflow-array-ephys/docker/apt_requirements.txt /tmp/
 RUN /entrypoint.sh echo "Installed dependencies."
 
 WORKDIR /main/workflow-array-ephys

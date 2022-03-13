@@ -1,8 +1,8 @@
 # export COMPOSE_DOCKER_CLI_BUILD=0 # some machines need for smooth --build
 # .env file: TEST_DATA_DIR=<local parent directory of workflow_ephys_data{1,2}>
-# docker-compose -f docker-compose-test.yaml up --build
+# docker-compose -f ./docker/docker-compose-test.yaml up --build
 # docker exec -it workflow-array-ephys_workflow_1 /bin/bash
-# docker-compose -f docker-compose-test.yaml down
+# docker-compose -f ./docker/docker-compose-test.yaml down
 
 version: "2.4"
 x-net: &net
@@ -17,8 +17,8 @@ services:
   workflow:
     <<: *net
     build:
-      context: ../
-      dockerfile: ./workflow-array-ephys/Dockerfile.test
+      context: ../../
+      dockerfile: ./workflow-array-ephys/docker/Dockerfile.test
     env_file: .env
     image: workflow_array_ephys_test:0.1.0a4
     environment:
@@ -37,11 +37,11 @@ services:
     volumes:
       - ${TEST_DATA_DIR}:/main/test_data
       - ./apt_requirements.txt:/tmp/apt_requirements.txt
-      - ../element-lab:/main/element-lab
-      - ../element-animal:/main/element-animal
-      - ../element-session:/main/element-session
-      - ../element-array-ephys:/main/element-array-ephys
-      - .:/main/workflow-array-ephys
+      - ../../element-lab:/main/element-lab
+      - ../../element-animal:/main/element-animal
+      - ../../element-session:/main/element-session
+      - ../../element-array-ephys:/main/element-array-ephys
+      - ..:/main/workflow-array-ephys
     depends_on:
       db:
         condition: service_healthy
