@@ -198,6 +198,28 @@ def testdata_paths():
         'npx3B-p1-ks': 'subject6/session1/towersTask_g0_imec0'
     }
 
+@pytest.fixture
+def ephys_insertionlocation(pipeline, ingest_sessions):
+    """Insert probe location into ephys.InsertionLocation"""
+    ephys = pipeline['ephys']
+    
+    for probe_insertion_key in ephys.ProbeInsertion.fetch('KEY'):
+        ephys.InsertionLocation.insert1(dict(**probe_insertion_key,
+                                             skull_reference='Bregma',
+                                             ap_location=0,
+                                             ml_location=0,
+                                             depth=0,
+                                             theta=0,
+                                             phi=0,
+                                             beta=0))
+    yield
+
+    if _tear_down:
+        if verbose:
+            ephys.InsertionLocation.delete()
+        else:
+            with QuietStdOut():
+                ephys.InsertionLocation.delete()
 
 @pytest.fixture
 def kilosort_paramset(pipeline):
