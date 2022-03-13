@@ -1,7 +1,7 @@
-# run all tests: pytest -sv --cov-report term-missing \
-#                --cov=workflow_array_ephys -p no:warnings tests/
-# run one test, debug: pytest [above options] --pdb tests/tests_name.py -k \
-#                      function_name
+# run all tests:
+# pytest -sv --cov-report term-missing --cov=workflow_array_ephys -p no:warnings tests/
+# run one test, debug:
+# pytest [above options] --pdb tests/tests_name.py -k function_name
 
 import os
 import sys
