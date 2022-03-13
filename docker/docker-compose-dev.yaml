@@ -18,6 +18,8 @@ services:
       dockerfile: ./workflow-array-ephys/docker/Dockerfile.dev
     env_file: .env
     image: workflow_array_ephys_dev:0.1.0a4
+    environment:
+      - EPHYS_ROOT_DATA_DIR=/main/test_data/workflow_ephys_data1/,/main/test_data/workflow_ephys_data2/
     volumes:
       - ${TEST_DATA_DIR}:/main/test_data
       - ./apt_requirements.txt:/tmp/apt_requirements.txt
