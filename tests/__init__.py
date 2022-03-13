@@ -56,8 +56,7 @@ def dj_config():
     dj.config['custom'] = {
         'database.prefix': (os.environ.get('DATABASE_PREFIX')
                             or dj.config['custom']['database.prefix']),
-        'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR').split(',')
-                                or dj.config['custom']['ephys_root_data_dir'])
+        'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR').split(',') if os.environ.get('EPHYS_ROOT_DATA_DIR') else dj.config['custom']['ephys_root_data_dir'])
     }
     return
 
