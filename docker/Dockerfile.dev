@@ -8,6 +8,7 @@ RUN /entrypoint.sh echo "Installed dependencies."
 RUN mkdir /main/element-lab \
           /main/element-animal \
           /main/element-session \
+          /main/element-trial \
           /main/element-array-ephys \
           /main/workflow-array-ephys
 
@@ -15,6 +16,7 @@ RUN mkdir /main/element-lab \
 COPY --chown=anaconda:anaconda ./element-lab /main/element-lab
 COPY --chown=anaconda:anaconda ./element-animal /main/element-animal
 COPY --chown=anaconda:anaconda ./element-session /main/element-session
+COPY --chown=anaconda:anaconda ./element-trial /main/element-trial
 COPY --chown=anaconda:anaconda ./element-array-ephys /main/element-array-ephys
 COPY --chown=anaconda:anaconda ./workflow-array-ephys /main/workflow-array-ephys
 
@@ -22,6 +24,7 @@ COPY --chown=anaconda:anaconda ./workflow-array-ephys /main/workflow-array-ephys
 RUN pip install -e /main/element-lab
 RUN pip install -e /main/element-animal
 RUN pip install -e /main/element-session
+RUN pip install -e /main/element-trial
 RUN pip install -e /main/element-array-ephys
 RUN pip install -e /main/workflow-array-ephys
 RUN pip install -r /main/workflow-array-ephys/requirements_test.txt

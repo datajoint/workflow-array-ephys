@@ -1,0 +1,5 @@
+subject,session_datetime,block_id,block_start_time,block_stop_time,attribute_name,attribute_value
+subject5,2018-07-03 20:32:28,1,2,86,type,light
+subject5,2018-07-03 20:32:28,2,86,170,type,dark
+subject5,2018-07-03 20:32:28,3,170,254,type,light
+subject5,2018-07-03 20:32:28,4,254,338,type,dark
