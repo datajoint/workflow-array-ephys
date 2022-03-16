@@ -1,7 +1,7 @@
-# run all tests: pytest -sv --cov-report term-missing \
-#                --cov=workflow_array_ephys -p no:warnings tests/
-# run one test, debug: pytest [above options] --pdb tests/tests_name.py -k \
-#                      function_name
+# run all tests:
+# pytest -sv --cov-report term-missing --cov=workflow_array_ephys -p no:warnings tests/
+# run one test, debug:
+# pytest [above options] --pdb tests/tests_name.py -k function_name
 
 import os
 import sys
@@ -10,14 +10,13 @@ import pandas as pd
 import pathlib
 import datajoint as dj
 
-import workflow_array_ephys
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 from element_interface.utils import find_full_path
 
 
 # ------------------- SOME CONSTANTS -------------------
 
-_tear_down = True
+_tear_down = False
 verbose = False
 
 test_user_data_dir = pathlib.Path('./tests/user_data')
@@ -56,8 +55,7 @@ def dj_config():
     dj.config['custom'] = {
         'database.prefix': (os.environ.get('DATABASE_PREFIX')
                             or dj.config['custom']['database.prefix']),
-        'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR').split(',')
-                                or dj.config['custom']['ephys_root_data_dir'])
+        'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR').split(',') if os.environ.get('EPHYS_ROOT_DATA_DIR') else dj.config['custom']['ephys_root_data_dir'])
     }
     return
 
@@ -198,6 +196,28 @@ def testdata_paths():
         'npx3B-p1-ks': 'subject6/session1/towersTask_g0_imec0'
     }
 
+@pytest.fixture
+def ephys_insertionlocation(pipeline, ingest_sessions):
+    """Insert probe location into ephys.InsertionLocation"""
+    ephys = pipeline['ephys']
+    
+    for probe_insertion_key in ephys.ProbeInsertion.fetch('KEY'):
+        ephys.InsertionLocation.insert1(dict(**probe_insertion_key,
+                                             skull_reference='Bregma',
+                                             ap_location=0,
+                                             ml_location=0,
+                                             depth=0,
+                                             theta=0,
+                                             phi=0,
+                                             beta=0))
+    yield
+
+    if _tear_down:
+        if verbose:
+            ephys.InsertionLocation.delete()
+        else:
+            with QuietStdOut():
+                ephys.InsertionLocation.delete()
 
 @pytest.fixture
 def kilosort_paramset(pipeline):
