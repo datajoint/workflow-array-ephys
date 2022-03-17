@@ -10,14 +10,13 @@ import pandas as pd
 import pathlib
 import datajoint as dj
 
-import workflow_array_ephys
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 from element_interface.utils import find_full_path
 
 
 # ------------------- SOME CONSTANTS -------------------
 
-_tear_down = True
+_tear_down = False
 verbose = False
 
 test_user_data_dir = pathlib.Path('./tests/user_data')
