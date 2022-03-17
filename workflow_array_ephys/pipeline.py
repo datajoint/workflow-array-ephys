@@ -7,7 +7,7 @@ from element_array_ephys import probe
 
 from element_animal.subject import Subject
 from element_lab.lab import Source, Lab, Protocol, User, Project
-from element_session.session import Session
+from element_session.session_with_datetime import Session
 
 from .paths import get_ephys_root_data_dir, get_session_directory
 
@@ -28,7 +28,7 @@ elif ephys_mode == 'no-curation':
 else:
     raise ValueError(f'Unknown ephys mode: {ephys_mode}')
 
-# Activate "lab", "subject", "session" schema ----------------------------------
+# Activate "lab", "subject", "session" schema ---------------------------------
 
 lab.activate(db_prefix + 'lab')
 
@@ -38,7 +38,7 @@ Experimenter = lab.User
 session.activate(db_prefix + 'session', linking_module=__name__)
 
 
-# Declare table "SkullReference" for use in element-array-ephys ----------------
+# Declare table "SkullReference" for use in element-array-ephys ---------------
 
 @lab.schema
 class SkullReference(dj.Lookup):
@@ -48,7 +48,7 @@ class SkullReference(dj.Lookup):
     contents = zip(['Bregma', 'Lambda'])
 
 
-# Activate "ephys" schema ------------------------------------------------------
+# Activate "ephys" schema -----------------------------------------------------
 
 ephys.activate(db_prefix + 'ephys', 
                db_prefix + 'probe', 
