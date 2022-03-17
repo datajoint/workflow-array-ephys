@@ -1,7 +1,7 @@
 import datajoint as dj
 import numpy as np
 
-from .pipeline import db_prefix, session, ephys, trial, event
+from workflow_array_ephys.pipeline import db_prefix, session, ephys, trial, event
 
 
 schema = dj.schema(db_prefix + 'analysis')
@@ -14,6 +14,7 @@ class SpikesAlignmentCondition(dj.Manual):
     -> event.AlignmentEvent
     trial_condition: varchar(128) # user-friendly name of condition
     ---
+    condition_description='': varchar(1000)
     bin_size=0.04: float # bin-size (in second) used to compute the PSTH
     """
 
@@ -28,12 +29,13 @@ class SpikesAlignmentCondition(dj.Manual):
 class SpikesAlignment(dj.Computed):
     definition = """
     -> SpikesAlignmentCondition
-    -> ephys.CuratedClustering.Unit
+    -> ephys.CuratedClustering
     """
 
     class AlignedTrialSpikes(dj.Part):
         definition = """
         -> master
+        -> ephys.CuratedClustering.Unit
         -> SpikesAlignmentCondition.Trial
         ---
         aligned_spike_times: longblob  # (s) spike times relative to the alignment event time
@@ -49,7 +51,7 @@ class SpikesAlignment(dj.Computed):
         """
 
     def make(self, key):
-        unit_keys, unit_spike_times = (ephys.CuratedClustering.Unit & key).fetch('KEY', 'unit_spike_times', order_by='unit')
+        unit_keys, unit_spike_times = (ephys.CuratedClustering.Unit & key).fetch('KEY', 'spike_times', order_by='unit')
 
         trial_keys, trial_starts, trial_ends = (trial.Trial & (SpikesAlignmentCondition.Trial & key)).fetch(
             'KEY', 'trial_start_time', 'trial_stop_time', order_by='trial_id')
@@ -60,7 +62,7 @@ class SpikesAlignment(dj.Computed):
 
         # Spike raster
         aligned_trial_spikes = []
-        units_spike_raster = {u['unit']: {'KEY': {}, 'aligned_spikes': []} for u in unit_keys}
+        units_spike_raster = {u['unit']: {**key, **u, 'aligned_spikes': []} for u in unit_keys}
         min_limit, max_limit = np.Inf, -np.Inf
         for trial_key, trial_start, trial_stop in zip(trial_keys, trial_starts, trial_ends):
             alignment_event_time = (event.Event & key & {'event_type': alignment_spec['alignment_event_type']}
@@ -96,8 +98,8 @@ class SpikesAlignment(dj.Computed):
             alignment_start_time += alignment_spec['start_time_shift']
             alignment_end_time += alignment_spec['end_time_shift']
 
-            min_limit = min(alignment_start_time, min_limit)
-            max_limit = max(alignment_end_time, max_limit)
+            min_limit = min(alignment_start_time - alignment_event_time, min_limit)
+            max_limit = max(alignment_end_time - alignment_event_time, max_limit)
 
             for unit_key, spikes in zip(unit_keys, unit_spike_times):
                 aligned_spikes = spikes[(alignment_start_time <= spikes)
@@ -116,3 +118,23 @@ class SpikesAlignment(dj.Computed):
         self.insert1(key)
         self.AlignedTrialSpikes.insert(aligned_trial_spikes)
         self.UnitPSTH.insert(list(units_spike_raster.values()))
+
+    def plot_raster(self, key, unit, axs=None):
+        import matplotlib.pyplot as plt
+        from .plotting import plot_psth
+
+        fig = None
+        if axs is None:
+            fig, axs = plt.subplots(2, 1)
+
+        trial_ids, aligned_spikes = (self.AlignedTrialSpikes
+                                     & key & {'unit': unit}).fetch('trial_id', 'aligned_spike_times')
+        psth, psth_edges = (self.UnitPSTH & key & {'unit': unit}).fetch(
+            'psth', 'psth_edges')
+
+        plot_psth._plot_spike_raster(aligned_spikes, trial_ids=trial_ids, ax=axs[0],
+                                     title=f'{{**key, "unit": unit}}', xlim=None)
+        plot_psth._plot_psth(psth, psth_edges, ax=axs[1],
+                             title=f'{{**key, "unit": unit}}', xlim=None)
+
+        return fig
