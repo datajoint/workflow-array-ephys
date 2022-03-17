@@ -6,12 +6,12 @@ x-net: &net
   networks:
       - main
 services:
-  db:
+  array-ephys-dev-db:
     <<: *net
     image: datajoint/mysql:5.7
     environment:
       - MYSQL_ROOT_PASSWORD=simple
-  workflow-array-ephys-dev:
+  array-ephys-dev-workflow:
     <<: *net
     build:
       context: ../../
@@ -30,7 +30,7 @@ services:
       - ../../element-array-ephys:/main/element-array-ephys
       - ..:/main/workflow-array-ephys
     depends_on:
-      db:
+      array-ephys-dev-db:
         condition: service_healthy
 networks:
   main:
