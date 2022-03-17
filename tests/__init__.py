@@ -13,7 +13,7 @@ from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 # ------------------- SOME CONSTANTS -------------------
 
-_tear_down = True
+_tear_down = False
 
 test_user_data_dir = pathlib.Path('./tests/user_data')
 test_user_data_dir.mkdir(exist_ok=True)
@@ -198,8 +198,8 @@ def kilosort_paramset(pipeline):
 
     # doing the insert here as well, since most of the test will require this paramset inserted
     ephys.ClusteringParamSet.insert_new_params(
-        processing_method='kilosort2',
-        paramset_desc='Spike sorting using Kilosort2',
+        clustering_method='kilosort2.5',
+        paramset_desc='Spike sorting using Kilosort2.5',
         params=params_ks,
         paramset_idx=0)
 
