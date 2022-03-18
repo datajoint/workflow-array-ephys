@@ -9,7 +9,7 @@ services:
   db:
     <<: *net
     image: datajoint/mysql:5.7
-    container_name: array-ephys-dev-db
+    container_name: workflow-array-ephys-dev-db
     environment:
       - MYSQL_ROOT_PASSWORD=simple
   workflow:
@@ -18,8 +18,8 @@ services:
       context: ../../
       dockerfile: ./workflow-array-ephys/docker/Dockerfile.dev
     env_file: .env
-    image: workflow_array_ephys_dev:0.1.0a4
-    container_name: array-ephys-dev-workflow
+    image: workflow-array-ephys-dev:0.1.0a4
+    container_name: workflow-array-ephys-dev
     environment:
       - EPHYS_ROOT_DATA_DIR=/main/test_data/workflow_ephys_data1/,/main/test_data/workflow_ephys_data2/
     volumes:

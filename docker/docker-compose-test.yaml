@@ -12,7 +12,7 @@ services:
   db:
     <<: *net
     image: datajoint/mysql:5.7
-    container_name: array-ephys-test-db
+    container_name: workflow-array-ephys-test-db
     environment:
       - MYSQL_ROOT_PASSWORD=simple
   workflow:
@@ -21,8 +21,8 @@ services:
       context: ../../
       dockerfile: ./workflow-array-ephys/docker/Dockerfile.test
     env_file: .env
-    image: workflow_array_ephys_test:0.1.0a4
-    container_name: array-ephys-test-workflow
+    image: workflow-array-ephys-test:0.1.0a4
+    container_name: workflow-array-ephys-test
     environment:
       - DJ_HOST=db
       - DJ_USER=root
