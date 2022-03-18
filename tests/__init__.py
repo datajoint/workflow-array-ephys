@@ -53,6 +53,8 @@ def dj_config():
         dj.config.load('./dj_local_conf.json')
     dj.config['safemode'] = False
     dj.config['custom'] = {
+        'ephys_mode': (os.environ.get('EPHYS_MODE')
+                       or dj.config['custom']['ephys_mode']),
         'database.prefix': (os.environ.get('DATABASE_PREFIX')
                             or dj.config['custom']['database.prefix']),
         'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR').split(',') if os.environ.get('EPHYS_ROOT_DATA_DIR') else dj.config['custom']['ephys_root_data_dir'])
@@ -111,7 +113,9 @@ def pipeline():
            'ephys': pipeline.ephys,
            'probe': pipeline.probe,
            'session': pipeline.session,
-           'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
+           'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir,
+           'ephys_mode': pipeline.ephys_mode}
+
     if verbose and _tear_down:
         pipeline.subject.Subject.delete()
     elif not verbose and _tear_down:
@@ -251,7 +255,10 @@ def kilosort_paramset(pipeline):
 
     # Insert here, since most of the test will require this paramset inserted
     ephys.ClusteringParamSet.insert_new_params(
-        'kilosort2', 0, 'Spike sorting using Kilosort2', params_ks)
+        clustering_method='kilosort2.5',
+        paramset_desc='Spike sorting using Kilosort2.5',
+        params=params_ks,
+        paramset_idx=0)
 
     yield params_ks
 
@@ -293,9 +300,9 @@ def clustering_tasks(pipeline, kilosort_paramset, ephys_recordings):
         kilosort_dir = next(recording_dir.rglob('spike_times.npy')).parent
         ephys.ClusteringTask.insert1({**ephys_rec_key,
                                       'paramset_idx': 0,
-                                      'clustering_output_dir':
-                                      kilosort_dir.as_posix()
-                                      }, skip_duplicates=True)
+                                      'task_mode': 'load',
+                                      'clustering_output_dir': kilosort_dir.as_posix()},
+                                     skip_duplicates=True)
 
     yield
 
@@ -326,17 +333,21 @@ def clustering(clustering_tasks, pipeline):
 
 @pytest.fixture
 def curations(clustering, pipeline):
-    """Insert keys from ephys.ClusteringTask into ephys.Curation"""
-    ephys = pipeline['ephys']
+    ephys_mode = pipeline['ephys_mode']
 
-    for key in (ephys.ClusteringTask - ephys.Curation).fetch('KEY'):
-        ephys.Curation().create1_from_clustering_task(key)
+    if ephys_mode == 'no-curation':
+        yield
+    else:
+        ephys = pipeline['ephys']
 
-    yield
+        for key in (ephys.ClusteringTask - ephys.Curation).fetch('KEY'):
+            ephys.Curation().create1_from_clustering_task(key)
 
-    if _tear_down:
-        if verbose:
-            ephys.Curation.delete()
-        else:
-            with QuietStdOut():
+        yield
+
+        if _tear_down:
+            if verbose:
                 ephys.Curation.delete()
+            else:
+                with QuietStdOut():
+                    ephys.Curation.delete()

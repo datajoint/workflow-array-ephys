@@ -3,6 +3,7 @@ import re
 
 from workflow_array_ephys.pipeline import subject, ephys, probe, session, trial, event
 from workflow_array_ephys.paths import get_ephys_root_data_dir
+from workflow_array_ephys.pipeline import ephys_mode
 
 from element_array_ephys.readers import spikeglx, openephys
 from element_interface.utils import find_root_directory, find_full_path
@@ -65,10 +66,9 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
         session_datetimes, insertions = [], []
 
         # search session dir and determine acquisition software
-        for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'],
-                                                 ['SpikeGLX', 'OpenEphys']):
-            ephys_meta_filepaths = [fp for fp in session_dir.rglob(ephys_pattern)]
-            if len(ephys_meta_filepaths):
+        for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'], ['SpikeGLX', 'OpenEphys']):
+            ephys_meta_filepaths = list(session_dir.rglob(ephys_pattern))
+            if ephys_meta_filepaths:
                 acq_software = ephys_acq_type
                 break
         else:
@@ -120,20 +120,28 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
             probe_insertion_list.extend([{**session_key, **insertion
                                           } for insertion in insertions])
 
-    session.Session.insert(session_list)
-    session.SessionDirectory.insert(session_dir_list)
-    if verbose:
-        print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
-
-    probe.Probe.insert(probe_list)
     if verbose:
         print(f'\n---- Insert {len(probe_list)} entry(s) into probe.Probe ----')
+    probe.Probe.insert(probe_list)
 
-    ephys.ProbeInsertion.insert(probe_insertion_list)
+    if ephys_mode == 'chronic':
+        ephys.ProbeInsertion.insert(probe_insertion_list,
+                                    ignore_extra_fields=True, skip_duplicates=True)
+        session.Session.insert(session_list)
+        session.SessionDirectory.insert(session_dir_list)
+        if verbose:
+            print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
+            print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
+    else:
+        session.Session.insert(session_list)
+        session.SessionDirectory.insert(session_dir_list)
+        ephys.ProbeInsertion.insert(probe_insertion_list)
+        if verbose:
+            print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
+            print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
+
     if verbose:
-        print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into '
-              + 'ephys.ProbeInsertion ----')
-        print('\n---- Successfully completed ingest_subjects ----')
+        print('\n---- Successfully completed workflow_array_ephys/ingest.py ----')
 
 
 def ingest_events(recording_csv_path='./user_data/behavior_recordings.csv',

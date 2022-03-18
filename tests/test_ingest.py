@@ -97,6 +97,6 @@ def test_paramset_insert(kilosort_paramset, pipeline):
     method, desc, paramset_hash = (ephys.ClusteringParamSet
                                    & {'paramset_idx': 0}).fetch1(
         'clustering_method', 'paramset_desc', 'param_set_hash')
-    assert method == 'kilosort2'
-    assert desc == 'Spike sorting using Kilosort2'
+    assert method == 'kilosort2.5'
+    assert desc == 'Spike sorting using Kilosort2.5'
     assert dict_to_uuid(kilosort_paramset) == paramset_hash
