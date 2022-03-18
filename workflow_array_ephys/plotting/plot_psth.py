@@ -8,8 +8,10 @@ def _plot_spike_raster(aligned_spikes, trial_ids=None, vlines=[0], ax=None, titl
 
     raster = np.concatenate(aligned_spikes)
     if trial_ids is None:
-        trial_ids = np.concatenate([[t] * len(s)
-                                    for t, s in enumerate(aligned_spikes)])
+        trial_ids = range(len(aligned_spikes))
+
+    trial_ids = np.concatenate([[t] * len(s)
+                                for t, s in zip(trial_ids, aligned_spikes)]).astype(int)
 
     assert len(raster) == len(trial_ids)
 
@@ -28,7 +30,7 @@ def _plot_psth(psth, psth_edges, vlines=[0], ax=None, title='', xlim=None):
     if not ax:
         fig, ax = plt.subplots(1, 1)
 
-    ax.plot(psth, psth_edges, 'b')
+    ax.plot(psth_edges, psth, 'r')
 
     for x in vlines:
         ax.axvline(x=x, linestyle='--', color='k')

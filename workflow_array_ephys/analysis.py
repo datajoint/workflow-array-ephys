@@ -125,16 +125,18 @@ class SpikesAlignment(dj.Computed):
 
         fig = None
         if axs is None:
-            fig, axs = plt.subplots(2, 1)
+            fig, axs = plt.subplots(2, 1, figsize=(12, 8))
 
         trial_ids, aligned_spikes = (self.AlignedTrialSpikes
                                      & key & {'unit': unit}).fetch('trial_id', 'aligned_spike_times')
-        psth, psth_edges = (self.UnitPSTH & key & {'unit': unit}).fetch(
+        psth, psth_edges = (self.UnitPSTH & key & {'unit': unit}).fetch1(
             'psth', 'psth_edges')
 
+        xlim = psth_edges[0], psth_edges[-1]
+
         plot_psth._plot_spike_raster(aligned_spikes, trial_ids=trial_ids, ax=axs[0],
-                                     title=f'{{**key, "unit": unit}}', xlim=None)
+                                     title=f'{dict(**key, unit=unit)}', xlim=xlim)
         plot_psth._plot_psth(psth, psth_edges, ax=axs[1],
-                             title=f'{{**key, "unit": unit}}', xlim=None)
+                             title='', xlim=xlim)
 
         return fig
