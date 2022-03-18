@@ -6,18 +6,20 @@ x-net: &net
   networks:
       - main
 services:
-  array-ephys-dev-db:
+  db:
     <<: *net
     image: datajoint/mysql:5.7
+    container_name: workflow-array-ephys-dev-db
     environment:
       - MYSQL_ROOT_PASSWORD=simple
-  array-ephys-dev-workflow:
+  workflow:
     <<: *net
     build:
       context: ../../
       dockerfile: ./workflow-array-ephys/docker/Dockerfile.dev
     env_file: .env
-    image: workflow_array_ephys_dev:0.1.0a4
+    image: workflow-array-ephys-dev:0.1.0a4
+    container_name: workflow-array-ephys-dev
     environment:
       - EPHYS_ROOT_DATA_DIR=/main/test_data/workflow_ephys_data1/,/main/test_data/workflow_ephys_data2/
     volumes:
@@ -29,7 +31,7 @@ services:
       - ../../element-array-ephys:/main/element-array-ephys
       - ..:/main/workflow-array-ephys
     depends_on:
-      array-ephys-dev-db:
+      db:
         condition: service_healthy
 networks:
   main:
