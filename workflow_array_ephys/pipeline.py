@@ -2,10 +2,9 @@ import datajoint as dj
 import os
 from element_animal import subject
 from element_lab import lab
-from element_session import session
+from element_session import session_with_datetime as session
 from element_array_ephys import probe
 from element_trial import trial, event
-from element_array_ephys import probe, ephys
 
 from element_animal.subject import Subject
 from element_lab.lab import Source, Lab, Protocol, User, Project
@@ -44,7 +43,7 @@ subject.activate(db_prefix + 'subject', linking_module=__name__)
 Experimenter = lab.User
 session.activate(db_prefix + 'session', linking_module=__name__)
 
-trial.activate(db_prefix + 'trial', db_prefix + 'event', linking_module= __name__)
+trial.activate(db_prefix + 'trial', db_prefix + 'event', linking_module=__name__)
 
 
 # Declare table "SkullReference" for use in element-array-ephys ---------------

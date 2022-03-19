@@ -47,7 +47,8 @@ def ingest_subjects(subject_csv_path='./user_data/subjects.csv',
     ingest_general(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose)
 
 
-def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
+def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True,
+                    skip_duplicates=False):
     """
     Ingests SpikeGLX and OpenEphys files from directories listed
     in the session_dir column of ./user_data/sessions.csv
@@ -162,12 +163,12 @@ def ingest_events(recording_csv_path='./user_data/behavior_recordings.csv',
             block_csv_path, block_csv_path,
             trial_csv_path, trial_csv_path, trial_csv_path,
             trial_csv_path,
-            event_csv_path,event_csv_path]
+            event_csv_path, event_csv_path, event_csv_path]
     tables = [event.BehaviorRecording(), event.BehaviorRecording.File(),
               trial.Block(), trial.Block.Attribute(),
               trial.TrialType(), trial.Trial(), trial.Trial.Attribute(),
               trial.BlockTrial(),
-              event.EventType(), event.Event()]
+              event.EventType(), event.Event(), trial.TrialEvent()]
 
     # Allow direct insert required bc element-trial has Imported that should be Manual
     ingest_general(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose,
