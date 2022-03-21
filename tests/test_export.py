@@ -39,7 +39,9 @@ def test_session_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions):
     assert nwbfile.experiment_description == "Example project to populate element-lab"
 
 
-def test_write_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, ephys_insertionlocation, kilosort_paramset, ephys_recordings, clustering_tasks, clustering, curations):
+def test_write_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, 
+                      ephys_insertionlocation, kilosort_paramset, ephys_recordings, 
+                      clustering_tasks, clustering, curations):
      session = pipeline['session']
      ephys = pipeline['ephys']
 
