@@ -5,6 +5,9 @@ from workflow_array_ephys.pipeline import lab, subject, ephys, probe, session
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 from element_array_ephys.readers import spikeglx, openephys
+from element_interface.utils import find_root_directory, find_full_path, ingest_csv_to_table
+
+
 def ingest_lab(lab_csv_path='./user_data/lab/labs.csv',
                project_csv_path='./user_data/lab/projects.csv',
                publication_csv_path='./user_data/lab/publications.csv',
@@ -70,7 +73,8 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
         input_sessions = list(csv.DictReader(f, delimiter=','))
 
     # Folder structure: root / subject / session / probe / .ap.meta
-    session_list, session_dir_list = [], []
+    session_list, session_dir_list, = [], []
+    session_note_list, session_experimenter_list = [], []
     probe_list, probe_insertion_list = [], []
 
     for sess in input_sessions:
@@ -131,11 +135,17 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
             root_dir = find_root_directory(get_ephys_root_data_dir(), session_dir)
             session_dir_list.append({**session_key, 'session_dir':
                                      session_dir.relative_to(root_dir).as_posix()})
+            session_note_list.append({**session_key, 'session_note':
+                                        sess['session_note']})
+            session_experimenter_list.append({**session_key, 'user':
+                                        sess['user']})
             probe_insertion_list.extend([{**session_key, **insertion
                                           } for insertion in insertions])
 
     session.Session.insert(session_list)
     session.SessionDirectory.insert(session_dir_list)
+    session.SessionNote.insert(session_note_list)
+    session.SessionExperimenter.insert(session_experimenter_list)
     if verbose:
         print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
 
