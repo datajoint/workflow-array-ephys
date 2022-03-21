@@ -1,4 +1,5 @@
 import datajoint as dj
+
 from element_lab import lab
 from element_animal import subject
 from element_session import session_with_datetime as session
@@ -42,3 +43,10 @@ class SkullReference(dj.Lookup):
 ephys.activate(db_prefix + 'ephys', 
                db_prefix + 'probe', 
                linking_module=__name__)
+
+# Import NWB export functions ----------------------------------------------------------
+
+from element_lab.export.nwb import element_lab_to_nwb_dict
+from element_animal.export.nwb import subject_to_nwb
+from element_session.export.nwb import session_to_nwb
+from element_array_ephys.export.nwb import ecephys_session_to_nwb, write_nwb
