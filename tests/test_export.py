@@ -50,8 +50,8 @@ def test_write_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, ep
      ephys.WaveformSet.populate(session_key, display_progress=True)
      
      nwbfile=ecephys_session_to_nwb(session_key=session_key,
-          raw=False,
-          spikes=False,
+          raw=True,
+          spikes=True,
           lfp="dj",
           end_frame=None,
           lab_key=None,
