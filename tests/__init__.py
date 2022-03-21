@@ -121,6 +121,147 @@ def pipeline():
 
 
 @pytest.fixture
+def lab_csv():
+    """ Create a 'labs.csv' file"""
+    lab_content = ["lab,lab_name,institution,address,"
+                   + "time_zone,location,location_description",
+                   "LabA,The Example Lab,Example Uni,"
+                   + "'221B Baker St,London NW1 6XE,UK',UTC+0,"
+                   + "Example Building,'2nd floor lab dedicated to all "
+                   + "fictional experiments.'",
+                   "LabB,The Other Lab,Other Uni,"
+                   + "'Oxford OX1 2JD, United Kingdom',UTC+0,"
+                   + "Other Building,'fictional campus dedicated to imaginary"
+                   + "experiments.'"]
+    lab_csv_path = pathlib.Path('./tests/user_data/lab/labs.csv')
+    write_csv(lab_content, lab_csv_path)
+
+    yield lab_content, lab_csv_path
+    lab_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_project_csv():
+    """ Create a 'projects.csv' file"""
+    lab_project_content = ["project,project_description,repository_url,"
+                           + "repository_name,codeurl",
+                           "ProjA,Example project to populate element-lab,"
+                           + "https://github.com/datajoint/element-lab/,"
+                           + "element-lab,https://github.com/datajoint/element"
+                           + "-lab/tree/main/element_lab",
+                           "ProjB,Other example project to populate element-"
+                           + "lab,https://github.com/datajoint/element-session"
+                           + "/,element-session,https://github.com/datajoint/"
+                           + "element-session/tree/main/element_session"]
+    lab_project_csv_path = pathlib.Path('./tests/user_data/lab/projects.csv')
+    write_csv(lab_project_content, lab_project_csv_path)
+
+    yield lab_project_content, lab_project_csv_path
+    lab_project_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_project_users_csv():
+    """ Create a 'project_users.csv' file"""
+    lab_project_user_content = ["user,project",
+                                "Sherlock,ProjA",
+                                "Sherlock,ProjB",
+                                "Watson,ProjB",
+                                "Dr. Candace Pert,ProjA",
+                                "User1,ProjA"]
+    lab_project_user_csv_path = pathlib.Path('./tests/user_data/lab/\
+                                              project_users.csv')
+    write_csv(lab_project_user_content, lab_project_user_csv_path)
+
+    yield lab_project_user_content, lab_project_user_csv_path
+    lab_project_user_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_publications_csv():
+    """ Create a 'publications.csv' file"""
+    lab_publication_content = ["project,publication",
+                               "ProjA,arXiv:1807.11104",
+                               "ProjA,arXiv:1807.11104v1"]
+    lab_publication_csv_path = pathlib.Path('./tests/user_data/lab/\
+                                             publications.csv')
+    write_csv(lab_publication_content, lab_publication_csv_path)
+
+    yield lab_publication_content, lab_publication_csv_path
+    lab_publication_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_keywords_csv():
+    """ Create a 'keywords.csv' file"""
+    lab_keyword_content = ["project,keyword",
+                           "ProjA,Study",
+                           "ProjA,Example",
+                           "ProjB,Alternate"]
+    lab_keyword_csv_path = pathlib.Path('./tests/user_data/lab/keywords.csv')
+    write_csv(lab_keyword_content, lab_keyword_csv_path)
+
+    yield lab_keyword_content, lab_keyword_csv_path
+    lab_keyword_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_protocol_csv():
+    """ Create a 'protocols.csv' file"""
+    lab_protocol_content = ["protocol,protocol_type,protocol_description",
+                            "ProtA,IRB expedited review,Protocol for managing "
+                            + "data ingestion",
+                            "ProtB,Alternative Method,Limited protocol for "
+                            + "piloting only"]
+    lab_protocol_csv_path = pathlib.Path('./tests/user_data/lab/protocols.csv')
+    write_csv(lab_protocol_content, lab_protocol_csv_path)
+
+    yield lab_protocol_content, lab_protocol_csv_path
+    lab_protocol_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_user_csv():
+    """ Create a 'users.csv' file"""
+    lab_user_content = ["lab,user,user_role,user_email,user_cellphone",
+                        "LabA,Sherlock,PI,Sherlock@BakerSt.com,"
+                        + "+44 20 7946 0344",
+                        "LabA,Watson,Dr,DrWatson@BakerSt.com,+44 73 8389 1763",
+                        "LabB,Dr. Candace Pert,PI,Pert@gmail.com,"
+                        + "+44 74 4046 5899",
+                        "LabA,User1,Lab Tech,fake@email.com,+44 1632 960103",
+                        "LabB,User2,Lab Tech,fake2@email.com,+44 1632 960102"]
+    lab_user_csv_path = pathlib.Path('./tests/user_data/lab/users.csv')
+    write_csv(lab_user_content, lab_user_csv_path)
+
+    yield lab_user_content, lab_user_csv_path
+    lab_user_csv_path.unlink()
+
+
+@pytest.fixture
+def ingest_lab(pipeline, lab_csv, lab_project_csv, lab_publications_csv,
+               lab_keywords_csv, lab_protocol_csv, lab_user_csv,
+               lab_project_users_csv):
+    """ From workflow_array_ephys ingest.py, import ingest_lab, run """
+    from workflow_array_ephys.ingest import ingest_lab
+    _, lab_csv_path = lab_csv
+    _, lab_project_csv_path = lab_project_csv
+    _, lab_publication_csv_path = lab_publications_csv
+    _, lab_keyword_csv_path = lab_keywords_csv
+    _, lab_protocol_csv_path = lab_protocol_csv
+    _, lab_user_csv_path = lab_user_csv
+    _, lab_project_user_csv_path = lab_project_users_csv
+    ingest_lab(lab_csv_path=lab_csv_path,
+               project_csv_path=lab_project_csv_path,
+               publication_csv_path=lab_publication_csv_path,
+               keyword_csv_path=lab_keyword_csv_path,
+               protocol_csv_path=lab_protocol_csv_path,
+               users_csv_path=lab_user_csv_path,
+               project_user_csv_path=lab_project_user_csv_path, verbose=verbose)
+    return
+
+
+@pytest.fixture
 def subjects_csv():
     """ Create a 'subjects.csv' file"""
     input_subjects = pd.DataFrame(columns=['subject', 'sex',
