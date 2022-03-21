@@ -20,8 +20,8 @@ from element_interface.utils import find_full_path
 _tear_down = True
 verbose = False
 
-test_user_data_dir = pathlib.Path('./tests/user_data')
-test_user_data_dir.mkdir(exist_ok=True)
+pathlib.Path('./tests/user_data').mkdir(exist_ok=True)
+pathlib.Path('./tests/user_data/lab').mkdir(exist_ok=True)
 
 sessions_dirs = ['subject1/session1',
                  'subject2/session1',
@@ -32,6 +32,17 @@ sessions_dirs = ['subject1/session1',
                  'subject6/session1']
 
 # --------------------  HELPER CLASS --------------------
+
+
+def write_csv(content, path):
+    """
+    General function for writing strings to lines in CSV
+    :param path: pathlib PosixPath
+    :param content: list of strings, each as row of CSV
+    """
+    with open(path, 'w') as f:
+        for line in content:
+            f.write(line+'\n')
 
 
 class QuietStdOut:
@@ -300,11 +311,23 @@ def ingest_subjects(pipeline, subjects_csv):
 @pytest.fixture
 def sessions_csv(test_data):
     """ Create a 'sessions.csv' file"""
-    input_sessions = pd.DataFrame(columns=['subject', 'session_dir'])
+    input_sessions = pd.DataFrame(columns=['subject', 'session_dir', 'session_note', 
+                                           'user'])
     input_sessions.subject = ['subject1', 'subject2', 'subject2',
                               'subject3', 'subject4', 'subject5',
                               'subject6']
     input_sessions.session_dir = sessions_dirs
+    input_sessions.session_note = ['Data collection notes',
+                                   'Data collection notes',
+                                   'Interrupted session',
+                                   'Data collection notes',
+                                   'Successful data collection',
+                                   'Successful data collection',
+                                   'Ambient temp abnormally low']
+    input_sessions.user = ['User2', 'User2', 'User2',
+                           'User1', 'User2', 'User1',
+                           'User2']
+
     input_sessions = input_sessions.set_index('subject')
 
     sessions_csv_path = pathlib.Path('./tests/user_data/sessions.csv')
@@ -351,7 +374,7 @@ def ephys_insertionlocation(pipeline, ingest_sessions):
                                              depth=0,
                                              theta=0,
                                              phi=0,
-                                             beta=0))
+                                             beta=0), skip_duplicates=True)
     yield
 
     if _tear_down:
