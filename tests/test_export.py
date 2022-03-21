@@ -63,7 +63,9 @@ def test_write_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, ep
      write_nwb(nwbfile,'/main/test_data/test1.nwb')
 
 
-def test_convert_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, ephys_insertionlocation, kilosort_paramset, ephys_recordings, clustering_tasks, clustering, curations):
+def test_convert_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, 
+                        ephys_insertionlocation, kilosort_paramset, ephys_recordings, 
+                        clustering_tasks, clustering, curations):
     ephys = pipeline['ephys']
     
     session_key = dict(subject='subject5', session_datetime='2018-07-03 20:32:28')
