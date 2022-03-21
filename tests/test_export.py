@@ -9,7 +9,7 @@ from . import (dj_config, pipeline, test_data,
                testdata_paths, ephys_insertionlocation, kilosort_paramset,
                ephys_recordings, clustering_tasks, clustering, curations)
 
-from workflow_array_ephys.pipeline import ecephys_session_to_nwb, session_to_nwb, write_nwb
+from workflow_array_ephys.export import ecephys_session_to_nwb, session_to_nwb, write_nwb
 
 
 def test_session_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions):
