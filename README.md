@@ -34,6 +34,11 @@ https://github.com/datajoint/element-lab/raw/main/images/lab_diagram.svg)
 ![element-animal](
 https://github.com/datajoint/element-animal/raw/main/images/subject_diagram.svg)
 
+### element-session
+
+![element-session](
+https://github.com/datajoint/element-session/raw/main/images/session_diagram.svg)
+
 ### assembled with element-array-ephys
 
 ![element-array-ephys](images/attached_array_ephys_element.svg)
