@@ -46,7 +46,7 @@ https://github.com/datajoint/element-session/raw/main/images/session_diagram.svg
 ## Installation instructions
 
 + The installation instructions can be found at the 
-[datajoint-elements repository](https://github.com/datajoint/datajoint-elements/blob/main/gh-pages/docs/install.md).
+[datajoint-elements repository](https://github.com/datajoint/datajoint-elements/blob/main/gh-pages/docs/usage/install.md).
 
 ## Interacting with the DataJoint workflow
 
