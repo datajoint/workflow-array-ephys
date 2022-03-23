@@ -5,12 +5,13 @@ from element_lab import lab
 from element_session import session
 from element_trial import trial, event
 from element_array_ephys import probe
+from element_electrode_localization import coordinate_framework, electrode_localization
 
 from element_animal.subject import Subject
 from element_lab.lab import Source, Lab, Protocol, User, Project
 from element_session.session_with_datetime import Session
 
-from .paths import get_ephys_root_data_dir, get_session_directory
+from .paths import get_ephys_root_data_dir, get_session_directory, get_electrode_localization_dir
 
 if 'custom' not in dj.config:
     dj.config['custom'] = {}
@@ -30,8 +31,8 @@ else:
     raise ValueError(f'Unknown ephys mode: {ephys_mode}')
     
 __all__ = ['subject', 'lab', 'session', 'trial', 'event', 'probe', 'ephys', 'Subject',
-           'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session',
-           'get_ephys_root_data_dir', 'get_session_directory']
+           'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session', 'coordinate_framework', 'electrode_localization',
+           'get_ephys_root_data_dir', 'get_session_directory', 'get_electrode_localization_dir']
 
 
 # Activate "lab", "subject", "session" schema ---------------------------------
@@ -61,3 +62,17 @@ class SkullReference(dj.Lookup):
 ephys.activate(db_prefix + 'ephys', 
                db_prefix + 'probe', 
                linking_module=__name__)
+
+# Activate "electrode-localization" schema ------------------------------------
+
+ProbeInsertion = ephys.ProbeInsertion
+Electrode = probe.ProbeType.Electrode
+
+electrode_localization.activate(db_prefix + 'electrode_localization',
+                                db_prefix + 'ccf',
+                                linking_module=__name__)
+
+coordinate_framework.load_ccf_annotation(
+    ccf_id=0, version_name='ccf_2017', voxel_resolution=25,
+    nrrd_filepath='./data/annotation_25.nrrd',
+    ontology_csv_filepath='./data/query.csv')
