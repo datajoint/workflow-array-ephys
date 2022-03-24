@@ -42,12 +42,19 @@ ontology_csv_filepath = find_full_path(get_ephys_root_data_dir(), 'query.csv')
 from workflow_array_ephys.localization import coordinate_framework as ccf
 from element_electrode_localization.coordinate_framework import load_ccf_annotation
 load_ccf_annotation(
-    ccf_id=n, version_name='ccf_2017', voxel_resolution=resolution,
+    ccf_id=0, version_name='ccf_2017', voxel_resolution=resolution,
     nrrd_filepath=nrrd_filepath,
     ontology_csv_filepath=ontology_csv_filepath)
 
-from workflow_array_ephys.localization import coordinate_framework as ccf
-ccf.BrainRegionAnnotation()
+# Now, to explore the data we just loaded.
 
+ccf.BrainRegionAnnotation.BrainRegion()
 
-ccf.BrainRe
+ccf.BrainRegionAnnotation.Voxel()
+
+# If you have `channel_location` json files for your data, you can look at the position and regions associated with each electrode.
+
+from workflow_array_ephys.localization import electrode_localization as eloc
+eloc.ElectrodePosition.populate()
+
+eloc.ElectrodePosition.Electrode()
