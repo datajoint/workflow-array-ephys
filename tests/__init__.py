@@ -113,6 +113,7 @@ def pipeline():
            'probe': pipeline.probe,
            'session': pipeline.session,
            'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
+
     if verbose and _tear_down:
         pipeline.subject.Subject.delete()
     elif not verbose and _tear_down:
