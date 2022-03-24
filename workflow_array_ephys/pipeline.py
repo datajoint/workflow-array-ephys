@@ -3,7 +3,7 @@ import os
 from element_animal import subject
 from element_lab import lab
 from element_session import session
-from element_trial import trial, event
+from element_event import trial, event
 from element_array_ephys import probe
 from element_electrode_localization import coordinate_framework, electrode_localization
 
@@ -44,7 +44,10 @@ subject.activate(db_prefix + 'subject', linking_module=__name__)
 Experimenter = lab.User
 session.activate(db_prefix + 'session', linking_module=__name__)
 
-trial.activate(db_prefix + 'trial', db_prefix + 'event', linking_module= __name__)
+
+# Activate "event" and "trial" schema ---------------------------------
+
+trial.activate(db_prefix + 'trial', db_prefix + 'event', linking_module=__name__)
 
 
 # Declare table "SkullReference" for use in element-array-ephys ---------------
@@ -72,7 +75,11 @@ electrode_localization.activate(db_prefix + 'electrode_localization',
                                 db_prefix + 'ccf',
                                 linking_module=__name__)
 
-coordinate_framework.load_ccf_annotation(
-    ccf_id=0, version_name='ccf_2017', voxel_resolution=25,
-    nrrd_filepath='./data/annotation_25.nrrd',
-    ontology_csv_filepath='./data/query.csv')
+ccf_id = 0
+voxel_resolution = 100
+
+if not (coordinate_framework.CCF & {'ccf_id': ccf_id}):
+    coordinate_framework.load_ccf_annotation(
+        ccf_id=ccf_id, version_name='ccf_2017', voxel_resolution=voxel_resolution,
+        nrrd_filepath=f'./data/annotation_{voxel_resolution}.nrrd',
+        ontology_csv_filepath='./data/query.csv')
