@@ -1,0 +1,37 @@
+# docker-compose -f ./docker/docker-compose-dev.yaml up -d --build
+# docker-compose -f ./docker/docker-compose-dev.yaml down
+
+version: "2.4"
+x-net: &net
+  networks:
+      - main
+services:
+  db:
+    <<: *net
+    image: datajoint/mysql:5.7
+    container_name: workflow-array-ephys-dev-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=simple
+  workflow:
+    <<: *net
+    build:
+      context: ../../
+      dockerfile: ./workflow-array-ephys/docker/Dockerfile.dev
+    env_file: .env
+    image: workflow-array-ephys-dev:0.1.0a4
+    container_name: workflow-array-ephys-dev
+    environment:
+      - EPHYS_ROOT_DATA_DIR=/main/test_data/workflow_ephys_data1/,/main/test_data/workflow_ephys_data2/
+    volumes:
+      - ${TEST_DATA_DIR}:/main/test_data
+      - ./apt_requirements.txt:/tmp/apt_requirements.txt
+      - ../../element-lab:/main/element-lab
+      - ../../element-animal:/main/element-animal
+      - ../../element-session:/main/element-session
+      - ../../element-array-ephys:/main/element-array-ephys
+      - ..:/main/workflow-array-ephys
+    depends_on:
+      db:
+        condition: service_healthy
+networks:
+  main:
