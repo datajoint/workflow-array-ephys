@@ -2,33 +2,59 @@ import datajoint as dj
 import os
 from element_animal import subject
 from element_lab import lab
+<<<<<<< HEAD
 from element_session import session_with_datetime as session
 from element_array_ephys import probe
 from element_trial import trial, event
+=======
+from element_session import session
+from element_event import trial, event
+from element_array_ephys import probe
+from element_electrode_localization import coordinate_framework, electrode_localization
+>>>>>>> 3c9f7f180efde3a914c20a01bcba3a118cd4534d
 
 from element_animal.subject import Subject
 from element_lab.lab import Source, Lab, Protocol, User, Project
 from element_session.session_with_datetime import Session
 
+<<<<<<< HEAD
+=======
+from .paths import get_ephys_root_data_dir, get_session_directory, get_electrode_localization_dir
+
+>>>>>>> 3c9f7f180efde3a914c20a01bcba3a118cd4534d
 if 'custom' not in dj.config:
     dj.config['custom'] = {}
 
 db_prefix = dj.config['custom'].get('database.prefix', '')
 
+<<<<<<< HEAD
 __all__ = ['subject', 'lab', 'session', 'trial', 'event', 'probe', 'ephys',
            'Subject', 'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session']
 
+=======
+>>>>>>> 3c9f7f180efde3a914c20a01bcba3a118cd4534d
 # ------------- Import the configured "ephys mode" -------------
 ephys_mode = os.getenv('EPHYS_MODE',
                        dj.config['custom'].get('ephys_mode', 'acute'))
 if ephys_mode == 'acute':
+<<<<<<< HEAD
     from element_array_ephys import ephys_acute as ephys
+=======
+    from element_array_ephys import ephys
+>>>>>>> 3c9f7f180efde3a914c20a01bcba3a118cd4534d
 elif ephys_mode == 'chronic':
     from element_array_ephys import ephys_chronic as ephys
 elif ephys_mode == 'no-curation':
     from element_array_ephys import ephys_no_curation as ephys
 else:
     raise ValueError(f'Unknown ephys mode: {ephys_mode}')
+<<<<<<< HEAD
+=======
+    
+__all__ = ['subject', 'lab', 'session', 'trial', 'event', 'probe', 'ephys', 'Subject',
+           'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session', 'coordinate_framework', 'electrode_localization',
+           'get_ephys_root_data_dir', 'get_session_directory', 'get_electrode_localization_dir']
+>>>>>>> 3c9f7f180efde3a914c20a01bcba3a118cd4534d
 
 
 # Activate "lab", "subject", "session" schema ---------------------------------
@@ -39,6 +65,11 @@ subject.activate(db_prefix + 'subject', linking_module=__name__)
 
 Experimenter = lab.User
 session.activate(db_prefix + 'session', linking_module=__name__)
+
+trial.activate(db_prefix + 'trial', db_prefix + 'event', linking_module=__name__)
+
+
+# Activate "event" and "trial" schema ---------------------------------
 
 trial.activate(db_prefix + 'trial', db_prefix + 'event', linking_module=__name__)
 
@@ -58,3 +89,21 @@ class SkullReference(dj.Lookup):
 ephys.activate(db_prefix + 'ephys',
                db_prefix + 'probe',
                linking_module=__name__)
+
+# Activate "electrode-localization" schema ------------------------------------
+
+ProbeInsertion = ephys.ProbeInsertion
+Electrode = probe.ProbeType.Electrode
+
+electrode_localization.activate(db_prefix + 'electrode_localization',
+                                db_prefix + 'ccf',
+                                linking_module=__name__)
+
+ccf_id = 0
+voxel_resolution = 100
+
+if not (coordinate_framework.CCF & {'ccf_id': ccf_id}):
+    coordinate_framework.load_ccf_annotation(
+        ccf_id=ccf_id, version_name='ccf_2017', voxel_resolution=voxel_resolution,
+        nrrd_filepath=f'./data/annotation_{voxel_resolution}.nrrd',
+        ontology_csv_filepath='./data/query.csv')

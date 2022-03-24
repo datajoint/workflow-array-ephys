@@ -71,8 +71,8 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True,
         # search session dir and determine acquisition software
         for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'],
                                                  ['SpikeGLX', 'OpenEphys']):
-            ephys_meta_filepaths = [fp for fp in session_dir.rglob(ephys_pattern)]
-            if len(ephys_meta_filepaths):
+            ephys_meta_filepaths = list(session_dir.rglob(ephys_pattern))
+            if ephys_meta_filepaths:
                 acq_software = ephys_acq_type
                 break
         else:

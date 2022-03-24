@@ -44,6 +44,7 @@ services:
       - ../../element-animal:/main/element-animal
       - ../../element-session:/main/element-session
       - ../../element-electrode-localization:/main/element-electrode-localization
+      - ../../element-trial:/main/element-trial
       - ../../element-array-ephys:/main/element-array-ephys
       - ..:/main/workflow-array-ephys
     depends_on:

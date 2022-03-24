@@ -57,7 +57,9 @@ def dj_config():
                        or dj.config['custom']['ephys_mode']),
         'database.prefix': (os.environ.get('DATABASE_PREFIX')
                             or dj.config['custom']['database.prefix']),
-        'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR').split(',') if os.environ.get('EPHYS_ROOT_DATA_DIR') else dj.config['custom']['ephys_root_data_dir'])
+        'ephys_root_data_dir': (os.environ.get('EPHYS_ROOT_DATA_DIR').split(',')
+                                if os.environ.get('EPHYS_ROOT_DATA_DIR')
+                                else dj.config['custom']['ephys_root_data_dir'])
     }
     return
 
@@ -200,6 +202,7 @@ def testdata_paths():
         'npx3B-p1-ks': 'subject6/session1/towersTask_g0_imec0'
     }
 
+
 @pytest.fixture
 def ephys_insertionlocation(pipeline, ingest_sessions):
     """Insert probe location into ephys.InsertionLocation"""
@@ -222,6 +225,7 @@ def ephys_insertionlocation(pipeline, ingest_sessions):
         else:
             with QuietStdOut():
                 ephys.InsertionLocation.delete()
+
 
 @pytest.fixture
 def kilosort_paramset(pipeline):
@@ -344,9 +348,11 @@ def curations(clustering, pipeline):
         for key in (ephys.ClusteringTask - ephys.Curation).fetch('KEY'):
             ephys.Curation().create1_from_clustering_task(key)
 
-    if _tear_down:
-        if verbose:
-            ephys.Curation.delete()
-        else:
-            with QuietStdOut():
+        yield
+
+        if _tear_down:
+            if verbose:
                 ephys.Curation.delete()
+            else:
+                with QuietStdOut():
+                    ephys.Curation.delete()

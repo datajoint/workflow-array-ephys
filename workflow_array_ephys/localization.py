@@ -6,7 +6,6 @@ from .pipeline import ephys, probe
 from .paths import get_ephys_root_data_dir, get_session_directory, \
                    get_electrode_localization_dir
 
-
 if 'custom' not in dj.config:
     dj.config['custom'] = {}
 
@@ -18,9 +17,14 @@ __all__ = ['ephys', 'probe', 'coordinate_framework', 'electrode_localization',
            'get_electrode_localization_dir', 'load_ccf_annotation']
 
 
+ccf_id = 0
+voxel_resolution = 100
+
+
 # Dummy table for case sensitivity in MySQL------------------------------------
 
 coordinate_framework_schema = dj.schema(db_prefix + 'ccf')
+
 
 @coordinate_framework_schema
 class DummyTable(dj.Manual):
@@ -35,7 +39,6 @@ dj.conn().query(f'ALTER DATABASE `{ccf_schema_name}` CHARACTER SET utf8 COLLATE 
                 + 'utf8_bin;')
 
 
-
 # Activate "electrode-localization" schema ------------------------------------
 
 ProbeInsertion = ephys.ProbeInsertion
@@ -43,3 +46,9 @@ Electrode = probe.ProbeType.Electrode
 electrode_localization.activate(db_prefix + 'eloc',
                                 db_prefix + 'ccf',
                                 linking_module=__name__)
+
+if not (coordinate_framework.CCF & {'ccf_id': ccf_id}):
+    coordinate_framework.load_ccf_annotation(
+        ccf_id=ccf_id, version_name='ccf_2017', voxel_resolution=voxel_resolution,
+        nrrd_filepath=f'./data/annotation_{voxel_resolution}.nrrd',
+        ontology_csv_filepath='./data/query.csv')
