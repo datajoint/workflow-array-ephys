@@ -17,8 +17,8 @@ if 'custom' not in dj.config:
 
 db_prefix = dj.config['custom'].get('database.prefix', '')
 
-__all__ = ['subject', 'lab', 'session', 'trial', 'event', 'probe', 'ephys', 'Subject',
-           'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session',
+__all__ = ['subject', 'lab', 'session', 'trial', 'event', 'probe', 'ephys',
+           'Subject', 'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session',
            'get_ephys_root_data_dir', 'get_session_directory']
 
 
@@ -26,13 +26,14 @@ __all__ = ['subject', 'lab', 'session', 'trial', 'event', 'probe', 'ephys', 'Sub
 ephys_mode = os.getenv('EPHYS_MODE',
                        dj.config['custom'].get('ephys_mode', 'acute'))
 if ephys_mode == 'acute':
-    from element_array_ephys import ephys
+    from element_array_ephys import ephys_acute as ephys
 elif ephys_mode == 'chronic':
     from element_array_ephys import ephys_chronic as ephys
 elif ephys_mode == 'no-curation':
     from element_array_ephys import ephys_no_curation as ephys
 else:
     raise ValueError(f'Unknown ephys mode: {ephys_mode}')
+
 
 # Activate "lab", "subject", "session" schema ---------------------------------
 

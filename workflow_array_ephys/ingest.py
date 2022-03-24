@@ -15,12 +15,14 @@ def ingest_general(csvs, tables, skip_duplicates=True, verbose=True,
     Inserts data from a series of csvs into their corresponding table:
         e.g., ingest_general(['./lab_data.csv', './proj_data.csv'],
                                  [lab.Lab(),lab.Project()]
-    ingest_general(csvs, tables, skip_duplicates=True, verbose=True, allow_direct_insert=False)
+    ingest_general(csvs, tables, skip_duplicates=True, verbose=True,
+                   allow_direct_insert=False)
         :param csvs: list of relative paths to CSV files.  CSV are delimited by commas.
         :param tables: list of datajoint tables with ()
         :param verbose: print number inserted (i.e., table length change)
-        :param skip_duplicates: <description>
-        :param allow_direct_insert: <description>
+        :param skip_duplicates: skip items that are either (a) duplicates within the csv
+                                or (b) already exist in the corresponding table
+        :param allow_direct_insert: Permit insertion directly into calculated tables
     """
     for csv_filepath, table in zip(csvs, tables):
         with open(csv_filepath, newline='') as f:

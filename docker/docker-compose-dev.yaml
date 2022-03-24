@@ -6,7 +6,7 @@ x-net: &net
   networks:
       - main
 services:
-  array-ephys-dev-db:
+  db:
     <<: *net
     image: datajoint/mysql:5.7
     container_name: workflow-array-ephys-dev-db
@@ -29,6 +29,7 @@ services:
       - ../../element-animal:/main/element-animal
       - ../../element-session:/main/element-session
       - ../../element-trial:/main/element-trial
+      - ../../element-electrode-localization:/main/element-electrode-localization
       - ../../element-array-ephys:/main/element-array-ephys
       - ..:/main/workflow-array-ephys
     depends_on:
