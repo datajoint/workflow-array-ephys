@@ -6,7 +6,7 @@ x-net: &net
   networks:
       - main
 services:
-  array-ephys-dev-db:
+  db:
     <<: *net
     image: datajoint/mysql:5.7
     container_name: workflow-array-ephys-dev-db
