@@ -77,7 +77,7 @@ class SpikesAlignment(dj.Computed):
         for unit_spike_raster in units_spike_raster.values():
             spikes = np.concatenate(unit_spike_raster['aligned_spikes'])
 
-            psth, edges = np.histogram(spikes, bins=np.arange(min_limit, max_limit, bin_size))
+            psth, edges = np.histogram(spikes, bins=np.arange(-min_limit, max_limit, bin_size))
             unit_spike_raster['psth'] = psth / len(unit_spike_raster.pop('aligned_spikes')) / bin_size
             unit_spike_raster['psth_edges'] = edges[1:]
 
