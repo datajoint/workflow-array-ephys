@@ -12,7 +12,7 @@ anchor-dev-if: &dev-if
     startsWith(github.ref, 'refs/tags') &&
     github.repository_owner == 'yambottle'
 anchor-dev-workflow: &dev-workflow
-  uses: dj-sciops/djsciops-cicd/.github/workflows/u24_docker_images.yaml@main
+  uses: Yambottle/djsciops-cicd/.github/workflows/u24_docker_images.yaml@main
 ### For Github Action run in your own fork with release
 anchor-test-if: &test-if
   if: |
