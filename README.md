@@ -36,13 +36,17 @@ https://github.com/datajoint/element-lab/raw/main/images/lab_diagram.svg)
 ![element-animal](
 https://github.com/datajoint/element-animal/raw/main/images/subject_diagram.svg)
 
-### assembled with element-array-ephys
+### Assembled with element-array-ephys
 
-![element-array-ephys](images/attached_array_ephys_element.svg)
+![attached-element-array-ephys](images/attached_array_ephys_element.svg)
 
-### assembled with element-event and workflow analysis
+### Assembled with element-event and workflow analysis
 
-![worklow-trial-analysis](attached_trial_analysis.svg)
+![attached-trial-analysis](./images/attached_trial_analysis.svg)
+
+## Assembled with element-electrode-localization
+
+![attached-electrode-localization](./images/attached_electrode_localization.svg)
 
 ## Installation instructions
 
