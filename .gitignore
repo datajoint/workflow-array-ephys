@@ -118,6 +118,7 @@ Diagram.ipynb
 
 # docker
 .env
+*.pem
 
 # vscode
 .vscode/settings.json
