@@ -1,10 +1,12 @@
 import datajoint as dj
+from element_interface.utils import find_full_path
 from element_electrode_localization import coordinate_framework, electrode_localization
 from element_electrode_localization.coordinate_framework import load_ccf_annotation
 
 from .pipeline import ephys, probe
 from .paths import get_ephys_root_data_dir, get_session_directory, \
                    get_electrode_localization_dir
+
 
 if 'custom' not in dj.config:
     dj.config['custom'] = {}
@@ -21,34 +23,41 @@ ccf_id = 0
 voxel_resolution = 100
 
 
-# Dummy table for case sensitivity in MySQL------------------------------------
+# # Dummy table for case sensitivity in MySQL------------------------------------
+# # Without DummyTable, the schema activates with a case-insensitive character set
+# # which cannot ingest all CCF standard acronyms
 
-coordinate_framework_schema = dj.schema(db_prefix + 'ccf')
-
-
-@coordinate_framework_schema
-class DummyTable(dj.Manual):
-    definition = """
-    id   : varchar(1)
-    """
-    contents = zip(['1', '2'])
+# coordinate_framework_schema = dj.schema(db_prefix + 'ccf')
 
 
-ccf_schema_name = db_prefix + 'ccf'
-dj.conn().query(f'ALTER DATABASE `{ccf_schema_name}` CHARACTER SET utf8 COLLATE '
-                + 'utf8_bin;')
+# @coordinate_framework_schema
+# class DummyTable(dj.Manual):
+#     definition = """
+#     id   : varchar(1)
+#     """
+#     contents = zip(['1', '2'])
+
+
+# ccf_schema_name = db_prefix + 'ccf'
+# dj.conn().query(f'ALTER DATABASE `{ccf_schema_name}` CHARACTER SET utf8 COLLATE '
+#                 + 'utf8_bin;')
 
 
 # Activate "electrode-localization" schema ------------------------------------
 
 ProbeInsertion = ephys.ProbeInsertion
 Electrode = probe.ProbeType.Electrode
+
 electrode_localization.activate(db_prefix + 'eloc',
                                 db_prefix + 'ccf',
                                 linking_module=__name__)
 
+nrrd_filepath = find_full_path(get_ephys_root_data_dir(),
+                               f'annotation_{voxel_resolution}.nrrd')
+ontology_csv_filepath = find_full_path(get_ephys_root_data_dir(), 'query.csv')
+
 if not (coordinate_framework.CCF & {'ccf_id': ccf_id}):
     coordinate_framework.load_ccf_annotation(
         ccf_id=ccf_id, version_name='ccf_2017', voxel_resolution=voxel_resolution,
-        nrrd_filepath=f'./data/annotation_{voxel_resolution}.nrrd',
-        ontology_csv_filepath='./data/query.csv')
+        nrrd_filepath=nrrd_filepath,
+        ontology_csv_filepath=ontology_csv_filepath)

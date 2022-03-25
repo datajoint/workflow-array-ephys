@@ -24,37 +24,39 @@ if os.path.basename(os.getcwd())=='notebooks': os.chdir('..')
 assert os.path.basename(os.getcwd())=='workflow-array-ephys', ("Please move to the "
                                                                + "workflow directory")
 
-# The Allen Institute hosts [brain atlases](http://download.alleninstitute.org/informatics-archive/current-release/mouse_ccf/annotation/ccf_2017) and [ontology trees](https://community.brain-map.org/t/allen-mouse-ccf-accessing-and-using-related-data-and-tools/359) that we'll use in the next section.
-# 1. Download the `nrrd` and `csv` files that correspond too your desired resolution
-# 2. Move these files to your ephys root directory.
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# ## Coordinate Framework
+# -
+
+# The Allen Institute hosts [brain atlases](http://download.alleninstitute.org/informatics-archive/current-release/mouse_ccf/annotation/ccf_2017) and [ontology trees](https://community.brain-map.org/t/allen-mouse-ccf-accessing-and-using-related-data-and-tools/359) that we'll use in the next section. The `localization.py` script assumes this is your first atlas, and that you'll use the 100μm resolution. For finer resolutions, edit `voxel_resolution` in `localization.py`. Higher resolution `nrrd` files are quite large when loaded. Depending on the python environment, the terminal may be killed when loading so much information into memory. To load multiple atlases, increment `ccf_id` for each unique atlas.
 #
-# Note that the higher resolution (i.e., lower number) files are quite large when loaded. Depending on the python environment, the terminal may be killed when loading so much information into memory.
+# To run this pipeline ...
+# 1. Download the 100μm `nrrd` and `csv` files from the links above.
+# 2. Move these files to your ephys root directory.
 
-resolution = 100
-from element_interface.utils import find_full_path
-from workflow_array_ephys.paths import get_ephys_root_data_dir
-nrrd_filepath = find_full_path(get_ephys_root_data_dir(), 
-                               f'annotation_{resolution}.nrrd')
-ontology_csv_filepath = find_full_path(get_ephys_root_data_dir(), 'query.csv')
-
-# Next, we'll load annotation information from the files above to generate a set of lookup tables for the entire brain volume.
+# Next, we'll populate the coordinate framework schema simply by loading it.
 
 from workflow_array_ephys.localization import coordinate_framework as ccf
-from element_electrode_localization.coordinate_framework import load_ccf_annotation
-load_ccf_annotation(
-    ccf_id=0, version_name='ccf_2017', voxel_resolution=resolution,
-    nrrd_filepath=nrrd_filepath,
-    ontology_csv_filepath=ontology_csv_filepath)
 
 # Now, to explore the data we just loaded.
 
 ccf.BrainRegionAnnotation.BrainRegion()
 
-ccf.BrainRegionAnnotation.Voxel()
+# Let's look at the dimensions of the primary somatosensory cortex, which has the acronym `SSp1`. To look at other regions, open the CSV you downloaded and search for your desired region.
 
-# If you have `channel_location` json files for your data, you can look at the position and regions associated with each electrode.
+ccf.BrainRegionAnnotation.Voxel() & 'acronym="SSp1"'
 
+# ## Electrode Localization
+
+# If you have `channel_location` json files for your data, you can look at the position and regions associated with each electrode. Here, we've added an example file to our pre-existing `subject6` for demonstration purposes.
+
+dj.config.load('dj_local_conf.json')
+from workflow_array_ephys.pipeline import subject, session, ephys, probe
 from workflow_array_ephys.localization import electrode_localization as eloc
-eloc.ElectrodePosition.populate()
 
+from workflow_array_ephys.localization import coordinate_framework as ccf
+
+eloc.ElectrodePosition.populate()
 eloc.ElectrodePosition.Electrode()
+
+
