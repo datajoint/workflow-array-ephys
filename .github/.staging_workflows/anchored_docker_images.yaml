@@ -45,7 +45,8 @@ jobs:
         name: Get build metadata
         run: |
           ## Get workflow version as codebook env image version
-          echo "::set-output name=workflow_version::$(cat workflow/version.py | tail -1 | awk -F\' '{print $2}')"
+          PACKAGE_DIR=$(ls | grep workflow)
+          echo "::set-output name=workflow_version::$(cat ${PACKAGE_DIR}/version.py | tail -1 | awk -F\' '{print $2}')"
       - id: create_release
         name: Create release
         !!merge <<: *$STAGE-if
