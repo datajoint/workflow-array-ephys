@@ -12,4 +12,4 @@ services:
         - DEPLOY_KEY
         - REPO_OWNER
         - REPO_NAME
-    image: registry.vathes.com/datajoint/codebook-${REPO_NAME}:jhub${JHUB_VER}-py${PY_VER}-${DIST}-v${WORKFLOW_VERSION}
+    image: registry.vathes.com/${REPO_OWNER}/codebook-${REPO_NAME}:jhub${JHUB_VER}-py${PY_VER}-${DIST}-v${WORKFLOW_VERSION}
