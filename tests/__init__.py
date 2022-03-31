@@ -117,6 +117,7 @@ def pipeline():
            'session': pipeline.session,
            'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir,
            'ephys_mode': pipeline.ephys_mode}
+           'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
 
     if verbose and _tear_down:
         pipeline.subject.Subject.delete()
