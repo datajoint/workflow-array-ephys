@@ -2,9 +2,9 @@ import datajoint as dj
 import os
 from element_animal import subject
 from element_lab import lab
-from element_session import session
-from element_trial import trial, event
+from element_session import session_with_datetime as session
 from element_array_ephys import probe
+from element_event import trial, event
 
 from element_animal.subject import Subject
 from element_lab.lab import Source, Lab, Protocol, User, Project
@@ -17,21 +17,21 @@ if 'custom' not in dj.config:
 
 db_prefix = dj.config['custom'].get('database.prefix', '')
 
+__all__ = ['subject', 'lab', 'session', 'trial', 'event', 'probe', 'ephys',
+           'Subject', 'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session',
+           'get_ephys_root_data_dir', 'get_session_directory']
+
 # ------------- Import the configured "ephys mode" -------------
 ephys_mode = os.getenv('EPHYS_MODE',
                        dj.config['custom'].get('ephys_mode', 'acute'))
 if ephys_mode == 'acute':
-    from element_array_ephys import ephys
+    from element_array_ephys import ephys_acute as ephys
 elif ephys_mode == 'chronic':
     from element_array_ephys import ephys_chronic as ephys
 elif ephys_mode == 'no-curation':
     from element_array_ephys import ephys_no_curation as ephys
 else:
     raise ValueError(f'Unknown ephys mode: {ephys_mode}')
-    
-__all__ = ['subject', 'lab', 'session', 'trial', 'event', 'probe', 'ephys', 'Subject',
-           'Source', 'Lab', 'Protocol', 'User', 'Project', 'Session',
-           'get_ephys_root_data_dir', 'get_session_directory']
 
 
 # Activate "lab", "subject", "session" schema ---------------------------------
@@ -43,7 +43,12 @@ subject.activate(db_prefix + 'subject', linking_module=__name__)
 Experimenter = lab.User
 session.activate(db_prefix + 'session', linking_module=__name__)
 
-trial.activate(db_prefix + 'trial', db_prefix + 'event', linking_module= __name__)
+trial.activate(db_prefix + 'trial', db_prefix + 'event', linking_module=__name__)
+
+
+# Activate "event" and "trial" schema ---------------------------------
+
+trial.activate(db_prefix + 'trial', db_prefix + 'event', linking_module=__name__)
 
 
 # Declare table "SkullReference" for use in element-array-ephys ---------------
@@ -58,6 +63,6 @@ class SkullReference(dj.Lookup):
 
 # Activate "ephys" schema -----------------------------------------------------
 
-ephys.activate(db_prefix + 'ephys', 
-               db_prefix + 'probe', 
+ephys.activate(db_prefix + 'ephys',
+               db_prefix + 'probe',
                linking_module=__name__)

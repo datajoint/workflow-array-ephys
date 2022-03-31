@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def _plot_spike_raster(aligned_spikes, trial_ids=None, vlines=[0], ax=None, title='', xlim=None):
+def _plot_spike_raster(aligned_spikes, trial_ids=None, vlines=[0], ax=None, title='',
+                       xlim=None):
     if not ax:
         fig, ax = plt.subplots(1, 1)
 

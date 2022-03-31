@@ -15,12 +15,14 @@ def ingest_general(csvs, tables, skip_duplicates=True, verbose=True,
     Inserts data from a series of csvs into their corresponding table:
         e.g., ingest_general(['./lab_data.csv', './proj_data.csv'],
                                  [lab.Lab(),lab.Project()]
-    ingest_general(csvs, tables, skip_duplicates=True, verbose=True, allow_direct_insert=False)
+    ingest_general(csvs, tables, skip_duplicates=True, verbose=True,
+                   allow_direct_insert=False)
         :param csvs: list of relative paths to CSV files.  CSV are delimited by commas.
         :param tables: list of datajoint tables with ()
         :param verbose: print number inserted (i.e., table length change)
-        :param skip_duplicates: <description>
-        :param allow_direct_insert: <description>
+        :param skip_duplicates: skip items that are either (a) duplicates within the csv
+                                or (b) already exist in the corresponding table
+        :param allow_direct_insert: Permit insertion directly into calculated tables
     """
     for csv_filepath, table in zip(csvs, tables):
         with open(csv_filepath, newline='') as f:
@@ -47,7 +49,8 @@ def ingest_subjects(subject_csv_path='./user_data/subjects.csv',
     ingest_general(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose)
 
 
-def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
+def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True,
+                    skip_duplicates=False):
     """
     Ingests SpikeGLX and OpenEphys files from directories listed
     in the session_dir column of ./user_data/sessions.csv
@@ -66,7 +69,8 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
         session_datetimes, insertions = [], []
 
         # search session dir and determine acquisition software
-        for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'], ['SpikeGLX', 'OpenEphys']):
+        for ephys_pattern, ephys_acq_type in zip(['*.ap.meta', '*.oebin'],
+                                                 ['SpikeGLX', 'OpenEphys']):
             ephys_meta_filepaths = list(session_dir.rglob(ephys_pattern))
             if ephys_meta_filepaths:
                 acq_software = ephys_acq_type
@@ -130,16 +134,19 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
         session.Session.insert(session_list)
         session.SessionDirectory.insert(session_dir_list)
         if verbose:
-            print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
-            print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
+            print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into '
+                  + 'ephys.ProbeInsertion ----')
+            print(f'\n---- Insert {len(session_list)} entry(s) into '
+                  + 'session.Session ----')
     else:
         session.Session.insert(session_list)
         session.SessionDirectory.insert(session_dir_list)
         ephys.ProbeInsertion.insert(probe_insertion_list)
         if verbose:
-            print(f'\n---- Insert {len(session_list)} entry(s) into session.Session ----')
-            print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into ephys.ProbeInsertion ----')
-
+            print(f'\n---- Insert {len(probe_insertion_list)} entry(s) into '
+                  + 'ephys.ProbeInsertion ----')
+            print(f'\n---- Insert {len(session_list)} entry(s) into '
+                  + 'session.Session ----')
     if verbose:
         print('\n---- Successfully completed workflow_array_ephys/ingest.py ----')
 
@@ -153,12 +160,12 @@ def ingest_events(recording_csv_path='./user_data/behavior_recordings.csv',
             block_csv_path, block_csv_path,
             trial_csv_path, trial_csv_path, trial_csv_path,
             trial_csv_path,
-            event_csv_path,event_csv_path]
+            event_csv_path, event_csv_path, event_csv_path]
     tables = [event.BehaviorRecording(), event.BehaviorRecording.File(),
               trial.Block(), trial.Block.Attribute(),
               trial.TrialType(), trial.Trial(), trial.Trial.Attribute(),
               trial.BlockTrial(),
-              event.EventType(), event.Event()]
+              event.EventType(), event.Event(), trial.TrialEvent()]
 
     # Allow direct insert required bc element-trial has Imported that should be Manual
     ingest_general(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose,

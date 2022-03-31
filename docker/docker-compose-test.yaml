@@ -9,22 +9,25 @@ x-net: &net
   networks:
       - main
 services:
-  array-ephys-test-db:
+  db:
     <<: *net
     image: datajoint/mysql:5.7
+    container_name: workflow-array-ephys-test-db
     environment:
       - MYSQL_ROOT_PASSWORD=simple
-  array-ephys-test-workflow:
+  workflow:
     <<: *net
     build:
       context: ../../
       dockerfile: ./workflow-array-ephys/docker/Dockerfile.test
     env_file: .env
-    image: workflow_array_ephys_test:0.1.0a4
+    image: workflow-array-ephys-test:0.1.0a4
+    container_name: workflow-array-ephys-test
     environment:
       - DJ_HOST=db
       - DJ_USER=root
       - DJ_PASS=simple
+      - EPHYS_MODE=no-curation
       - EPHYS_ROOT_DATA_DIR=/main/test_data/workflow_ephys_data1/,/main/test_data/workflow_ephys_data2/
       - DATABASE_PREFIX=test_
     command:
@@ -40,11 +43,12 @@ services:
       - ../../element-lab:/main/element-lab
       - ../../element-animal:/main/element-animal
       - ../../element-session:/main/element-session
+      - ../../element-electrode-localization:/main/element-electrode-localization
       - ../../element-trial:/main/element-trial
       - ../../element-array-ephys:/main/element-array-ephys
       - ..:/main/workflow-array-ephys
     depends_on:
-      array-ephys-test-db:
+      db:
         condition: service_healthy
 networks:
   main:
