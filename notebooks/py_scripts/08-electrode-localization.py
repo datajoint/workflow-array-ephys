@@ -67,5 +67,35 @@ print(f'The central thalamus extends from \n\tx = {min(cm_x)}  to x = {max(cm_x)
 from workflow_array_ephys.localization import coordinate_framework as ccf
 from workflow_array_ephys.localization import electrode_localization as eloc
 
-elocBrainRegionAnnotationodePosition.populate()
-eloc.ElectrodePosition.Electrode()
+# Because the probe may not be fully inserted, there will be some electrode positions that occur outside the brain. We register these instances with an `IntegrityError` warning because we're trying to register a coorinate position with no corresponding location in the `ccf.CCF.Voxel` table. We can silence these warnings by setting the log level before running `populate()` on the `ElectrodePosition` table.
+
+import logging
+logging.getLogger().setLevel(logging.ERROR) # or logging.INFO
+
+eloc.ElectrodePosition.populate()
+
+# By calling the `ElectrodePosition` table, we can see the keys the `populate()` method has already processed.
+
+eloc.ElectrodePosition()
+
+# Let's focus on `subject5`, insertion `1`.
+
+from workflow_array_ephys.pipeline import ephys
+key=(ephys.EphysRecording & 'subject="subject5"' & 'insertion_number=1').fetch1('KEY')
+len(eloc.ElectrodePosition.Electrode & key)
+
+# With a resolution of 100μm, adjacent electrodes will very likely be in the same region. Let's look at every 38th electrode to sample 10 across the probe.
+#
+# If you're interested in more electrodes, decrease the number next to the `%` modulo operator.
+
+electrode_coordinates = (eloc.ElectrodePosition.Electrode & 'electrode%38=0' 
+                         & key).fetch('electrode', 'x', 'y', 'z', as_dict=True)
+for e in electrode_coordinates:
+    x, y, z = [ e[k] for k in ('x','y', 'z')]
+    acronym = (ccf.BrainRegionAnnotation.Voxel & f'x={x}' & f'y={y}' & f'z={z}'
+               ).fetch1('acronym')
+    e['region'] = (ccf.BrainRegionAnnotation.BrainRegion & f'acronym=\"{acronym}\"'
+                   ).fetch1('region_name')
+    print('Electrode {electrode} (x={x}, y={y}, z={z}) is in {region}'.format(**e))
+
+

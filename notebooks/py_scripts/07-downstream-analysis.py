@@ -15,9 +15,10 @@
 
 # + [markdown] tags=[]
 # # DataJoint U24 - Workflow Array Electrophysiology
-# -
 
+# + [markdown] tags=[]
 # ## Setup
+# -
 
 # First, let's change directories to find the `dj_local_conf` file.
 
@@ -33,7 +34,9 @@ import datajoint as dj; dj.config['display.limit']=10
 
 from workflow_array_ephys.pipeline import session, ephys, trial, event
 
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
 # ## Trial and Event schemas
+# -
 
 # Tables in the `trial` and `event` schemas specify the structure of your experiment, including block, trial and event timing. 
 # - Session has a 1-to-1 mapping with a behavior recording
@@ -97,6 +100,8 @@ ctrl_trials = trial.Trial & clustering_key & 'trial_type = "ctrl"'
 from workflow_array_ephys import analysis
 
 # + ***SpikesAlignmentCondition*** - a manual table to specify the inputs and condition for the analysis
+
+
 # + ***SpikesAlignment*** - a computed table to extract event-aligned spikes and compute unit PSTH
 
 # Let's start by creating several analyses configuration - i.e. inserting into ***SpikesAlignmentCondition*** for the `center` event, called `center_button` in the `AlignmentEvent` table.
@@ -117,12 +122,20 @@ analysis.SpikesAlignmentCondition.Trial()
 
 # With the steps above, we have create a new spike alignment condition for analysis, named `ctrl_center_button`, which specifies:
 # + a CuratedClustering of interest for analysis
+
+
 # + an event of interest to align the spikes to - `center_button`
+
+
 # + a set of trials of interest to perform the analysis on - `ctrl` trials
 
 # Now, let's create another set with:
 # + the same CuratedClustering of interest for analysis
+
+
 # + an event of interest to align the spikes to - `center_button`
+
+
 # + a set of trials of interest to perform the analysis on - `stim` trials
 
 stim_trials = trial.Trial & clustering_key & 'trial_type = "stim"'
