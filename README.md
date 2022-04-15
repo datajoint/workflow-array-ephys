@@ -18,6 +18,10 @@ convention, and directory lookup methods (see
 [workflow_array_ephys/paths.py](workflow_array_ephys/paths.py)).
 3. Ingestion of clustering results.
 
+See the [DataJoint Elements documentation](https://elements.datajoint.org) for 
+descriptions of the other `elements` and `workflows` developed as part of this National 
+Institutes of Health (NIH)-funded initiative.
+
 ## Workflow architecture
 
 The electrophysiology workflow presented here uses components from 4 DataJoint 
@@ -46,7 +50,7 @@ https://github.com/datajoint/element-session/raw/main/images/session_diagram.svg
 ## Installation instructions
 
 + The installation instructions can be found at the 
-[datajoint-elements repository](https://github.com/datajoint/datajoint-elements/blob/main/gh-pages/docs/usage/install.md).
+[DataJoint Elements documentation](https://elements.datajoint.org/usage/install/).
 
 ## Interacting with the DataJoint workflow
 
