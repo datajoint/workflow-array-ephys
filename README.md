@@ -25,25 +25,11 @@ Institutes of Health (NIH)-funded initiative.
 ## Workflow architecture
 
 The electrophysiology workflow presented here uses components from 4 DataJoint 
-Elements (`element-lab`, `element-animal`, `element-session`,
-`element-array-ephys`) assembled together to form a fully functional workflow.
-
-### element-lab
-
-![element-lab](
-https://github.com/datajoint/element-lab/raw/main/images/lab_diagram.svg)
-
-### element-animal
-
-![element-animal](
-https://github.com/datajoint/element-animal/raw/main/images/subject_diagram.svg)
-
-### element-session
-
-![element-session](
-https://github.com/datajoint/element-session/raw/main/images/session_diagram.svg)
-
-### assembled with element-array-ephys
+Elements ([element-lab](https://github.com/datajoint/element-lab), 
+[element-animal](https://github.com/datajoint/element-animal), 
+[element-session](https://github.com/datajoint/element-session),
+[element-array-ephys](https://github.com/datajoint/element-array-ephys)) 
+assembled together to form a fully functional workflow.
 
 ![element-array-ephys](images/attached_array_ephys_element.svg)
 
