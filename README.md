@@ -18,9 +18,7 @@ convention, and directory lookup methods (see
 [workflow_array_ephys/paths.py](workflow_array_ephys/paths.py)).
 3. Ingestion of clustering results.
 
-See the [DataJoint Elements documentation](https://elements.datajoint.org) for 
-descriptions of the other `elements` and `workflows` developed as part of this National 
-Institutes of Health (NIH)-funded initiative.
+For more information on the DataJoint Elements project, please visit https://elements.datajoint.org.  This work is supported by the National Institutes of Health.
 
 ## Workflow architecture
 
