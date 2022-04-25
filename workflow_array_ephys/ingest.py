@@ -5,7 +5,8 @@ from workflow_array_ephys.pipeline import lab, subject, ephys, probe, session
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 from element_array_ephys.readers import spikeglx, openephys
-from element_interface.utils import find_root_directory, find_full_path, ingest_csv_to_table
+from element_interface.utils import find_root_directory, find_full_path, \
+                                    ingest_csv_to_table
 
 
 def ingest_lab(lab_csv_path='./user_data/lab/labs.csv',
@@ -45,6 +46,7 @@ def ingest_lab(lab_csv_path='./user_data/lab/labs.csv',
               lab.ProjectUser()]
 
     ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose)
+
 
 def ingest_subjects(subject_csv_path='./user_data/subjects.csv', verbose=True):
     """
@@ -136,9 +138,9 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
             session_dir_list.append({**session_key, 'session_dir':
                                      session_dir.relative_to(root_dir).as_posix()})
             session_note_list.append({**session_key, 'session_note':
-                                        sess['session_note']})
+                                      sess['session_note']})
             session_experimenter_list.append({**session_key, 'user':
-                                        sess['user']})
+                                              sess['user']})
             probe_insertion_list.extend([{**session_key, **insertion
                                           } for insertion in insertions])
 

@@ -18,30 +18,8 @@ __all__ = ['ephys', 'probe', 'coordinate_framework', 'electrode_localization',
            'get_ephys_root_data_dir', 'get_session_directory',
            'get_electrode_localization_dir', 'load_ccf_annotation']
 
-
 ccf_id = 0
 voxel_resolution = 100
-
-
-# # Dummy table for case sensitivity in MySQL------------------------------------
-# # Without DummyTable, the schema activates with a case-insensitive character set
-# # which cannot ingest all CCF standard acronyms
-
-# coordinate_framework_schema = dj.schema(db_prefix + 'ccf')
-
-
-# @coordinate_framework_schema
-# class DummyTable(dj.Manual):
-#     definition = """
-#     id   : varchar(1)
-#     """
-#     contents = zip(['1', '2'])
-
-
-# ccf_schema_name = db_prefix + 'ccf'
-# dj.conn().query(f'ALTER DATABASE `{ccf_schema_name}` CHARACTER SET utf8 COLLATE '
-#                 + 'utf8_bin;')
-
 
 # Activate "electrode-localization" schema ------------------------------------
 

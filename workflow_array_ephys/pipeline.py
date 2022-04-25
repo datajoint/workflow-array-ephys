@@ -5,6 +5,7 @@ from element_animal import subject
 from element_session import session_with_datetime as session
 from element_array_ephys import probe
 from element_array_ephys import ephys_acute as ephys
+from element_event import trial, event
 
 from element_lab.lab import Source, Lab, Protocol, User, Project
 from element_animal.subject import Subject
@@ -17,6 +18,9 @@ if 'custom' not in dj.config:
 
 db_prefix = dj.config['custom'].get('database.prefix', '')
 
+__all__ = ['lab', 'subject', 'session', 'probe', 'ephys', 'trial', 'event',
+           'Source', 'Lab', 'Protocol', 'User', 'Project', 'Subject', 'Session',
+           'get_ephys_root_data_dir', 'get_session_directory']
 
 # Activate "lab", "subject", "session" schema ------------------------------------------
 
@@ -42,4 +46,10 @@ class SkullReference(dj.Lookup):
 
 ephys.activate(db_prefix + 'ephys', 
                db_prefix + 'probe', 
+               linking_module=__name__)
+
+# Activate "trial" schema --------------------------------------------------------------
+
+trial.activate(db_prefix + 'trial',
+               db_prefix + 'event',
                linking_module=__name__)
