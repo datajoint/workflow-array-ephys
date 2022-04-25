@@ -33,8 +33,9 @@ import datajoint as dj; dj.config['display.limit']=10
 # Next, we populate the python namespace with the required schemas
 
 from workflow_array_ephys.pipeline import session, ephys, trial, event
+from workflow_array_ephys import analysis
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ## Trial and Event schemas
 # -
 
@@ -76,7 +77,9 @@ ingest_alignment()
 
 event.AlignmentEvent()
 
-# ## Event-aligned trialized unit spike times
+# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# ## Event-aligned spike times
+# -
 
 # First, we'll check that the data is still properly inserted from the previous notebooks.
 
@@ -97,17 +100,12 @@ ctrl_trials = trial.Trial & clustering_key & 'trial_type = "ctrl"'
 
 # The `analysis` schema provides example tables to perform event-aligned spike-times analysis.
 
-from workflow_array_ephys import analysis
+analysis.schema.list_tables()
 
-# + ***SpikesAlignmentCondition*** - a manual table to specify the inputs and condition for the analysis
-
-
-# + ***SpikesAlignment*** - a computed table to extract event-aligned spikes and compute unit PSTH
-
+# + ***SpikesAlignmentCondition*** - a manual table to specify the inputs and condition for the analysis [markdown]
 # Let's start by creating several analyses configuration - i.e. inserting into ***SpikesAlignmentCondition*** for the `center` event, called `center_button` in the `AlignmentEvent` table.
 
-event.AlignmentEvent()
-
+# + ***SpikesAlignment*** - a computed table to extract event-aligned spikes and compute unit PSTH
 alignment_key = (event.AlignmentEvent & 'alignment_name = "center_button"'
                 ).fetch1('KEY')
 alignment_condition = {**clustering_key, **alignment_key, 
@@ -117,27 +115,14 @@ analysis.SpikesAlignmentCondition.insert1(alignment_condition, skip_duplicates=T
 analysis.SpikesAlignmentCondition.Trial.insert(
     (analysis.SpikesAlignmentCondition * ctrl_trials & alignment_condition).proj(),
     skip_duplicates=True)
+# + a CuratedClustering of interest for analysis [markdown]
+# With the steps above, we have create a new spike alignment condition for analysis, named `ctrl_center_button`, which retains all spiking information related to control trials during which the center button was pressed.
 
+# + ***SpikesAlignment*** - a computed table to extract event-aligned spikes and compute unit PSTH
 analysis.SpikesAlignmentCondition.Trial()
-
-# With the steps above, we have create a new spike alignment condition for analysis, named `ctrl_center_button`, which specifies:
-# + a CuratedClustering of interest for analysis
-
-
-# + an event of interest to align the spikes to - `center_button`
-
-
-# + a set of trials of interest to perform the analysis on - `ctrl` trials
-
-# Now, let's create another set with:
-# + the same CuratedClustering of interest for analysis
-
-
-# + an event of interest to align the spikes to - `center_button`
-
-
+# + a set of trials of interest to perform the analysis on - `ctrl` trials [markdown]
+# Now, let's create another set for the stimulus condition.
 # + a set of trials of interest to perform the analysis on - `stim` trials
-
 stim_trials = trial.Trial & clustering_key & 'trial_type = "stim"'
 alignment_condition = {**clustering_key, **alignment_key, 'trial_condition': 'stim_center_button'}
 analysis.SpikesAlignmentCondition.insert1(alignment_condition, skip_duplicates=True)
@@ -145,24 +130,35 @@ analysis.SpikesAlignmentCondition.Trial.insert(
     (analysis.SpikesAlignmentCondition * stim_trials & alignment_condition).proj(),
     skip_duplicates=True)
 
+# + a set of trials of interest to perform the analysis on - `stim` trials [markdown]
 # We can compare conditions in the `SpikesAlignmentCondition` table.
 
+# + a set of trials of interest to perform the analysis on - `stim` trials
 analysis.SpikesAlignmentCondition()
 
-analysis.SpikesAlignmentCondition.Trial & 'trial_condition = "ctrl_center_button"'
+# + a set of trials of interest to perform the analysis on - `stim` trials
+analysis.SpikesAlignmentCondition.Trial & 'trial_condition = "stim_center_button"'
 
-# ### Computation
-
+# + a set of trials of interest to perform the analysis on - `stim` trials [markdown]
+# ## Computation
+#
 # Now let's run the computation on these.
 
+# + a set of trials of interest to perform the analysis on - `stim` trials
 analysis.SpikesAlignment.populate(display_progress=True)
 
-# ### Vizualize
-
+# + a set of trials of interest to perform the analysis on - `stim` trials [markdown]
+# ## Visualize
+#
 # We can visualize the results with the `plot_raster` function.
 
+# + a set of trials of interest to perform the analysis on - `stim` trials
 alignment_condition = {**clustering_key, **alignment_key, 'trial_condition': 'ctrl_center_button'}
 analysis.SpikesAlignment().plot_raster(alignment_condition, unit=2);
 
+# + a set of trials of interest to perform the analysis on - `stim` trials
 alignment_condition = {**clustering_key, **alignment_key, 'trial_condition': 'stim_center_button'}
 analysis.SpikesAlignment().plot_raster(alignment_condition, unit=2);
+# -
+
+
