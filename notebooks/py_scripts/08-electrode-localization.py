@@ -98,4 +98,6 @@ for e in electrode_coordinates:
                    ).fetch1('region_name')
     print('Electrode {electrode} (x={x}, y={y}, z={z}) is in {region}'.format(**e))
 
+eloc.ElectrodePosition.Electrode()
+
 

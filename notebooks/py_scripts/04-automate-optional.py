@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.13.7
 #   kernelspec:
-#     display_name: ephys_workflow_runner
+#     display_name: venv-nwb
 #     language: python
-#     name: ephys_workflow_runner
+#     name: venv-nwb
 # ---
 
 # + [markdown] pycharm={"name": "#%% md\n"}
@@ -69,7 +69,7 @@ params_ks = {
     "useRAM": 0
 }
 ephys.ClusteringParamSet.insert_new_params(
-    processing_method='kilosort2',
+    clustering_method='kilosort2',
     paramset_idx=0,
     params=params_ks,
     paramset_desc='Spike sorting using Kilosort2')

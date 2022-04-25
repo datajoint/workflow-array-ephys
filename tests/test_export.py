@@ -1,85 +1,106 @@
-import sys
-import pathlib
-import numpy as np
-
+from pynwb.ecephys import ElectricalSeries
+import datetime
 from . import (dj_config, pipeline, test_data,
+               lab_csv, lab_project_csv, lab_user_csv, 
+               lab_publications_csv, lab_keywords_csv, lab_protocol_csv,
+               lab_project_users_csv, ingest_lab, 
                subjects_csv, ingest_subjects,
                sessions_csv, ingest_sessions,
-               testdata_paths, kilosort_paramset,
+               testdata_paths, ephys_insertionlocation, kilosort_paramset,
                ephys_recordings, clustering_tasks, clustering, curations)
 
-
-def test_subject_nwb_export(ingest_subjects, pipeline):
-    subject = pipeline['subject']
-    subject_key = {'subject': 'subject1'}
-    nwb_subject = subject.Subject.make_nwb(subject_key)
-
-    subject_info = (subject.Subject & subject_key).fetch1()
-
-    assert nwb_subject.subject_id == subject_info['subject']
-    assert nwb_subject.sex == subject_info['sex']
-    assert nwb_subject.date_of_birth.date() == subject_info['subject_birth_date']
+from workflow_array_ephys.export import ecephys_session_to_nwb, session_to_nwb, write_nwb
 
 
-def test_session_nwb_export(ingest_sessions, pipeline):
-    session = pipeline['session']
-    session_key = {'subject': 'subject1', 'session_datetime': '2018-11-22 18:51:26'}
-    nwb_session = session.Session.make_nwb(session_key)
+def test_session_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions):
+    nwbfile = session_to_nwb(session_key={"subject": "subject5",
+                              "session_datetime": 
+                                   datetime.datetime(2018, 7, 3, 20, 32, 28),},
+                              lab_key={"lab": "LabA"},
+                              protocol_key={"protocol": "ProtA"},
+                              project_key={"project": "ProjA"})
 
-    session_info = (session.Session & session_key).fetch1()
-
-    assert nwb_session.session_start_time.strftime('%Y%m%d_%H%M%S') == session_info['session_datetime'].strftime('%Y%m%d_%H%M%S')
-    assert nwb_session.subject.subject_id == session_info['subject']
-    assert nwb_session.experimenter == list(session.SessionExperimenter.fetch('user'))
-
-
-def test_ephys_nwb_export(curations, pipeline, testdata_paths):
-    ephys = pipeline['ephys']
-    probe = pipeline['probe']
-
-    rel_path = testdata_paths['npx3B-p1-ks']
-    curation_key = (ephys.Curation & f'curation_output_dir LIKE "%{rel_path}"').fetch1('KEY')
-    ephys.CuratedClustering.populate(curation_key)
-    ephys.LFP.populate(curation_key)
-    ephys.WaveformSet.populate(curation_key)
-
-    nwb_ephys = ephys.CuratedClustering.make_nwb(curation_key)
-
-    probe_name, probe_type = (ephys.ProbeInsertion * probe.Probe * probe.ProbeType
-                              & curation_key).fetch1('probe', 'probe_type')
-
-    device_name = f'{probe_name} ({probe_type})'
-    assert device_name in nwb_ephys.devices
-
-    # check LFP
-    lfp_name = f'probe_{probe_name} - LFP'
-    assert lfp_name in nwb_ephys.processing['ecephys'].data_interfaces
-
-    lfp_timestamps = (ephys.LFP & curation_key).fetch1('lfp_time_stamps')
-    lfp_channel_count = len((ephys.LFP.Electrode & curation_key))
-
-    nwb_lfp = nwb_ephys.processing['ecephys'].data_interfaces[lfp_name].electrical_series['processed_electrical_series']
-    assert nwb_lfp.data.shape == (len(lfp_timestamps), lfp_channel_count)
-
-    # check electrodes
-    nwb_electrodes = nwb_ephys.electrodes.to_dataframe()
-    electrodes = (ephys.EphysRecording * probe.ElectrodeConfig.Electrode
-                  * probe.ProbeType.Electrode & curation_key).fetch(
-        format='frame').reset_index()
-    assert np.array_equal(nwb_electrodes.index, electrodes.index)
-    assert np.array_equal(nwb_electrodes.rel_x, electrodes.x_coord)
-    assert np.array_equal(nwb_electrodes.rel_y, electrodes.y_coord)
-
-    # check Unit
-    nwb_units = nwb_ephys.units.to_dataframe()
-
-    assert len(ephys.CuratedClustering.Unit & curation_key) == len(nwb_units)
-    assert len(ephys.CuratedClustering.Unit & curation_key & 'cluster_quality_label = "good"') == sum(nwb_units.cluster_quality_label == 'good')
-
-    # check waveform
-
-    assert np.array_equal(
-        nwb_units.iloc[15].waveform_mean,
-        (ephys.WaveformSet.PeakWaveform & curation_key
-         & 'unit = 15').fetch1('peak_electrode_waveform')
+    assert nwbfile.session_id == "subject5_2018-07-03T20:32:28"
+    assert nwbfile.session_description == "Successful data collection"
+    assert nwbfile.session_start_time == datetime.datetime(
+        2018, 7, 3, 20, 32, 28, tzinfo=datetime.timezone.utc
     )
+    assert nwbfile.experimenter == ["User1"]
+
+    assert nwbfile.subject.subject_id == "subject5"
+    assert nwbfile.subject.sex == "F"
+
+    assert nwbfile.institution == "Example Uni"
+    assert nwbfile.lab == "The Example Lab"
+
+    assert nwbfile.protocol == "ProtA"
+    assert nwbfile.notes == "Protocol for managing data ingestion"
+
+    assert nwbfile.experiment_description == "Example project to populate element-lab"
+
+
+def test_write_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, 
+                      ephys_insertionlocation, kilosort_paramset, ephys_recordings, 
+                      clustering_tasks, clustering, curations):
+     session = pipeline['session']
+     ephys = pipeline['ephys']
+
+     session_key = dict(subject='subject5', session_datetime='2018-07-03 20:32:28')
+     
+     ephys.LFP.populate(session_key, display_progress=True)
+     ephys.CuratedClustering.populate(session_key, display_progress=True)
+     ephys.WaveformSet.populate(session_key, display_progress=True)
+     
+     nwbfile=ecephys_session_to_nwb(session_key=session_key,
+          raw=True,
+          spikes=True,
+          lfp="dj",
+          end_frame=None,
+          lab_key=None,
+          project_key=None,
+          protocol_key=None,
+          nwbfile_kwargs=None,
+     )
+
+     write_nwb(nwbfile,'/main/test_data/test1.nwb')
+
+
+def test_convert_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, 
+                        ephys_insertionlocation, kilosort_paramset, ephys_recordings, 
+                        clustering_tasks, clustering, curations):
+    ephys = pipeline['ephys']
+    
+    session_key = dict(subject='subject5', session_datetime='2018-07-03 20:32:28')
+    
+    ephys.CuratedClustering.populate(session_key, display_progress=True)
+    ephys.WaveformSet.populate(session_key, display_progress=True)
+    nwbfile = ecephys_session_to_nwb(session_key=session_key,
+                                     end_frame=1000,
+                                     lab_key=dict(lab='LabA'),
+                                     protocol_key=dict(protocol='ProtA'),
+                                     project_key=dict(project='ProjA'))
+    
+    for x in ("262716621", "714000838"):
+        assert x in nwbfile.devices
+        
+    assert len(nwbfile.electrodes) == 1920
+    for col in ("shank", "shank_row", "shank_col"):
+        assert col in nwbfile.electrodes
+        
+    for es_name in ("ElectricalSeries1", "ElectricalSeries2"):
+        es = nwbfile.acquisition[es_name]
+        assert isinstance(es, ElectricalSeries)
+        assert es.conversion == 2.34375e-06
+    
+    # make sure the ElectricalSeries objects don't share electrodes
+    assert not set(nwbfile.acquisition["ElectricalSeries1"].electrodes.data) & set(nwbfile.acquisition["ElectricalSeries2"].electrodes.data)
+    
+    assert len(nwbfile.units) == 499
+    for col in ("cluster_quality_label", "spike_depths"):
+        assert col in nwbfile.units
+        
+    for es_name in ("ElectricalSeries1", "ElectricalSeries2"):
+        es = nwbfile.processing["ecephys"].data_interfaces["LFP"][es_name]
+        assert isinstance(es, ElectricalSeries)
+        assert es.conversion == 4.6875e-06
+        assert es.rate == 2500.0
