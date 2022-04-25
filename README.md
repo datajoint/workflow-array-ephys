@@ -33,21 +33,34 @@ assembled together to form a fully functional workflow.
 
 ![element-array-ephys](images/attached_array_ephys_element.svg)
 
+Optionally, this can be used in conjunction with 
+[element-event](https://github.com/datajoint/element-event)
+and [element-electrode-localization](https://github.com/datajoint/element-electrode-localization/).
+
+![element-event_attached](images/attached_trial_analysis)
+
+![element-electrode-localization_attached](images/attached_electrode_localization)
+
 ## Installation instructions
 
-+ The installation instructions can be found at the 
+The installation instructions can be found at the 
 [DataJoint Elements documentation](https://elements.datajoint.org/usage/install/).
 
 ## Interacting with the DataJoint workflow
 
-+ Please refer to the following workflow-specific 
- [Jupyter notebooks](/notebooks) for an in-depth explanation of how to run the 
- workflow ([03-process.ipynb](notebooks/03-process.ipynb)) and explore the data 
- ([05-explore.ipynb](notebooks/05-explore.ipynb)).
+Please refer to the workflow-specific 
+[Jupyter notebooks](/notebooks) 
+for an in-depth explanation of how to run the 
+workflow ([03-process.ipynb](notebooks/03-process.ipynb)) and explore the data 
+([05-explore.ipynb](notebooks/05-explore.ipynb)).
+[07-downstream-analysis.ipynb](notebooks/07-downstream-analysis.ipynb) 
+and [08-electrode-localization.ipynb](notebooks/08-electrode-localization.ipynb)
+explore how to (a) look at trialized analyses, and (b) locate probes within the 
+[Common Coordinate Framework](https://www.sciencedirect.com/science/article/pii/S0092867420304025).
 
 ## Citation
 
-+ If your work uses DataJoint and DataJoint Elements, please cite the respective Research Resource Identifiers (RRIDs) and manuscripts.
+If your work uses DataJoint and DataJoint Elements, please cite the respective Research Resource Identifiers (RRIDs) and manuscripts.
 
 + DataJoint for Python or MATLAB
     + Yatsenko D, Reimer J, Ecker AS, Walker EY, Sinz F, Berens P, Hoenselaar A, Cotton RJ, Siapas AS, Tolias AS. DataJoint: managing big scientific data using MATLAB or Python. bioRxiv. 2015 Jan 1:031658. doi: https://doi.org/10.1101/031658
