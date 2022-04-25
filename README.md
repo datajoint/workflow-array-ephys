@@ -37,9 +37,9 @@ Optionally, this can be used in conjunction with
 [element-event](https://github.com/datajoint/element-event)
 and [element-electrode-localization](https://github.com/datajoint/element-electrode-localization/).
 
-![element-event_attached](images/attached_trial_analysis)
+![element-event_attached](images/attached_trial_analysis.svg)
 
-![element-electrode-localization_attached](images/attached_electrode_localization)
+![element-electrode-localization_attached](images/attached_electrode_localization.svg)
 
 ## Installation instructions
 
