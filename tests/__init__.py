@@ -19,8 +19,8 @@ from element_interface.utils import find_full_path
 _tear_down = False
 verbose = False
 
-test_user_data_dir = pathlib.Path('./tests/user_data')
-test_user_data_dir.mkdir(exist_ok=True)
+pathlib.Path('./tests/user_data').mkdir(exist_ok=True)
+pathlib.Path('./tests/user_data/lab').mkdir(exist_ok=True)
 
 sessions_dirs = ['subject1/session1',
                  'subject2/session1',
@@ -31,6 +31,17 @@ sessions_dirs = ['subject1/session1',
                  'subject6/session1']
 
 # --------------------  HELPER CLASS --------------------
+
+
+def write_csv(content, path):
+    """
+    General function for writing strings to lines in CSV
+    :param path: pathlib PosixPath
+    :param content: list of strings, each as row of CSV
+    """
+    with open(path, 'w') as f:
+        for line in content:
+            f.write(line+'\n')
 
 
 class QuietStdOut:
@@ -126,6 +137,147 @@ def pipeline():
 
 
 @pytest.fixture
+def lab_csv():
+    """ Create a 'labs.csv' file"""
+    lab_content = ["lab,lab_name,institution,address,"
+                   + "time_zone,location,location_description",
+                   "LabA,The Example Lab,Example Uni,"
+                   + "'221B Baker St,London NW1 6XE,UK',UTC+0,"
+                   + "Example Building,'2nd floor lab dedicated to all "
+                   + "fictional experiments.'",
+                   "LabB,The Other Lab,Other Uni,"
+                   + "'Oxford OX1 2JD, United Kingdom',UTC+0,"
+                   + "Other Building,'fictional campus dedicated to imaginary"
+                   + "experiments.'"]
+    lab_csv_path = pathlib.Path('./tests/user_data/lab/labs.csv')
+    write_csv(lab_content, lab_csv_path)
+
+    yield lab_content, lab_csv_path
+    lab_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_project_csv():
+    """ Create a 'projects.csv' file"""
+    lab_project_content = ["project,project_description,repository_url,"
+                           + "repository_name,codeurl",
+                           "ProjA,Example project to populate element-lab,"
+                           + "https://github.com/datajoint/element-lab/,"
+                           + "element-lab,https://github.com/datajoint/element"
+                           + "-lab/tree/main/element_lab",
+                           "ProjB,Other example project to populate element-"
+                           + "lab,https://github.com/datajoint/element-session"
+                           + "/,element-session,https://github.com/datajoint/"
+                           + "element-session/tree/main/element_session"]
+    lab_project_csv_path = pathlib.Path('./tests/user_data/lab/projects.csv')
+    write_csv(lab_project_content, lab_project_csv_path)
+
+    yield lab_project_content, lab_project_csv_path
+    lab_project_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_project_users_csv():
+    """ Create a 'project_users.csv' file"""
+    lab_project_user_content = ["user,project",
+                                "Sherlock,ProjA",
+                                "Sherlock,ProjB",
+                                "Watson,ProjB",
+                                "Dr. Candace Pert,ProjA",
+                                "User1,ProjA"]
+    lab_project_user_csv_path = pathlib.Path('./tests/user_data/lab/\
+                                              project_users.csv')
+    write_csv(lab_project_user_content, lab_project_user_csv_path)
+
+    yield lab_project_user_content, lab_project_user_csv_path
+    lab_project_user_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_publications_csv():
+    """ Create a 'publications.csv' file"""
+    lab_publication_content = ["project,publication",
+                               "ProjA,arXiv:1807.11104",
+                               "ProjA,arXiv:1807.11104v1"]
+    lab_publication_csv_path = pathlib.Path('./tests/user_data/lab/\
+                                             publications.csv')
+    write_csv(lab_publication_content, lab_publication_csv_path)
+
+    yield lab_publication_content, lab_publication_csv_path
+    lab_publication_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_keywords_csv():
+    """ Create a 'keywords.csv' file"""
+    lab_keyword_content = ["project,keyword",
+                           "ProjA,Study",
+                           "ProjA,Example",
+                           "ProjB,Alternate"]
+    lab_keyword_csv_path = pathlib.Path('./tests/user_data/lab/keywords.csv')
+    write_csv(lab_keyword_content, lab_keyword_csv_path)
+
+    yield lab_keyword_content, lab_keyword_csv_path
+    lab_keyword_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_protocol_csv():
+    """ Create a 'protocols.csv' file"""
+    lab_protocol_content = ["protocol,protocol_type,protocol_description",
+                            "ProtA,IRB expedited review,Protocol for managing "
+                            + "data ingestion",
+                            "ProtB,Alternative Method,Limited protocol for "
+                            + "piloting only"]
+    lab_protocol_csv_path = pathlib.Path('./tests/user_data/lab/protocols.csv')
+    write_csv(lab_protocol_content, lab_protocol_csv_path)
+
+    yield lab_protocol_content, lab_protocol_csv_path
+    lab_protocol_csv_path.unlink()
+
+
+@pytest.fixture
+def lab_user_csv():
+    """ Create a 'users.csv' file"""
+    lab_user_content = ["lab,user,user_role,user_email,user_cellphone",
+                        "LabA,Sherlock,PI,Sherlock@BakerSt.com,"
+                        + "+44 20 7946 0344",
+                        "LabA,Watson,Dr,DrWatson@BakerSt.com,+44 73 8389 1763",
+                        "LabB,Dr. Candace Pert,PI,Pert@gmail.com,"
+                        + "+44 74 4046 5899",
+                        "LabA,User1,Lab Tech,fake@email.com,+44 1632 960103",
+                        "LabB,User2,Lab Tech,fake2@email.com,+44 1632 960102"]
+    lab_user_csv_path = pathlib.Path('./tests/user_data/lab/users.csv')
+    write_csv(lab_user_content, lab_user_csv_path)
+
+    yield lab_user_content, lab_user_csv_path
+    lab_user_csv_path.unlink()
+
+
+@pytest.fixture
+def ingest_lab(pipeline, lab_csv, lab_project_csv, lab_publications_csv,
+               lab_keywords_csv, lab_protocol_csv, lab_user_csv,
+               lab_project_users_csv):
+    """ From workflow_array_ephys ingest.py, import ingest_lab, run """
+    from workflow_array_ephys.ingest import ingest_lab
+    _, lab_csv_path = lab_csv
+    _, lab_project_csv_path = lab_project_csv
+    _, lab_publication_csv_path = lab_publications_csv
+    _, lab_keyword_csv_path = lab_keywords_csv
+    _, lab_protocol_csv_path = lab_protocol_csv
+    _, lab_user_csv_path = lab_user_csv
+    _, lab_project_user_csv_path = lab_project_users_csv
+    ingest_lab(lab_csv_path=lab_csv_path,
+               project_csv_path=lab_project_csv_path,
+               publication_csv_path=lab_publication_csv_path,
+               keyword_csv_path=lab_keyword_csv_path,
+               protocol_csv_path=lab_protocol_csv_path,
+               users_csv_path=lab_user_csv_path,
+               project_user_csv_path=lab_project_user_csv_path, verbose=verbose)
+    return
+
+
+@pytest.fixture
 def subjects_csv():
     """ Create a 'subjects.csv' file"""
     input_subjects = pd.DataFrame(columns=['subject', 'sex',
@@ -164,11 +316,23 @@ def ingest_subjects(pipeline, subjects_csv):
 @pytest.fixture
 def sessions_csv(test_data):
     """ Create a 'sessions.csv' file"""
-    input_sessions = pd.DataFrame(columns=['subject', 'session_dir'])
+    input_sessions = pd.DataFrame(columns=['subject', 'session_dir', 'session_note', 
+                                           'user'])
     input_sessions.subject = ['subject1', 'subject2', 'subject2',
                               'subject3', 'subject4', 'subject5',
                               'subject6']
     input_sessions.session_dir = sessions_dirs
+    input_sessions.session_note = ['Data collection notes',
+                                   'Data collection notes',
+                                   'Interrupted session',
+                                   'Data collection notes',
+                                   'Successful data collection',
+                                   'Successful data collection',
+                                   'Ambient temp abnormally low']
+    input_sessions.user = ['User2', 'User2', 'User2',
+                           'User1', 'User2', 'User1',
+                           'User2']
+
     input_sessions = input_sessions.set_index('subject')
 
     sessions_csv_path = pathlib.Path('./tests/user_data/sessions.csv')
@@ -216,7 +380,7 @@ def ephys_insertionlocation(pipeline, ingest_sessions):
                                              depth=0,
                                              theta=0,
                                              phi=0,
-                                             beta=0))
+                                             beta=0), skip_duplicates=True)
     yield
 
     if _tear_down:

@@ -1,15 +1,14 @@
 # DataJoint Workflow - Array Electrophysiology
 
-Workflow for extracellular array electrophysiology data acquired with a polytrode probe (e.g.
-Neuropixels, Neuralynx) using the `SpikeGLX` or `OpenEphys` acquisition software and processed
-with MATLAB- or python-based `Kilosort` spike sorting software.
+Workflow for extracellular array electrophysiology data acquired with a polytrode probe 
+(e.g. [Neuropixels](https://www.neuropixels.org), Neuralynx) using the [SpikeGLX](https://github.com/billkarsh/SpikeGLX) or 
+[OpenEphys](https://open-ephys.org/gui) acquisition software and processed with [MATLAB-based Kilosort](https://github.com/MouseLand/Kilosort) or [python-based Kilosort](https://github.com/MouseLand/pykilosort) spike sorting software.
 
 A complete electrophysiology workflow can be built using the DataJoint Elements.
 + [element-lab](https://github.com/datajoint/element-lab)
 + [element-animal](https://github.com/datajoint/element-animal)
 + [element-session](https://github.com/datajoint/element-session)
 + [element-array-ephys](https://github.com/datajoint/element-array-ephys)
-+ Optionally, [element-event](https://github.com/datajoint/element-event)
 
 This repository provides demonstrations for:
 1. Set up a workflow using DataJoint Elements (see
@@ -18,45 +17,44 @@ This repository provides demonstrations for:
 convention, and directory lookup methods (see
 [workflow_array_ephys/paths.py](workflow_array_ephys/paths.py)).
 3. Ingestion of clustering results.
-4. Ingestion of experimental condition information and downstream [PSTH analysis](https://www.sciencedirect.com/topics/neuroscience/peristimulus-time-histogram).
+
+See the [Element Array Electrophysiology documentation](https://elements.datajoint.org/description/array_ephys/) for the background information and development timeline.
+
+For more information on the DataJoint Elements project, please visit https://elements.datajoint.org.  This work is supported by the National Institutes of Health.
 
 ## Workflow architecture
 
-The electrophysiology workflow presented here uses components from 5 DataJoint 
-Elements (`element-lab`, `element-animal`, `element-session`, `element-event`,
-`element-array-ephys`) assembled together to form a fully functional workflow.
+The electrophysiology workflow presented here uses components from 4 DataJoint 
+Elements ([element-lab](https://github.com/datajoint/element-lab), 
+[element-animal](https://github.com/datajoint/element-animal), 
+[element-session](https://github.com/datajoint/element-session),
+[element-array-ephys](https://github.com/datajoint/element-array-ephys)) 
+assembled together to form a fully functional workflow.
 
-### element-lab
-
-![element-lab](
-https://github.com/datajoint/element-lab/raw/main/images/lab_diagram.svg)
-
-### element-animal
-
-![element-animal](
-https://github.com/datajoint/element-animal/raw/main/images/subject_diagram.svg)
-
-### Assembled with element-array-ephys
-
-![attached-element-array-ephys](images/attached_array_ephys_element.svg)
-
-### Assembled with element-event and workflow analysis
-
-![attached-trial-analysis](./images/attached_trial_analysis.svg)
-
-## Assembled with element-electrode-localization
-
-![attached-electrode-localization](./images/attached_electrode_localization.svg)
+![element-array-ephys](images/attached_array_ephys_element.svg)
 
 ## Installation instructions
 
 + The installation instructions can be found at the 
-[datajoint-elements repository](https://github.com/datajoint/datajoint-elements/blob/main/gh-pages/docs/install.md).
+[DataJoint Elements documentation](https://elements.datajoint.org/usage/install/).
 
 ## Interacting with the DataJoint workflow
 
-Please refer to the following workflow-specific 
- [Jupyter notebooks](/notebooks) for an in-depth explanation of how to ...
-+ run the workflow ([03-process.ipynb](notebooks/03-process.ipynb)) 
-+ explore the data ([05-explore.ipynb](notebooks/05-explore.ipynb))
-+ visualize trial-based analyses ([07-downstream-analysis.ipynb](notebooks/07-downstream-analysis.ipynb))
++ Please refer to the following workflow-specific 
+ [Jupyter notebooks](/notebooks) for an in-depth explanation of how to run the 
+ workflow ([03-process.ipynb](notebooks/03-process.ipynb)) and explore the data 
+ ([05-explore.ipynb](notebooks/05-explore.ipynb)).
+
+## Citation
+
++ If your work uses DataJoint and DataJoint Elements, please cite the respective Research Resource Identifiers (RRIDs) and manuscripts.
+
++ DataJoint for Python or MATLAB
+    + Yatsenko D, Reimer J, Ecker AS, Walker EY, Sinz F, Berens P, Hoenselaar A, Cotton RJ, Siapas AS, Tolias AS. DataJoint: managing big scientific data using MATLAB or Python. bioRxiv. 2015 Jan 1:031658. doi: https://doi.org/10.1101/031658
+
+    + DataJoint ([RRID:SCR_014543](https://scicrunch.org/resolver/SCR_014543)) - DataJoint for `<Select Python or MATLAB>` (version `<Enter version number>`)
+
++ DataJoint Elements
+    + Yatsenko D, Nguyen T, Shen S, Gunalan K, Turner CA, Guzman R, Sasaki M, Sitonic D, Reimer J, Walker EY, Tolias AS. DataJoint Elements: Data Workflows for Neurophysiology. bioRxiv. 2021 Jan 1. doi: https://doi.org/10.1101/2021.03.30.437358
+
+    + DataJoint Elements ([RRID:SCR_021894](https://scicrunch.org/resolver/SCR_021894)) - Element Array Electrophysiology (version `<Enter version number>`)
