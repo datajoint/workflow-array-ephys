@@ -30,7 +30,6 @@ class SpikesAlignmentCondition(dj.Manual):
 class SpikesAlignment(dj.Computed):
     definition = """
     -> SpikesAlignmentCondition
-    -> ephys.CuratedClustering
     """
 
     class AlignedTrialSpikes(dj.Part):
