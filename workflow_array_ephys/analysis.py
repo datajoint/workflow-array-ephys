@@ -6,7 +6,6 @@ from .pipeline import db_prefix, ephys, trial, event
 
 schema = dj.schema(db_prefix + 'analysis')
 
-AlignmentEvent = event.AlignmentEvent
 
 
 @schema

@@ -28,13 +28,13 @@ services:
       - ../../element-lab:/main/element-lab
       - ../../element-animal:/main/element-animal
       - ../../element-session:/main/element-session
-      - ../../element-trial:/main/element-trial
+      - ../../element-event:/main/element-event
       - ../../element-electrode-localization:/main/element-electrode-localization
       - ../../element-array-ephys:/main/element-array-ephys
       - ../../element-interface:/main/element-interface
       - ..:/main/workflow-array-ephys
     depends_on:
-      array-ephys-dev-db:
+      db:
         condition: service_healthy
 networks:
   main:
