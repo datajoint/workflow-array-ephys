@@ -24,7 +24,8 @@ WORKDIR /main/workflow-array-ephys
 RUN mkdir -p /main/element-lab \
              /main/element-animal \
              /main/element-session \
-             /main/element-trial \
+             /main/element-event \
+             /main/element-interface \
              /main/element-array-ephys \
              /main/element-electrode-localization \
              /main/workflow-array-ephys
