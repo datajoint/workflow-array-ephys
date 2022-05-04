@@ -24,7 +24,6 @@ voxel_resolution = 100
 # Activate "electrode-localization" schema ------------------------------------
 
 ProbeInsertion = ephys.ProbeInsertion
-Electrode = probe.ProbeType.Electrode
 
 electrode_localization.activate(db_prefix + 'eloc',
                                 db_prefix + 'ccf',

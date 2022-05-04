@@ -6,7 +6,6 @@ from .pipeline import db_prefix, ephys, trial, event
 
 schema = dj.schema(db_prefix + 'analysis')
 
-AlignmentEvent = event.AlignmentEvent
 
 
 @schema
@@ -31,7 +30,6 @@ class SpikesAlignmentCondition(dj.Manual):
 class SpikesAlignment(dj.Computed):
     definition = """
     -> SpikesAlignmentCondition
-    -> ephys.CuratedClustering
     """
 
     class AlignedTrialSpikes(dj.Part):
