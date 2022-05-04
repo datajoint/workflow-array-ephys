@@ -1,7 +1,8 @@
 import csv
 import re
 
-from workflow_array_ephys.pipeline import lab, subject, ephys, probe, session
+from workflow_array_ephys.pipeline import lab, subject, ephys, probe, session, trial, \
+                                          event
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 from element_array_ephys.readers import spikeglx, openephys
@@ -162,6 +163,45 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
         print('\n---- Successfully completed ingest_subjects ----')
 
 
+def ingest_events(recording_csv_path='./user_data/behavior_recordings.csv',
+                  block_csv_path='./user_data/blocks.csv',
+                  trial_csv_path='./user_data/trials.csv',
+                  event_csv_path='./user_data/events.csv',
+                  skip_duplicates=True, verbose=True):
+    """
+    Ingest each level of experiment heirarchy for element-trial:
+        recording, block (i.e., phases of trials), trials (repeated units),
+        events (optionally 0-duration occurances within trial).
+    This ingestion function is duplicated across wf-array-ephys and wf-calcium-imaging
+    """
+    csvs = [recording_csv_path, recording_csv_path,
+            block_csv_path, block_csv_path,
+            trial_csv_path, trial_csv_path, trial_csv_path,
+            trial_csv_path,
+            event_csv_path, event_csv_path, event_csv_path]
+    tables = [event.BehaviorRecording(), event.BehaviorRecording.File(),
+              trial.Block(), trial.Block.Attribute(),
+              trial.TrialType(), trial.Trial(), trial.Trial.Attribute(),
+              trial.BlockTrial(),
+              event.EventType(), event.Event(), trial.TrialEvent()]
+
+    # Allow direct insert required bc element-trial has Imported that should be Manual
+    ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose,
+                        allow_direct_insert=True)
+
+
+def ingest_alignment(alignment_csv_path='./user_data/alignments.csv',
+                     skip_duplicates=True, verbose=True):
+    """This is duplicated across wf-array-ephys and wf-calcium-imaging"""
+
+    csvs = [alignment_csv_path]
+    tables = [event.AlignmentEvent()]
+
+    ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose)
+
+
 if __name__ == '__main__':
     ingest_subjects()
     ingest_sessions()
+    ingest_events()
+    ingest_alignment()
