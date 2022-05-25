@@ -128,7 +128,6 @@ def pipeline():
            'session': pipeline.session,
            'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir,
            'ephys_mode': pipeline.ephys_mode}
-           'get_ephys_root_data_dir': pipeline.get_ephys_root_data_dir}
 
     if verbose and _tear_down:
         pipeline.subject.Subject.delete()
@@ -488,16 +487,21 @@ def clustering(clustering_tasks, pipeline):
     """Populate ephys.Clustering"""
     ephys = pipeline['ephys']
 
-    ephys.Clustering.populate()
+    if pipeline['ephys_mode'] == "no-curation":
+        clustering_table = ephys.CuratedClustering
+    else:
+        clustering_table = ephys.Clustering
+
+    clustering_table.populate()
 
     yield
 
     if _tear_down:
         if verbose:
-            ephys.Clustering.delete()
+            clustering_table.delete()
         else:
             with QuietStdOut():
-                ephys.Clustering.delete()
+                clustering_table.delete()
 
 
 @pytest.fixture
