@@ -98,6 +98,7 @@ def test_convert_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions,
     
     session_key = dict(subject='subject5', session_datetime='2018-07-03 20:32:28')
     
+    ephys.Clustering.populate(session_key,display_progress=True)
     ephys.CuratedClustering.populate(session_key, display_progress=True)
     ephys.WaveformSet.populate(session_key, display_progress=True)
     nwbfile = ecephys_session_to_nwb(session_key=session_key,
