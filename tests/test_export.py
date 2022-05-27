@@ -1,5 +1,9 @@
 from pynwb.ecephys import ElectricalSeries
 import datetime
+import time
+
+from element_interface.utils import find_root_directory, find_full_path
+
 from . import (dj_config, pipeline, test_data,
                lab_csv, lab_project_csv, lab_user_csv, 
                lab_publications_csv, lab_keywords_csv, lab_protocol_csv,
@@ -88,7 +92,17 @@ def test_write_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions,
                                      protocol_key=None,
                                      nwbfile_kwargs=None)
 
-    write_nwb(nwbfile, '/main/test_data/test1.nwb')
+    root_dirs = pipeline["get_ephys_root_data_dir"]()
+    root_dir = find_root_directory(
+        root_dirs,
+        find_full_path(
+            root_dirs,
+            (pipeline["session"].SessionDirectory & session_key).fetch1("session_dir"),
+        ),
+    )
+    
+    write_nwb(nwbfile, root_dir / time.strftime("_test_%Y%m%d-%H%M%S.nwb"))
+
 
 
 def test_convert_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, 
@@ -125,7 +139,7 @@ def test_convert_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions,
         nwbfile.acquisition["ElectricalSeries2"].electrodes.data
     )
     
-    assert len(nwbfile.units) == 499  # TODO: fails bc tests/__init__ isn't buidling right
+    assert len(nwbfile.units) == 499  
 
     for col in ("cluster_quality_label", "spike_depths"):
         assert col in nwbfile.units
