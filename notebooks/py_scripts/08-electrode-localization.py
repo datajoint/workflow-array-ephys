@@ -39,6 +39,8 @@ import datajoint as dj; dj.config['display.limit']=10
 
 from workflow_array_ephys.localization import coordinate_framework as ccf
 
+dj.Diagram(ccf)
+
 # Now, to explore the data we just loaded.
 
 ccf.BrainRegionAnnotation.BrainRegion()
@@ -66,6 +68,8 @@ print(f'The central thalamus extends from \n\tx = {min(cm_x)}  to x = {max(cm_x)
 
 from workflow_array_ephys.localization import coordinate_framework as ccf
 from workflow_array_ephys.localization import electrode_localization as eloc
+
+(dj.Diagram(eloc) + dj.Diagram(ccf) - 1)
 
 # Because the probe may not be fully inserted, there will be some electrode positions that occur outside the brain. We register these instances with an `IntegrityError` warning because we're trying to register a coorinate position with no corresponding location in the `ccf.CCF.Voxel` table. We can silence these warnings by setting the log level before running `populate()` on the `ElectrodePosition` table.
 
