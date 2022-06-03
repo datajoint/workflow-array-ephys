@@ -169,7 +169,7 @@ def ingest_events(recording_csv_path='./user_data/behavior_recordings.csv',
                   event_csv_path='./user_data/events.csv',
                   skip_duplicates=True, verbose=True):
     """
-    Ingest each level of experiment heirarchy for element-trial:
+    Ingest each level of experiment heirarchy for element-event:
         recording, block (i.e., phases of trials), trials (repeated units),
         events (optionally 0-duration occurances within trial).
     """
