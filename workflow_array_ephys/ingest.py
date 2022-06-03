@@ -20,7 +20,7 @@ def ingest_lab(lab_csv_path='./user_data/lab/labs.csv',
                skip_duplicates=True, verbose=True):
     """
     Inserts data from a CSVs into their corresponding lab schema tables.
-    By default, uses data from workflow_session/user_data/lab/
+    By default, uses data from workflow/user_data/lab/
     :param lab_csv_path:      relative path of lab csv
     :param project_csv_path:  relative path of project csv
     :param publication_csv_path:     relative path of publication csv
@@ -169,10 +169,9 @@ def ingest_events(recording_csv_path='./user_data/behavior_recordings.csv',
                   event_csv_path='./user_data/events.csv',
                   skip_duplicates=True, verbose=True):
     """
-    Ingest each level of experiment heirarchy for element-trial:
+    Ingest each level of experiment heirarchy for element-event:
         recording, block (i.e., phases of trials), trials (repeated units),
         events (optionally 0-duration occurances within trial).
-    This ingestion function is duplicated across wf-array-ephys and wf-calcium-imaging
     """
     csvs = [recording_csv_path, recording_csv_path,
             block_csv_path, block_csv_path,
@@ -185,14 +184,13 @@ def ingest_events(recording_csv_path='./user_data/behavior_recordings.csv',
               trial.BlockTrial(),
               event.EventType(), event.Event(), trial.TrialEvent()]
 
-    # Allow direct insert required bc element-trial has Imported that should be Manual
+    # Allow direct insert required because element-event has Imported that should be Manual
     ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose,
                         allow_direct_insert=True)
 
 
 def ingest_alignment(alignment_csv_path='./user_data/alignments.csv',
                      skip_duplicates=True, verbose=True):
-    """This is duplicated across wf-array-ephys and wf-calcium-imaging"""
 
     csvs = [alignment_csv_path]
     tables = [event.AlignmentEvent()]
@@ -201,6 +199,7 @@ def ingest_alignment(alignment_csv_path='./user_data/alignments.csv',
 
 
 if __name__ == '__main__':
+    ingest_lab()
     ingest_subjects()
     ingest_sessions()
     ingest_events()

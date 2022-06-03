@@ -21,6 +21,7 @@ def _plot_spike_raster(aligned_spikes, trial_ids=None, vlines=[0], ax=None, titl
     for x in vlines:
         ax.axvline(x=x, linestyle='--', color='k')
 
+    ax.set_ylabel('Trial (#)')
     if xlim:
         ax.set_xlim(xlim)
     ax.set_axis_off()
