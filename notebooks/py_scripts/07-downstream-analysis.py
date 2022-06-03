@@ -77,7 +77,7 @@ ingest_alignment()
 
 event.AlignmentEvent()
 
-# + [markdown] jp-MarkdownHeadingCollapsed=true tags=[]
+# + [markdown] tags=[]
 # ## Event-aligned spike times
 # -
 
@@ -100,7 +100,8 @@ ctrl_trials = trial.Trial & clustering_key & 'trial_type = "ctrl"'
 
 # The `analysis` schema provides example tables to perform event-aligned spike-times analysis.
 
-analysis.schema.list_tables()
+(dj.Diagram(analysis) + dj.Diagram(event.AlignmentEvent) + dj.Diagram(trial.Trial) + 
+    dj.Diagram(ephys.CuratedClustering))
 
 # + ***SpikesAlignmentCondition*** - a manual table to specify the inputs and condition for the analysis [markdown]
 # Let's start by creating several analyses configuration - i.e. inserting into ***SpikesAlignmentCondition*** for the `center` event, called `center_button` in the `AlignmentEvent` table.

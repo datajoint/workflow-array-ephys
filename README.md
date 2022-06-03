@@ -17,6 +17,7 @@ This repository provides demonstrations for:
 convention, and directory lookup methods (see
 [workflow_array_ephys/paths.py](workflow_array_ephys/paths.py)).
 3. Ingestion of clustering results.
+4. Export of `no_curation` schema to NWB and DANDI (see (notebooks/09-NWB-export.ipynb)[notebooks/09-NWB-export.ipynb]
 
 See the [Element Array Electrophysiology documentation](https://elements.datajoint.org/description/array_ephys/) for the background information and development timeline.
 
@@ -24,12 +25,17 @@ For more information on the DataJoint Elements project, please visit https://ele
 
 ## Workflow architecture
 
-The electrophysiology workflow presented here uses components from 4 DataJoint 
-Elements ([element-lab](https://github.com/datajoint/element-lab), 
-[element-animal](https://github.com/datajoint/element-animal), 
+The electrophysiology workflow presented here uses components from 4 DataJoint Elements
+([element-lab](https://github.com/datajoint/element-lab),
+[element-animal](https://github.com/datajoint/element-animal),
 [element-session](https://github.com/datajoint/element-session),
-[element-array-ephys](https://github.com/datajoint/element-array-ephys)) 
-assembled together to form a fully functional workflow.
+[element-array-ephys](https://github.com/datajoint/element-array-ephys)) assembled
+together to form a fully functional workflow. Note that element-array-ephys offers three
+schema options, selected via the DataJoint config file, with 
+`dj.config['custom']['ephys_mode']`
++ `acute` probe insertion, with curated clustering
++ `chronic` probe insertion, with curated clustering
++ `no-curation`, with kilosort triggered clustering and supported NWB export
 
 ![element-array-ephys](images/attached_array_ephys_element.svg)
 
@@ -50,13 +56,16 @@ The installation instructions can be found at the
 
 Please refer to the workflow-specific 
 [Jupyter notebooks](/notebooks) 
-for an in-depth explanation of how to run the 
-workflow ([03-process.ipynb](notebooks/03-process.ipynb)) and explore the data 
-([05-explore.ipynb](notebooks/05-explore.ipynb)).
-[07-downstream-analysis.ipynb](notebooks/07-downstream-analysis.ipynb) 
-and [08-electrode-localization.ipynb](notebooks/08-electrode-localization.ipynb)
-explore how to (a) look at trialized analyses, and (b) locate probes within the 
-[Common Coordinate Framework](https://www.sciencedirect.com/science/article/pii/S0092867420304025).
+for an in-depth explanation of how to ...
+1. Run the workflow ([03-process.ipynb](notebooks/03-process.ipynb)).
+2. Explore the data ([05-explore.ipynb](notebooks/05-explore.ipynb)).
+3. Establish downstream analyses 
+([07-downstream-analysis.ipynb](notebooks/07-downstream-analysis.ipynb))
+4. Examine trialized analyses, and locate probes within the 
+[Common Coordinate Framework](https://www.sciencedirect.com/science/article/pii/S0092867420304025) 
+([08-electrode-localization.ipynb](notebooks/08-electrode-localization.ipynb))
+5. Export to NWB and DANDI ([09-NWB-export.ipynb](notebooks/09-NWB-export.ipynb))
+
 
 ## Citation
 
