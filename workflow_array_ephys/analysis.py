@@ -1,11 +1,10 @@
 import datajoint as dj
 import numpy as np
 
-from .pipeline import db_prefix, ephys, trial, event
+from .pipeline import db_prefix, ephys, trial
 
 
 schema = dj.schema(db_prefix + 'analysis')
-
 
 
 @schema
@@ -94,7 +93,7 @@ class SpikesAlignment(dj.Computed):
         self.AlignedTrialSpikes.insert(aligned_trial_spikes)
         self.UnitPSTH.insert(list(units_spike_raster.values()))
 
-    def plot_raster(self, key, unit, axs=None):
+    def plot(self, key, unit, axs=None):
         import matplotlib.pyplot as plt
         from .plotting import plot_psth
 

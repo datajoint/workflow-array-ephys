@@ -151,15 +151,15 @@ analysis.SpikesAlignment.populate(display_progress=True)
 # + a set of trials of interest to perform the analysis on - `stim` trials [markdown]
 # ## Visualize
 #
-# We can visualize the results with the `plot_raster` function.
+# We can visualize the results with the `plot` function.
 
 # + a set of trials of interest to perform the analysis on - `stim` trials
 alignment_condition = {**clustering_key, **alignment_key, 'trial_condition': 'ctrl_center_button'}
-analysis.SpikesAlignment().plot_raster(alignment_condition, unit=2);
+analysis.SpikesAlignment().plot(alignment_condition, unit=2);
 
 # + a set of trials of interest to perform the analysis on - `stim` trials
 alignment_condition = {**clustering_key, **alignment_key, 'trial_condition': 'stim_center_button'}
-analysis.SpikesAlignment().plot_raster(alignment_condition, unit=2);
+analysis.SpikesAlignment().plot(alignment_condition, unit=2);
 # -
 
 

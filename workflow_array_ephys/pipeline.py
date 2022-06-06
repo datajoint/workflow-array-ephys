@@ -88,7 +88,6 @@ ephys.activate(db_prefix + 'ephys',
 # Activate "electrode-localization" schema ------------------------------------
 
 ProbeInsertion = ephys.ProbeInsertion
-Electrode = probe.ProbeType.Electrode
 
 electrode_localization.activate(db_prefix + 'electrode_localization',
                                 db_prefix + 'ccf',
