@@ -53,8 +53,7 @@ session_key={"subject": "subject5",
 # - [Element Array Electrophysiology](#Element-Array-Electrophysiology) - If you are using all upstream Elements, you can skip to this
 # - [Element Interface for DANDI Upload](#DANDI-Upload)
 
-# <a id='#Element-Lab'></a>
-# ### Element Lab
+# ### Element Lab <a id='Element-Lab'></a>
 #
 # Because an NWB file must include session information, `element_lab_to_nwb_dict` can only help package information from the Lab schema into `dict` format. This would be helpful for a team using Element Lab, but not others. 
 
@@ -63,23 +62,20 @@ help(element_lab_to_nwb_dict)
 element_lab_to_nwb_dict(lab_key=lab_key, protocol_key=protocol_key, 
                         project_key=project_key)
 
-# <a id='#Element-Animal'></a>
-# ### Element Animal
+# ### Element Animal <a id='Element-Animal'></a>
 #
 # `subject_to_nwb` can use a session key to retrieve subject information, and will return an nwb file with a number of sections specified. When packaging into an NWB file, `pynwb` will display a warning regarding timezone information - datetime fields are assumed to be in local time, and will be converted to UTC.
 
 subject_to_nwb(session_key=session_key)
 
-# <a id='#Element-Session'></a>
-# ### Element Session
+# ### Element Session <a id='Element-Session'></a>
 #
 # `session_to_nwb` pulls the same information as above, while also including information about session experimenter and session time. The export process provides the same warning about timezone conversion to UTC.
 #
 
 session_to_nwb(session_key=session_key)
 
-# <a id='#Element-Array-Electrophysiology'></a>
-# ### Element Array Electrophysiology
+# ### Element Array Electrophysiology <a id='Element-Array-Electrophysiology'></a>
 #
 # `ecephys_session_to_nwb` provides a full export mechanism, returning an NWB file with raw data, spikes, and LFP. Optional arguments determine which pieces are exported. For demonstration purposes, we recommend limiting `end_frame`.
 #
@@ -106,8 +102,7 @@ import time
 write_nwb(nwbfile, f'./temp_nwb/{time.strftime("_test_%Y%m%d-%H%M%S.nwb")}')
 # -
 
-# <a id='#DANDI-Upload'></a>
-# ## DANDI Upload
+# ## DANDI Upload <a id='DANDI-Upload'></a>
 #
 # `element-interface.dandi` includes the `upload_to_dandi` utility to support direct uploads. For more information, see [DANDI documentation](https://www.dandiarchive.org/handbook/10_using_dandi/).
 #
