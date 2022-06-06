@@ -4,7 +4,7 @@ import time
 
 from element_interface.utils import find_root_directory, find_full_path
 
-from . import (dj_config, pipeline, test_data,
+from . import (dj_config, verbose, QuietStdOut, pipeline, test_data,
                lab_csv, lab_project_csv, lab_user_csv, 
                lab_publications_csv, lab_keywords_csv, lab_protocol_csv,
                lab_project_users_csv, ingest_lab, 
@@ -43,15 +43,22 @@ from workflow_array_ephys.export import (ecephys_session_to_nwb,
 
 
 def test_session_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions):
-    nwbfile = session_to_nwb(
-        session_key={
+    session_kwargs = {
+        'session_key':{
             "subject": "subject5",
             "session_datetime": datetime.datetime(2018, 7, 3, 20, 32, 28),
         },
-        lab_key={"lab": "LabA"},
-        protocol_key={"protocol": "ProtA"},
-        project_key={"project": "ProjA"},
-    )
+        'lab_key': {"lab": "LabA"},
+        'protocol_key':{"protocol": "ProtA"},
+        'project_key':{"project": "ProjA"},
+    }
+    
+    if verbose:
+        nwbfile = session_to_nwb(**session_kwargs)
+    else:
+        with QuietStdOut():
+            nwbfile = session_to_nwb(**session_kwargs)
+
     assert nwbfile.session_id == "subject5_2018-07-03T20:32:28"
     assert nwbfile.session_description == "Successful data collection"
     # when saved in NWB, converts local to UTC
@@ -78,19 +85,22 @@ def test_write_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions,
 
     session_key = dict(subject='subject5', session_datetime='2018-07-03 20:32:28')
 
-    ephys.LFP.populate(session_key, display_progress=True)
-    ephys.CuratedClustering.populate(session_key, display_progress=True)
-    ephys.WaveformSet.populate(session_key, display_progress=True)
+    ephys.LFP.populate(session_key, display_progress=verbose)
+    ephys.CuratedClustering.populate(session_key, display_progress=verbose)
+    ephys.WaveformSet.populate(session_key, display_progress=verbose)
 
-    nwbfile = ecephys_session_to_nwb(session_key=session_key,
-                                     raw=True,
-                                     spikes=True,
-                                     lfp="dj",
-                                     end_frame=None,
-                                     lab_key=None,
-                                     project_key=None,
-                                     protocol_key=None,
-                                     nwbfile_kwargs=None)
+    ecephys_kwargs = {
+        'session_key':session_key,
+        'raw':True,
+        'spikes':True,
+        'lfp':"dj",
+    }
+    
+    if verbose:
+        nwbfile = ecephys_session_to_nwb(**ecephys_kwargs)
+    else:
+        with QuietStdOut():
+            nwbfile = ecephys_session_to_nwb(**ecephys_kwargs)
 
     root_dirs = pipeline["get_ephys_root_data_dir"]()
     root_dir = find_root_directory(
@@ -104,7 +114,6 @@ def test_write_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions,
     write_nwb(nwbfile, root_dir / time.strftime("_test_%Y%m%d-%H%M%S.nwb"))
 
 
-
 def test_convert_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions, 
                         ephys_insertionlocation, kilosort_paramset, ephys_recordings, 
                         clustering_tasks, clustering, curations):
@@ -112,16 +121,24 @@ def test_convert_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions,
     
     session_key = dict(subject='subject5', session_datetime='2018-07-03 20:32:28')
     
-    ephys.Clustering.populate(session_key,display_progress=True)
-    ephys.CuratedClustering.populate(session_key, display_progress=True)
-    ephys.WaveformSet.populate(session_key, display_progress=True)
-    nwbfile = ecephys_session_to_nwb(session_key=session_key,
-                                     end_frame=1000,
-                                     spikes=True,
-                                     lab_key=dict(lab='LabA'),
-                                     protocol_key=dict(protocol='ProtA'),
-                                     project_key=dict(project='ProjA'))
+    ephys.CuratedClustering.populate(session_key, display_progress=verbose)
+    ephys.WaveformSet.populate(session_key, display_progress=verbose)
     
+    ecephys_kwargs = {
+        'session_key':session_key,
+        'end_frame':1000,
+        'spikes':True,
+        'lab_key': {"lab": "LabA"},
+        'protocol_key':{"protocol": "ProtA"},
+        'project_key':{"project": "ProjA"},
+    }
+
+    if verbose:
+        nwbfile = ecephys_session_to_nwb(**ecephys_kwargs)
+    else:
+        with QuietStdOut():
+            nwbfile = ecephys_session_to_nwb(**ecephys_kwargs)
+
     for x in ("262716621", "714000838"):
         assert x in nwbfile.devices
         

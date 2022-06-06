@@ -17,7 +17,7 @@ from element_interface.utils import find_full_path
 # ------------------- SOME CONSTANTS -------------------
 
 _tear_down = False
-verbose = False
+verbose = True
 
 pathlib.Path('./tests/user_data').mkdir(exist_ok=True)
 pathlib.Path('./tests/user_data/lab').mkdir(exist_ok=True)
@@ -487,21 +487,16 @@ def clustering(clustering_tasks, pipeline):
     """Populate ephys.Clustering"""
     ephys = pipeline['ephys']
 
-    if pipeline['ephys_mode'] == "no-curation":
-        clustering_table = ephys.CuratedClustering
-    else:
-        clustering_table = ephys.Clustering
-
-    clustering_table.populate()
+    ephys.Clustering.populate()
 
     yield
 
     if _tear_down:
         if verbose:
-            clustering_table.delete()
+            ephys.Clustering.delete()
         else:
             with QuietStdOut():
-                clustering_table.delete()
+                ephys.Clustering.delete()
 
 
 @pytest.fixture
