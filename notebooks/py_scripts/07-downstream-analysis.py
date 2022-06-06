@@ -44,12 +44,12 @@ from workflow_array_ephys import analysis
 # - A block is a continuous phase of an experiment that contains repeated instances of a condition, or trials. 
 # - Events may occur within or outside of conditions, either instantaneous or continuous.
 #
-# The diagram below shows (a) the levels of hierarchy and (b) how the bounds may not completely overlap. A block may not fully capure trials and events may occur outside both blocks/trials.
+# The diagram below shows (a) the levels of hierarchy and (b) how the bounds may not completely overlap. A block may not fully capture trials and events may occur outside both blocks/trials.
 
 # ```
 # |----------------------------------------------------------------------------|
 # |-------------------------------- Session ---------------------------------|__
-# |-------------------------- BehaviorRecording ---------------------------|____
+# |-------------------------- BehaviorRecording -----------------------------|__
 # |----- Block 1 -----|______|----- Block 2 -----|______|----- Block 3 -----|___
 # | trial 1 || trial 2 |____| trial 3 || trial 4 |____| trial 5 |____| trial 6 |
 # |_|e1|_|e2||e3|_|e4|__|e5|__|e6||e7||e8||e9||e10||e11|____|e12||e13|_________|
@@ -104,7 +104,7 @@ ctrl_trials = trial.Trial & clustering_key & 'trial_type = "ctrl"'
     dj.Diagram(ephys.CuratedClustering))
 
 # + ***SpikesAlignmentCondition*** - a manual table to specify the inputs and condition for the analysis [markdown]
-# Let's start by creating several analyses configuration - i.e. inserting into ***SpikesAlignmentCondition*** for the `center` event, called `center_button` in the `AlignmentEvent` table.
+# Let's start by creating an analysis configuration - i.e. inserting into ***SpikesAlignmentCondition*** for the `center` event, called `center_button` in the `AlignmentEvent` table.
 
 # + ***SpikesAlignment*** - a computed table to extract event-aligned spikes and compute unit PSTH
 alignment_key = (event.AlignmentEvent & 'alignment_name = "center_button"'
@@ -117,7 +117,7 @@ analysis.SpikesAlignmentCondition.Trial.insert(
     (analysis.SpikesAlignmentCondition * ctrl_trials & alignment_condition).proj(),
     skip_duplicates=True)
 # + a CuratedClustering of interest for analysis [markdown]
-# With the steps above, we have create a new spike alignment condition for analysis, named `ctrl_center_button`, which retains all spiking information related to control trials during which the center button was pressed.
+# With the steps above, we have created a new spike alignment condition for analysis, named `ctrl_center_button`, which retains all spiking information related to control trials during which the center button was pressed.
 
 # + ***SpikesAlignment*** - a computed table to extract event-aligned spikes and compute unit PSTH
 analysis.SpikesAlignmentCondition.Trial()

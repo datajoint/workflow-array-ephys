@@ -51,7 +51,7 @@ central_thalamus = ccf.BrainRegionAnnotation.retrieve_acronym('CM')
 cranial_nerves = ccf.BrainRegionAnnotation.retrieve_acronym('cm')
 print(f'CM: {central_thalamus}\ncm: {cranial_nerves}')
 
-# If your work requires the case-sensitive columns please contact get in touch with the DataJoint team via [StackOverflow](https://stackoverflow.com/questions/tagged/datajoint).
+# If your work requires the case-sensitive columns please get in touch with the DataJoint team via [StackOverflow](https://stackoverflow.com/questions/tagged/datajoint).
 #
 # For this demo, let's look at the dimensions of the central thalamus. To look at other regions, open the CSV you downloaded and search for your desired region.
 
@@ -71,7 +71,7 @@ from workflow_array_ephys.localization import electrode_localization as eloc
 
 (dj.Diagram(eloc) + dj.Diagram(ccf) - 1)
 
-# Because the probe may not be fully inserted, there will be some electrode positions that occur outside the brain. We register these instances with an `IntegrityError` warning because we're trying to register a coorinate position with no corresponding location in the `ccf.CCF.Voxel` table. We can silence these warnings by setting the log level before running `populate()` on the `ElectrodePosition` table.
+# Because the probe may not be fully inserted, there will be some electrode positions that occur outside the brain. We register these instances with an `IntegrityError` warning because we're trying to register a coordinate position with no corresponding location in the `ccf.CCF.Voxel` table. We can silence these warnings by setting the log level before running `populate()` on the `ElectrodePosition` table.
 
 import logging
 logging.getLogger().setLevel(logging.ERROR) # or logging.INFO
