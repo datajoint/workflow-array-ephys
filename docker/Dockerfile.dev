@@ -30,6 +30,7 @@ RUN pip install -e /main/element-animal
 RUN pip install -e /main/element-session
 RUN pip install -e /main/element-event
 RUN pip install -e /main/element-electrode-localization
+RUN pip install -e /main/element-interface
 RUN pip install -e /main/element-array-ephys
 RUN pip install -e /main/workflow-array-ephys
 RUN pip install -r /main/workflow-array-ephys/requirements_test.txt

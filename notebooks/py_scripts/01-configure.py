@@ -22,7 +22,7 @@
 #
 # **The configuration only needs to be set up once**, if you have gone through the configuration before, directly go to [02-workflow-structure](02-workflow-structure-optional.ipynb).
 #
-# As a convention, we set the configuration up in the root directory of the workflow package and always starts importing datajoint and pipeline modules from ther
+# As a convention, we set the configuration up in the root directory of the workflow package and always starts importing datajoint and pipeline modules from there.
 # -
 
 import os
@@ -32,7 +32,6 @@ assert os.path.basename(os.getcwd())=='workflow-array-ephys', ("Please move to t
                                                                + "workflow directory")
 import datajoint as dj
 
-import datajoint as dj
 
 # ## Setup - Credentials
 #

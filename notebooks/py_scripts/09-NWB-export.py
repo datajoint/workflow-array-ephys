@@ -72,7 +72,7 @@ session_to_nwb(session_key=session_key)
 #
 # ### Element Array Electrophysiology
 #
-# `ecephys_session_to_nwb` provides a full export mechanism, returning an NWB file with raw, data, spikes, and LFP. Optional arguments determine which pieces are exported. For demonstration purposes, we recommend limiting `end_frame`.
+# `ecephys_session_to_nwb` provides a full export mechanism, returning an NWB file with raw data, spikes, and LFP. Optional arguments determine which pieces are exported. For demonstration purposes, we recommend limiting `end_frame`.
 #
 
 help(ecephys_session_to_nwb)
@@ -93,12 +93,11 @@ nwbfile
 
 # +
 import time
-from workflow_array_ephys.paths import get_ephys_root_data_dir
     
 write_nwb(nwbfile, f'./temp_nwb/{time.strftime("_test_%Y%m%d-%H%M%S.nwb")}')
 # -
 
-# ## DANDI Export
+# ## DANDI Upload
 #
 # `element-interface.dandi` includes the `upload_to_dandi` utility to support direct uploads. For more information, see [DANDI documentation](https://www.dandiarchive.org/handbook/10_using_dandi/).
 #

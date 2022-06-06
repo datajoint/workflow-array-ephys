@@ -35,7 +35,7 @@ schema options, selected via the DataJoint config file, with
 `dj.config['custom']['ephys_mode']`
 + `acute` probe insertion, with curated clustering
 + `chronic` probe insertion, with curated clustering
-+ `no-curation`, with kilosort triggered clustering and supported NWB export
++ `no-curation`, acute probe insertion with kilosort triggered clustering and supported NWB export
 
 ![element-array-ephys](images/attached_array_ephys_element.svg)
 
@@ -59,9 +59,9 @@ Please refer to the workflow-specific
 for an in-depth explanation of how to ...
 1. Run the workflow ([03-process.ipynb](notebooks/03-process.ipynb)).
 2. Explore the data ([05-explore.ipynb](notebooks/05-explore.ipynb)).
-3. Establish downstream analyses 
+3. Examine trialized analyses, and establish downstream analyses 
 ([07-downstream-analysis.ipynb](notebooks/07-downstream-analysis.ipynb))
-4. Examine trialized analyses, and locate probes within the 
+4. Locate probes within the 
 [Common Coordinate Framework](https://www.sciencedirect.com/science/article/pii/S0092867420304025) 
 ([08-electrode-localization.ipynb](notebooks/08-electrode-localization.ipynb))
 5. Export to NWB and DANDI ([09-NWB-export.ipynb](notebooks/09-NWB-export.ipynb))
