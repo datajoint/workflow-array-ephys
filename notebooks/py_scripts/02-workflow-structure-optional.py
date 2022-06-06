@@ -24,7 +24,7 @@
 # To load the local configuration, we will change the directory to the package root.
 
 import os
-os.chdir('..')
+if os.path.basename(os.getcwd())=='notebooks': os.chdir('..')
 
 # ## Schemas and tables
 

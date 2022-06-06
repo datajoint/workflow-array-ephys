@@ -32,7 +32,6 @@ assert os.path.basename(os.getcwd())=='workflow-array-ephys', ("Please move to t
                                                                + "workflow directory")
 import datajoint as dj
 
-
 # ## Setup - Credentials
 #
 # Now let's set up the host, user and password in the `dj.config` global variable
