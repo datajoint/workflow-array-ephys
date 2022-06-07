@@ -3,6 +3,7 @@ import numpy as np
 
 from .pipeline import db_prefix, ephys, trial
 
+__all__ = ["db_prefix", "ephys", "trial", "event"]
 
 schema = dj.schema(db_prefix + 'analysis')
 
@@ -101,6 +102,7 @@ class SpikesAlignment(dj.Computed):
         if axs is None:
             fig, axs = plt.subplots(2, 1, figsize=(12, 8))
 
+        bin_size = (SpikesAlignmentCondition & key).fetch1("bin_size")
         trial_ids, aligned_spikes = (self.AlignedTrialSpikes
                                      & key & {'unit': unit}
                                      ).fetch('trial_id', 'aligned_spike_times')
@@ -111,7 +113,7 @@ class SpikesAlignment(dj.Computed):
 
         plot_psth._plot_spike_raster(aligned_spikes, trial_ids=trial_ids, ax=axs[0],
                                      title=f'{dict(**key, unit=unit)}', xlim=xlim)
-        plot_psth._plot_psth(psth, psth_edges, ax=axs[1],
+        plot_psth._plot_psth(psth, psth_edges, bin_size, ax=axs[1],
                              title='', xlim=xlim)
 
         return fig

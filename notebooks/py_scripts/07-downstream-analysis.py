@@ -8,9 +8,9 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.13.7
 #   kernelspec:
-#     display_name: venv-nwb
+#     display_name: Python 3.8.11 ('ele')
 #     language: python
-#     name: venv-nwb
+#     name: python3
 # ---
 
 # + [markdown] tags=[]
@@ -110,9 +110,10 @@ ctrl_trials = trial.Trial & clustering_key & 'trial_type = "ctrl"'
 alignment_key = (event.AlignmentEvent & 'alignment_name = "center_button"'
                 ).fetch1('KEY')
 alignment_condition = {**clustering_key, **alignment_key, 
-                       'trial_condition': 'ctrl_center_button'}
+                       'trial_condition': 'ctrl_center_button',
+                       'bin_size':.2}
 analysis.SpikesAlignmentCondition.insert1(alignment_condition, skip_duplicates=True)
-
+alignment_condition.pop('bin_size')
 analysis.SpikesAlignmentCondition.Trial.insert(
     (analysis.SpikesAlignmentCondition * ctrl_trials & alignment_condition).proj(),
     skip_duplicates=True)
@@ -125,8 +126,11 @@ analysis.SpikesAlignmentCondition.Trial()
 # Now, let's create another set for the stimulus condition.
 # + a set of trials of interest to perform the analysis on - `stim` trials
 stim_trials = trial.Trial & clustering_key & 'trial_type = "stim"'
-alignment_condition = {**clustering_key, **alignment_key, 'trial_condition': 'stim_center_button'}
+alignment_condition = {**clustering_key, **alignment_key, 
+                       'trial_condition': 'stim_center_button',
+                       'bin_size':.2}
 analysis.SpikesAlignmentCondition.insert1(alignment_condition, skip_duplicates=True)
+alignment_condition.pop('bin_size')
 analysis.SpikesAlignmentCondition.Trial.insert(
     (analysis.SpikesAlignmentCondition * stim_trials & alignment_condition).proj(),
     skip_duplicates=True)
@@ -151,7 +155,15 @@ analysis.SpikesAlignment.populate(display_progress=True)
 # + a set of trials of interest to perform the analysis on - `stim` trials [markdown]
 # ## Visualize
 #
-# We can visualize the results with the `plot` function.
+# We can visualize the results with the `plot` function with our keys.
+# -
+
+clustering_key = (ephys.CuratedClustering 
+                  & {'subject': 'subject6', 'session_datetime': '2021-01-15 11:16:38',
+                     'insertion_number': 0}
+                 ).fetch1('KEY')
+alignment_key = (event.AlignmentEvent & 'alignment_name = "center_button"'
+                ).fetch1('KEY')
 
 # + a set of trials of interest to perform the analysis on - `stim` trials
 alignment_condition = {**clustering_key, **alignment_key, 'trial_condition': 'ctrl_center_button'}
@@ -161,5 +173,4 @@ analysis.SpikesAlignment().plot(alignment_condition, unit=2);
 alignment_condition = {**clustering_key, **alignment_key, 'trial_condition': 'stim_center_button'}
 analysis.SpikesAlignment().plot(alignment_condition, unit=2);
 # -
-
 
