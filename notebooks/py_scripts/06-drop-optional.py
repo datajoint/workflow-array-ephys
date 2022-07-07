@@ -15,14 +15,15 @@
 
 # # Drop schemas
 #
-# + Schemas are not typically dropped in a production workflow with real data in it. 
+# + Schemas are not typically dropped in a production workflow with real data in it.
 # + At the developmental phase, it might be required for the table redesign.
 # + When dropping all schemas is needed, the following is the dependency order.
 
 # Change into the parent directory to find the `dj_local_conf.json` file.
 
 import os
-os.chdir('..')
+
+os.chdir("..")
 
 # +
 from workflow_array_ephys.pipeline import *

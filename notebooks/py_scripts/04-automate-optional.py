@@ -20,7 +20,8 @@
 # -
 
 import os
-os.chdir('..')
+
+os.chdir("..")
 import numpy as np
 from workflow_array_ephys.pipeline import lab, subject, session, probe, ephys
 
@@ -66,13 +67,14 @@ params_ks = {
     "nSkipCov": 25,
     "scaleproc": 200,
     "nPCs": 3,
-    "useRAM": 0
+    "useRAM": 0,
 }
 ephys.ClusteringParamSet.insert_new_params(
-    clustering_method='kilosort2',
+    clustering_method="kilosort2",
     paramset_idx=0,
     params=params_ks,
-    paramset_desc='Spike sorting using Kilosort2')
+    paramset_desc="Spike sorting using Kilosort2",
+)
 # -
 
 # ## Trigger autoprocessing of the remaining ephys pipeline
@@ -90,17 +92,23 @@ process.run()
 # + the `paramset_idx` used for the clustering job
 # + the output directory storing the clustering results
 
-session_key = session.Session.fetch1('KEY')
+session_key = session.Session.fetch1("KEY")
 ephys.ClusteringTask.insert1(
-    dict(session_key, insertion_number=0, paramset_idx=0,
-         clustering_output_dir='subject6/session1/towersTask_g0_imec0'), skip_duplicates=True)
+    dict(
+        session_key,
+        insertion_number=0,
+        paramset_idx=0,
+        clustering_output_dir="subject6/session1/towersTask_g0_imec0",
+    ),
+    skip_duplicates=True,
+)
 
 # run populate again for table Clustering
 process.run()
 
 # ## Insert new Curation to trigger ingestion of curated results
 
-key = (ephys.ClusteringTask & session_key).fetch1('KEY')
+key = (ephys.ClusteringTask & session_key).fetch1("KEY")
 ephys.Curation().create1_from_clustering_task(key)
 
 # run populate for the rest of the tables in the workflow, takes a while

@@ -27,6 +27,7 @@
 
 import os
 import djarchive_client
+
 client = djarchive_client.client()
 
 # To browse the datasets that are available in djarchive:
@@ -39,17 +40,22 @@ list(client.revisions())
 
 # To download the dataset, let's prepare a root directory, for example in `/tmp`:
 
-os.mkdir('/tmp/test_data')
+os.mkdir("/tmp/test_data")
 
 # Get the dataset revision with the current version of the workflow:
 
 from workflow_array_ephys import version
-revision = version.__version__.replace('.', '_')
+
+revision = version.__version__.replace(".", "_")
 revision
 
 # Then run download for a given set and the revision:
 
-client.download('workflow-array-ephys-test-set', target_directory='/tmp/test_data', revision=revision)
+client.download(
+    "workflow-array-ephys-test-set",
+    target_directory="/tmp/test_data",
+    revision=revision,
+)
 
 # ## Directory organization
 # After downloading, the directory will be organized as follows:
