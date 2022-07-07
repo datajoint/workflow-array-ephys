@@ -1,12 +1,12 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.0
 #   kernelspec:
 #     display_name: ephys_workflow_runner
 #     language: python
@@ -19,12 +19,15 @@
 
 # The example dataset was hosted on djarchive, an AWS storage. We provide a client package to download the data.[djarchive-client](https://github.com/datajoint/djarchive-client), which could be installed with pip:
 
-pip install git+https://github.com/datajoint/djarchive-client.git
+# + language="bash"
+# pip install git+https://github.com/datajoint/djarchive-client.git
+# -
 
 # ## Download ephys test datasets using `djarchive-client`
 
 import os
 import djarchive_client
+
 client = djarchive_client.client()
 
 # To browse the datasets that are available in djarchive:
@@ -37,17 +40,22 @@ list(client.revisions())
 
 # To download the dataset, let's prepare a root directory, for example in `/tmp`:
 
-os.mkdir('/tmp/test_data')
+os.mkdir("/tmp/test_data")
 
 # Get the dataset revision with the current version of the workflow:
 
 from workflow_array_ephys import version
-revision = version.__version__.replace('.', '_')
+
+revision = version.__version__.replace(".", "_")
 revision
 
 # Then run download for a given set and the revision:
 
-client.download('workflow-array-ephys-test-set', target_directory='/tmp/test_data', revision=revision)
+client.download(
+    "workflow-array-ephys-test-set",
+    target_directory="/tmp/test_data",
+    revision=revision,
+)
 
 # ## Directory organization
 # After downloading, the directory will be organized as follows:

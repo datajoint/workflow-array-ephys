@@ -24,7 +24,9 @@
 # To load the local configuration, we will change the directory to the package root.
 
 import os
-if os.path.basename(os.getcwd())=='notebooks': os.chdir('..')
+
+if os.path.basename(os.getcwd()) == "notebooks":
+    os.chdir("..")
 
 # ## Schemas and tables
 
@@ -57,24 +59,24 @@ ephys.EphysRecording()
 # + `dj.list_schemas()`: list all schemas a user could access.
 dj.list_schemas()
 
-# + `dj.Diagram()`: plot tables and dependencies. 
+# + `dj.Diagram()`: plot tables and dependencies.
 
 # + `dj.Diagram()`: plot tables and dependencies
 # plot diagram for all tables in a schema
 dj.Diagram(ephys)
 # -
 
-# **Table tiers**: 
+# **Table tiers**:
 #
-# Manual table: green box, manually inserted table, expect new entries daily, e.g. Subject, ProbeInsertion.  
-# Lookup table: gray box, pre inserted table, commonly used for general facts or parameters. e.g. Strain, ClusteringMethod, ClusteringParamSet.  
-# Imported table: blue oval, auto-processing table, the processing depends on the importing of external files. e.g. process of Clustering requires output files from kilosort2.  
-# Computed table: red circle, auto-processing table, the processing does not depend on files external to the database, commonly used for     
+# Manual table: green box, manually inserted table, expect new entries daily, e.g. Subject, ProbeInsertion.
+# Lookup table: gray box, pre inserted table, commonly used for general facts or parameters. e.g. Strain, ClusteringMethod, ClusteringParamSet.
+# Imported table: blue oval, auto-processing table, the processing depends on the importing of external files. e.g. process of Clustering requires output files from kilosort2.
+# Computed table: red circle, auto-processing table, the processing does not depend on files external to the database, commonly used for
 # Part table: plain text, as an appendix to the master table, all the part entries of a given master entry represent a intact set of the master entry. e.g. Unit of a CuratedClustering.
 #
-# **Dependencies**:  
+# **Dependencies**:
 #
-# One-to-one primary: thick solid line, share the exact same primary key, meaning the child table inherits all the primary key fields from the parent table as its own primary key.     
+# One-to-one primary: thick solid line, share the exact same primary key, meaning the child table inherits all the primary key fields from the parent table as its own primary key.
 # One-to-many primary: thin solid line, inherit the primary key from the parent table, but have additional field(s) as part of the primary key as well
 # secondary dependency: dashed line, the child table inherits the primary key fields from parent table as its own secondary attribute.
 
@@ -95,7 +97,7 @@ dj.Diagram(ephys.EphysRecording) - 2
 # + `heading`: [markdown]
 # # + `describe()`: show table definition with foreign key references.
 # -
-ephys.EphysRecording.describe();
+ephys.EphysRecording.describe()
 
 # + `heading`: show attribute definitions regardless of foreign key references
 
@@ -115,14 +117,14 @@ dj.Diagram(lab)
 dj.Diagram(subject)
 
 # + [subject](https://github.com/datajoint/element-animal): contains the basic information of subject, including Strain, Line, Subject, Zygosity, and SubjectDeath information.
-subject.Subject.describe();
+subject.Subject.describe()
 
 # + [`session`](https://github.com/datajoint/element-session): General information of experimental sessions.
 
 dj.Diagram(session)
 
 # + [session](https://github.com/datajoint/element-session): experimental session information
-session.Session.describe();
+session.Session.describe()
 
 # + [`ephys`](https://github.com/datajoint/element-array-ephys): Neuropixel based probe and ephys information
 

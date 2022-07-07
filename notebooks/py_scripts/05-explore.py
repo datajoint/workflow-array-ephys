@@ -18,7 +18,8 @@
 # This notebook will describe the steps for interacting with the data ingested into `workflow-array-ephys`.
 
 import os
-os.chdir('..')
+
+os.chdir("..")
 
 # +
 import datajoint as dj
@@ -36,7 +37,7 @@ from workflow_array_ephys.pipeline import lab, subject, session, ephys
 # # + [element-session](https://github.com/datajoint/element-session)
 # # + [element-array-ephys](https://github.com/datajoint/element-array-ephys)
 #
-# For the architecture and detailed descriptions for each of those elements, please visit the respective links. 
+# For the architecture and detailed descriptions for each of those elements, please visit the respective links.
 #
 # Below is the diagram describing the core components of the fully assembled pipeline.
 #
@@ -44,7 +45,7 @@ from workflow_array_ephys.pipeline import lab, subject, session, ephys
 
 dj.Diagram(ephys) + (dj.Diagram(session.Session) + 1) - 1
 
-# ## Browsing the data with DataJoint query and fetch 
+# ## Browsing the data with DataJoint query and fetch
 #
 #
 # DataJoint provides abundant functions to query data and fetch. For a detailed tutorials, visit our [general tutorial site](https://playground.datajoint.io/)
@@ -58,7 +59,9 @@ subject.Subject()
 
 session.Session()
 
-session_key = (session.Session & 'subject="subject6"' & 'session_datetime = "2021-01-15 11:16:38"').fetch1('KEY')
+session_key = (
+    session.Session & 'subject="subject6"' & 'session_datetime = "2021-01-15 11:16:38"'
+).fetch1("KEY")
 
 # ### `ephys.ProbeInsertion` and `ephys.EphysRecording` tables
 #
@@ -72,8 +75,8 @@ ephys.EphysRecording & session_key
 #
 # + Spike-sorting is performed on a per-probe basis with the details stored in `ClusteringTask` and `Clustering`
 #
-# + After the spike sorting, the results may go through curation process. 
-#     + If it did not go through curation, a copy of `ClusteringTask` entry was inserted into table `ephys.Curation` with the `curation_ouput_dir` identicial to the `clustering_output_dir`. 
+# + After the spike sorting, the results may go through curation process.
+#     + If it did not go through curation, a copy of `ClusteringTask` entry was inserted into table `ephys.Curation` with the `curation_ouput_dir` identicial to the `clustering_output_dir`.
 #     + If it did go through a curation, a new entry will be inserted into `ephys.Curation`, with a `curation_output_dir` specified.
 #     + `ephys.Curation` supports multiple curations of a clustering task.
 
@@ -89,7 +92,9 @@ ephys.CuratedClustering.Unit & session_key
 
 # Let's pick one probe insertion and one `curation_id`, and further inspect the clustering results.
 
-curation_key = (ephys.CuratedClustering & session_key & 'insertion_number = 0' & 'curation_id=1').fetch1('KEY')
+curation_key = (
+    ephys.CuratedClustering & session_key & "insertion_number = 0" & "curation_id=1"
+).fetch1("KEY")
 
 ephys.CuratedClustering.Unit & curation_key
 
@@ -99,39 +104,44 @@ ephys.CuratedClustering.Unit & curation_key
 
 ephys.CuratedClustering.Unit & curation_key & 'cluster_quality_label = "good"'
 
-units, unit_spiketimes = (ephys.CuratedClustering.Unit 
-                          & curation_key 
-                          & 'cluster_quality_label = "good"').fetch('unit', 'spike_times')
+units, unit_spiketimes = (
+    ephys.CuratedClustering.Unit & curation_key & 'cluster_quality_label = "good"'
+).fetch("unit", "spike_times")
 
 x = np.hstack(unit_spiketimes)
 y = np.hstack([np.full_like(s, u) for u, s in zip(units, unit_spiketimes)])
 
 fig, ax = plt.subplots(1, 1, figsize=(32, 16))
-ax.plot(x, y, '|')
-ax.set_xlabel('Time (s)');
-ax.set_ylabel('Unit');
+ax.plot(x, y, "|")
+ax.set_xlabel("Time (s)")
+ax.set_ylabel("Unit")
 
 # ### Plot waveform of a unit
 
 # Let's pick one unit and further inspect
 
-unit_key = (ephys.CuratedClustering.Unit & curation_key & 'unit = 15').fetch1('KEY')
+unit_key = (ephys.CuratedClustering.Unit & curation_key & "unit = 15").fetch1("KEY")
 
 ephys.CuratedClustering.Unit * ephys.WaveformSet.Waveform & unit_key
 
-unit_data = (ephys.CuratedClustering.Unit * ephys.WaveformSet.PeakWaveform & unit_key).fetch1()
+unit_data = (
+    ephys.CuratedClustering.Unit * ephys.WaveformSet.PeakWaveform & unit_key
+).fetch1()
 
 unit_data
 
-sampling_rate = (ephys.EphysRecording & curation_key).fetch1('sampling_rate')/1000 # in kHz
-plt.plot(np.r_[:unit_data['peak_electrode_waveform'].size] * 1/sampling_rate, unit_data['peak_electrode_waveform'])
-plt.xlabel('Time (ms)');
-plt.ylabel(r'Voltage ($\mu$V)');
+sampling_rate = (ephys.EphysRecording & curation_key).fetch1(
+    "sampling_rate"
+) / 1000  # in kHz
+plt.plot(
+    np.r_[: unit_data["peak_electrode_waveform"].size] * 1 / sampling_rate,
+    unit_data["peak_electrode_waveform"],
+)
+plt.xlabel("Time (ms)")
+plt.ylabel(r"Voltage ($\mu$V)")
 
 # ## Summary and Next Step
 
-# This notebook highlights the major tables in the workflow and visualize some of the ingested results. 
+# This notebook highlights the major tables in the workflow and visualize some of the ingested results.
 #
 # The next notebook [06-drop](06-drop-optional.ipynb) shows how to drop schemas and tables if needed.
-
-

@@ -26,10 +26,13 @@
 # -
 
 import os
+
 # change to the upper level folder
-if os.path.basename(os.getcwd())=='notebooks': os.chdir('..')
-assert os.path.basename(os.getcwd())=='workflow-array-ephys', ("Please move to the "
-                                                               + "workflow directory")
+if os.path.basename(os.getcwd()) == "notebooks":
+    os.chdir("..")
+assert os.path.basename(os.getcwd()) == "workflow-array-ephys", (
+    "Please move to the " + "workflow directory"
+)
 import datajoint as dj
 
 # ## Setup - Credentials
@@ -37,9 +40,10 @@ import datajoint as dj
 # Now let's set up the host, user and password in the `dj.config` global variable
 
 import getpass
-dj.config['database.host'] = '{YOUR_HOST}'
-dj.config['database.user'] = '{YOUR_USERNAME}'
-dj.config['database.password'] = getpass.getpass() # enter the password securily
+
+dj.config["database.host"] = "{YOUR_HOST}"
+dj.config["database.user"] = "{YOUR_USERNAME}"
+dj.config["database.password"] = getpass.getpass()  # enter the password securily
 
 # You should be able to connect to the database at this stage.
 
@@ -55,11 +59,11 @@ dj.conn()
 #
 # The prefix could be configurated as follows in `dj.config`:
 
-dj.config['custom'] = {'database.prefix': 'neuro_'}
+dj.config["custom"] = {"database.prefix": "neuro_"}
 
 # ### Root directories for raw/processed data
 #
-# `ephys_root_data_dir` field indicates the root directory for 
+# `ephys_root_data_dir` field indicates the root directory for
 # + The **ephys raw data** from SpikeGLX or OpenEphys, including `*{.ap,lf}.{bin,meta}`
 # + The **clustering results** from kilosort2 (e.g. `spike_{times,clusters}.npy`
 #
@@ -77,9 +81,9 @@ dj.config['custom'] = {'database.prefix': 'neuro_'}
 # ```
 
 # If there is only one root path.
-dj.config['custom']['ephys_root_data_dir'] = '/tmp/test_data'
+dj.config["custom"]["ephys_root_data_dir"] = "/tmp/test_data"
 # If there are multiple possible root paths:
-dj.config['custom']['ephys_root_data_dir'] = ['/tmp/test_data1', '/tmp/test_data2']
+dj.config["custom"]["ephys_root_data_dir"] = ["/tmp/test_data1", "/tmp/test_data2"]
 
 dj.config
 
@@ -92,7 +96,7 @@ dj.config
 #
 # `element-array-ephys` offers 3 different schemas: `acute`, `chronic`, and `no-curation`. For more information about each, please visit the [electrophysiology description page](https://elements.datajoint.org/description/array_ephys/). This decision should be made before first activating the schema. Note: only `no-curation` is supported for export to NWB directly from the Element.
 
-dj.config['custom']['ephys_mode']='no-curation' # or acute or chronic
+dj.config["custom"]["ephys_mode"] = "no-curation"  # or acute or chronic
 
 # ## Save configuration
 #
