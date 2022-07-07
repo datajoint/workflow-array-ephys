@@ -19,7 +19,9 @@
 
 # The example dataset was hosted on djarchive, an AWS storage. We provide a client package to download the data.[djarchive-client](https://github.com/datajoint/djarchive-client), which could be installed with pip:
 
-pip install git+https://github.com/datajoint/djarchive-client.git
+# + language="bash"
+# pip install git+https://github.com/datajoint/djarchive-client.git
+# -
 
 # ## Download ephys test datasets using `djarchive-client`
 
