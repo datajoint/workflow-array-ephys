@@ -8,14 +8,18 @@ RUN /entrypoint.sh echo "Installed dependencies."
 RUN mkdir /main/element-lab \
           /main/element-animal \
           /main/element-session \
-          /main/element-interface \
+          /main/element-event \
           /main/element-array-ephys \
+          /main/element-interface \
+          /main/element-electrode-localization \
           /main/workflow-array-ephys
 
 # Copy user's local fork of elements and workflow
 COPY --chown=anaconda:anaconda ./element-lab /main/element-lab
 COPY --chown=anaconda:anaconda ./element-animal /main/element-animal
 COPY --chown=anaconda:anaconda ./element-session /main/element-session
+COPY --chown=anaconda:anaconda ./element-event /main/element-event
+COPY --chown=anaconda:anaconda ./element-electrode-localization /main/element-electrode-localization
 COPY --chown=anaconda:anaconda ./element-interface /main/element-interface
 COPY --chown=anaconda:anaconda ./element-array-ephys /main/element-array-ephys
 COPY --chown=anaconda:anaconda ./workflow-array-ephys /main/workflow-array-ephys
@@ -24,6 +28,8 @@ COPY --chown=anaconda:anaconda ./workflow-array-ephys /main/workflow-array-ephys
 RUN pip install -e /main/element-lab
 RUN pip install -e /main/element-animal
 RUN pip install -e /main/element-session
+RUN pip install -e /main/element-event
+RUN pip install -e /main/element-electrode-localization
 RUN pip install -e /main/element-interface
 RUN pip install -e /main/element-array-ephys
 RUN pip install -e /main/workflow-array-ephys

@@ -27,6 +27,7 @@ services:
       - DJ_HOST=db
       - DJ_USER=root
       - DJ_PASS=simple
+      - EPHYS_MODE=no-curation
       - EPHYS_ROOT_DATA_DIR=/main/test_data/workflow_ephys_data1/,/main/test_data/workflow_ephys_data2/
       - DATABASE_PREFIX=test_
     command:
@@ -42,7 +43,8 @@ services:
       - ../../element-lab:/main/element-lab
       - ../../element-animal:/main/element-animal
       - ../../element-session:/main/element-session
-      - ../../element-interface:/main/element-interface
+      - ../../element-electrode-localization:/main/element-electrode-localization
+      - ../../element-event:/main/element-event
       - ../../element-array-ephys:/main/element-array-ephys
       - ..:/main/workflow-array-ephys
     depends_on:

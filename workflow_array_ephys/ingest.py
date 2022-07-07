@@ -1,11 +1,13 @@
 import csv
 import re
 
-from workflow_array_ephys.pipeline import lab, subject, ephys, probe, session
+from workflow_array_ephys.pipeline import lab, subject, ephys, probe, session, trial, \
+                                          event
 from workflow_array_ephys.paths import get_ephys_root_data_dir
 
 from element_array_ephys.readers import spikeglx, openephys
-from element_interface.utils import find_root_directory, find_full_path, ingest_csv_to_table
+from element_interface.utils import find_root_directory, find_full_path, \
+                                    ingest_csv_to_table
 
 
 def ingest_lab(lab_csv_path='./user_data/lab/labs.csv',
@@ -18,7 +20,7 @@ def ingest_lab(lab_csv_path='./user_data/lab/labs.csv',
                skip_duplicates=True, verbose=True):
     """
     Inserts data from a CSVs into their corresponding lab schema tables.
-    By default, uses data from workflow_session/user_data/lab/
+    By default, uses data from workflow/user_data/lab/
     :param lab_csv_path:      relative path of lab csv
     :param project_csv_path:  relative path of project csv
     :param publication_csv_path:     relative path of publication csv
@@ -45,6 +47,7 @@ def ingest_lab(lab_csv_path='./user_data/lab/labs.csv',
               lab.ProjectUser()]
 
     ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose)
+
 
 def ingest_subjects(subject_csv_path='./user_data/subjects.csv', verbose=True):
     """
@@ -136,9 +139,9 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
             session_dir_list.append({**session_key, 'session_dir':
                                      session_dir.relative_to(root_dir).as_posix()})
             session_note_list.append({**session_key, 'session_note':
-                                        sess['session_note']})
+                                      sess['session_note']})
             session_experimenter_list.append({**session_key, 'user':
-                                        sess['user']})
+                                              sess['user']})
             probe_insertion_list.extend([{**session_key, **insertion
                                           } for insertion in insertions])
 
@@ -160,6 +163,44 @@ def ingest_sessions(session_csv_path='./user_data/sessions.csv', verbose=True):
         print('\n---- Successfully completed ingest_subjects ----')
 
 
+def ingest_events(recording_csv_path='./user_data/behavior_recordings.csv',
+                  block_csv_path='./user_data/blocks.csv',
+                  trial_csv_path='./user_data/trials.csv',
+                  event_csv_path='./user_data/events.csv',
+                  skip_duplicates=True, verbose=True):
+    """
+    Ingest each level of experiment heirarchy for element-event:
+        recording, block (i.e., phases of trials), trials (repeated units),
+        events (optionally 0-duration occurances within trial).
+    """
+    csvs = [recording_csv_path, recording_csv_path,
+            block_csv_path, block_csv_path,
+            trial_csv_path, trial_csv_path, trial_csv_path,
+            trial_csv_path,
+            event_csv_path, event_csv_path, event_csv_path]
+    tables = [event.BehaviorRecording(), event.BehaviorRecording.File(),
+              trial.Block(), trial.Block.Attribute(),
+              trial.TrialType(), trial.Trial(), trial.Trial.Attribute(),
+              trial.BlockTrial(),
+              event.EventType(), event.Event(), trial.TrialEvent()]
+
+    # Allow direct insert required because element-event has Imported that should be Manual
+    ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose,
+                        allow_direct_insert=True)
+
+
+def ingest_alignment(alignment_csv_path='./user_data/alignments.csv',
+                     skip_duplicates=True, verbose=True):
+
+    csvs = [alignment_csv_path]
+    tables = [event.AlignmentEvent()]
+
+    ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose)
+
+
 if __name__ == '__main__':
+    ingest_lab()
     ingest_subjects()
     ingest_sessions()
+    ingest_events()
+    ingest_alignment()
