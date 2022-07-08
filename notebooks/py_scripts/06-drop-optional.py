@@ -1,16 +1,16 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.0
 #   kernelspec:
-#     display_name: Python [conda env:workflow-ephys]
+#     display_name: Python 3.10.4 64-bit ('python3p10')
 #     language: python
-#     name: conda-env-workflow-ephys-py
+#     name: python3
 # ---
 
 # # Drop schemas
