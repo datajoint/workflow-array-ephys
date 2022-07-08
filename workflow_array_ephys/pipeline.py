@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from element_animal import subject
 from element_lab import lab
-from element_session import session
+from element_session import session_with_datetime as session
 from element_event import trial, event
 from element_array_ephys import probe
 from element_electrode_localization import coordinate_framework, electrode_localization
@@ -29,11 +29,13 @@ db_prefix = dj.config["custom"].get("database.prefix", "")
 # ------------- Import the configured "ephys mode" -------------
 ephys_mode = os.getenv("EPHYS_MODE", dj.config["custom"].get("ephys_mode", "acute"))
 if ephys_mode == "acute":
-    from element_array_ephys import ephys
+    from element_array_ephys import ephys_acute as ephys
 elif ephys_mode == "chronic":
     from element_array_ephys import ephys_chronic as ephys
 elif ephys_mode == "no-curation":
     from element_array_ephys import ephys_no_curation as ephys
+elif ephys_mode == "precluster":
+    from element_array_ephys import ephys_precluster as ephys
 else:
     raise ValueError(f"Unknown ephys mode: {ephys_mode}")
 
