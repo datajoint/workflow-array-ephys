@@ -71,6 +71,9 @@ for an in-depth explanation of how to ...
 ([08-electrode-localization.ipynb](notebooks/08-electrode-localization.ipynb))
 5. Export to NWB and DANDI ([09-NWB-export.ipynb](notebooks/09-NWB-export.ipynb))
 
+See our YouTube tutorial for a walkthrough of the schemas and functions:
+  [![YouTube tutorial](https://img.youtube.com/vi/KQlGYOBq7ow/0.jpg)](https://www.youtube.com/watch?v=KQlGYOBq7ow)
+
 ## Citation
 
 If your work uses DataJoint and DataJoint Elements, please cite the respective Research Resource Identifiers (RRIDs) and manuscripts.
