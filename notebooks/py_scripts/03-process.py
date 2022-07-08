@@ -292,10 +292,9 @@ ephys.CuratedClustering.populate(session_key, display_progress=True)
 ephys.CuratedClustering.Unit()
 
 # ## Populate LFP
+# + `LFP`: Mean local field potential across different electrodes.
+# + `LFP.Electrode`: Local field potential of a given electrode.
 
-# + `LFP`: mean LFP across all electrodes [markdown]
-# # # # + `LFP`: Mean local field potential across different electrodes.
-# # # # + `LFP.Electrode`: Local field potential of a given electrode.
 # + LFP and LFP.Electrode: By populating LFP, LFP of every other 9 electrode on the probe will be saved into table `ephys_element.LFP.Electrode` and an average LFP saved into table `ephys_element.LFP`
 (
     dj.Diagram(ephys.EphysRecording)
