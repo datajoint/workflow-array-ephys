@@ -37,15 +37,15 @@ schema options, selected via the DataJoint config file, with
 + `chronic` probe insertion, with curated clustering
 + `no-curation`, acute probe insertion with kilosort triggered clustering and supported NWB export
 
-![element-array-ephys](images/attached_array_ephys_element.svg)
+![](https://raw.githubusercontent.com/datajoint/workflow-array-ephys/main/images/attached_array_ephys_element.svg)
 
 Optionally, this can be used in conjunction with 
 [element-event](https://github.com/datajoint/element-event)
 and [element-electrode-localization](https://github.com/datajoint/element-electrode-localization/).
 
-![element-event_attached](images/attached_trial_analysis.svg)
+![](https://raw.githubusercontent.com/datajoint/workflow-array-ephys/main/images/attached_trial_analysis.svg)
 
-![element-electrode-localization_attached](images/attached_electrode_localization.svg)
+![](https://raw.githubusercontent.com/datajoint/workflow-array-ephys/main/images/attached_electrode_localization.svg)
 
 ## Installation instructions
 
