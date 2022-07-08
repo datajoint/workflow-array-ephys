@@ -7,19 +7,19 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.0
 #   kernelspec:
-#     display_name: ephys_workflow_runner
+#     display_name: Python 3.10.4 64-bit ('python3p10')
 #     language: python
-#     name: ephys_workflow_runner
+#     name: python3
 # ---
 
 # # Introduction to the workflow structure
 
-# This notebook gives a brief overview of the workflow structure and introduce some useful DataJoint tools to facilitate the exploration.
+# This notebook gives a brief overview of the workflow structure and introduces some useful DataJoint tools to facilitate the exploration.
 # + DataJoint needs to be pre-configured before running this notebook, if you haven't set up the configuration, refer to notebook [01-configure](01-configure.ipynb).
 # + If you are familar with DataJoint and the workflow structure, proceed to the next notebook [03-process](03-process.ipynb) directly to run the workflow.
-# + For a more thorough introduction of DataJoint functionings, please visit our [general tutorial site](https://playground.datajoint.io)
+# + For a more thorough introduction of DataJoint functions, please visit our [general tutorial site](https://codebook.datajoint.io)
 
 # To load the local configuration, we will change the directory to the package root.
 
@@ -48,10 +48,9 @@ ephys.schema
 # preview table columns and contents in a table
 ephys.EphysRecording()
 
-# + The first time importing the modules, empty schemas and tables will be created in the database. [markdown]
-# # + By importing the modules for the first time, the schemas and tables will be created inside the database.
-# # + Once created, importing modules will not create schemas and tables again, but the existing schemas/tables can be accessed and manipulated by the modules.
-# -
+# + By importing the modules for the first time, the schemas and tables will be created inside the database.
+# + Once created, importing modules will not create schemas and tables again, but the existing schemas/tables can be accessed and manipulated by the modules.
+
 # ## DataJoint tools to explore schemas and tables
 
 # + The schemas and tables will not be re-created when importing modules if they have existed. [markdown]
@@ -59,7 +58,7 @@ ephys.EphysRecording()
 # + `dj.list_schemas()`: list all schemas a user could access.
 dj.list_schemas()
 
-# + `dj.Diagram()`: plot tables and dependencies.
+# + `dj.Diagram()`: plot tables and dependencies. 
 
 # + `dj.Diagram()`: plot tables and dependencies
 # plot diagram for all tables in a schema
