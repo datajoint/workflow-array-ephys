@@ -36,6 +36,7 @@ schema options, selected via the DataJoint config file, with
 + `acute` probe insertion, with curated clustering
 + `chronic` probe insertion, with curated clustering
 + `no-curation`, acute probe insertion with kilosort triggered clustering and supported NWB export
++ `precluster`, acute probe insertion with pre-processing steps prior to clustering and curated clustering
 
 ![](https://raw.githubusercontent.com/datajoint/workflow-array-ephys/main/images/attached_array_ephys_element.svg)
 
