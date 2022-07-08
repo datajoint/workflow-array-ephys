@@ -49,7 +49,7 @@ os.mkdir("/tmp/test_data")
 client.download(
     "workflow-array-ephys-benchmark",
     target_directory="/tmp/test_data",
-    revision='v1',
+    revision="v1",
 )
 
 # ## Directory organization
