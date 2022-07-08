@@ -25,6 +25,7 @@ if os.path.basename(os.getcwd()) == "notebooks":
 assert os.path.basename(os.getcwd()) == "workflow-array-ephys", (
     "Please move to the " + "workflow directory"
 )
+
 # We'll be working with long tables, so we'll make visualization easier with a limit
 import datajoint as dj
 

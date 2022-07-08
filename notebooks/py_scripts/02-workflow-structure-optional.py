@@ -58,7 +58,7 @@ ephys.EphysRecording()
 # + `dj.list_schemas()`: list all schemas a user could access.
 dj.list_schemas()
 
-# + `dj.Diagram()`: plot tables and dependencies. 
+# + `dj.Diagram()`: plot tables and dependencies.
 
 # + `dj.Diagram()`: plot tables and dependencies
 # plot diagram for all tables in a schema

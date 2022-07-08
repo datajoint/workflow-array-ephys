@@ -32,6 +32,7 @@ from workflow_array_ephys.pipeline import lab, subject, session, ephys
 # ## Workflow architecture
 #
 # This workflow is assembled from 4 DataJoint elements:
+#
 # # + [element-lab](https://github.com/datajoint/element-lab)
 # # + [element-animal](https://github.com/datajoint/element-animal)
 # # + [element-session](https://github.com/datajoint/element-session)

@@ -22,6 +22,7 @@
 import os
 
 os.chdir("..")
+
 import numpy as np
 from workflow_array_ephys.pipeline import lab, subject, session, probe, ephys
 

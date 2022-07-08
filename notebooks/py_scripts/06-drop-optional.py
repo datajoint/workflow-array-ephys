@@ -25,9 +25,9 @@ import os
 
 os.chdir("..")
 
-# +
 from workflow_array_ephys.pipeline import *
 
+# +
 # ephys.schema.drop()
 # probe.schema.drop()
 # session.schema.drop()
