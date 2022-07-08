@@ -1,7 +1,7 @@
 import datajoint as dj
 import numpy as np
 
-from .pipeline import db_prefix, ephys, trial
+from .pipeline import db_prefix, ephys, trial, event
 
 __all__ = ["db_prefix", "ephys", "trial", "event"]
 
