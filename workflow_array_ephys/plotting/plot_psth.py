@@ -26,7 +26,6 @@ def _plot_spike_raster(
     ax.set_ylabel("Trial (#)")
     if xlim:
         ax.set_xlim(xlim)
-    # ax.set_axis_off()
     ax.set_title(title)
 
 
