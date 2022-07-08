@@ -1,20 +1,20 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.0
 #   kernelspec:
-#     display_name: Python 3.8.11 ('ele')
+#     display_name: Python 3.10.4 64-bit ('python3p10')
 #     language: python
 #     name: python3
 # ---
 
 # + [markdown] tags=[]
-# # DataJoint U24 - Workflow Array Electrophysiology
+# # Event-aligned spike time analysis
 
 # + [markdown] tags=[]
 # ## Setup
@@ -78,7 +78,7 @@ ingest_events()
 
 trial.Trial()
 
-# Each trial is paired with one or more events that take place during the trial window.
+# Each trial is paired with events that take place during the trial window.
 
 trial.TrialEvent() & "trial_id<5"
 
