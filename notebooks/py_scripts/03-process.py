@@ -2,16 +2,16 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.0
 #   kernelspec:
-#     display_name: ephys_workflow_runner
+#     display_name: Python 3.10.4 64-bit ('python3p10')
 #     language: python
-#     name: ephys_workflow_runner
+#     name: python3
 # ---
 
 # # Interatively run array ephys workflow
@@ -292,10 +292,9 @@ ephys.CuratedClustering.populate(session_key, display_progress=True)
 ephys.CuratedClustering.Unit()
 
 # ## Populate LFP
+# + `LFP`: Mean local field potential across different electrodes.
+# + `LFP.Electrode`: Local field potential of a given electrode.
 
-# + `LFP`: mean LFP across all electrodes [markdown]
-# # + `LFP`: Mean local field potential across different electrodes.
-# # + `LFP.Electrode`: Local field potential of a given electrode.
 # + LFP and LFP.Electrode: By populating LFP, LFP of every other 9 electrode on the probe will be saved into table `ephys_element.LFP.Electrode` and an average LFP saved into table `ephys_element.LFP`
 (
     dj.Diagram(ephys.EphysRecording)

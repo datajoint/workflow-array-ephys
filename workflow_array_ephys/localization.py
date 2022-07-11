@@ -3,6 +3,7 @@ from element_interface.utils import find_full_path
 from element_electrode_localization import coordinate_framework, electrode_localization
 from element_electrode_localization.coordinate_framework import load_ccf_annotation
 
+
 from .pipeline import ephys, probe
 from .paths import (
     get_ephys_root_data_dir,
@@ -28,7 +29,7 @@ __all__ = [
     "load_ccf_annotation",
 ]
 
-ccf_id = 0
+ccf_id = 0  # Atlas ID
 voxel_resolution = 100
 
 # Activate "electrode-localization" schema ------------------------------------
@@ -36,7 +37,7 @@ voxel_resolution = 100
 ProbeInsertion = ephys.ProbeInsertion
 
 electrode_localization.activate(
-    db_prefix + "eloc", db_prefix + "ccf", linking_module=__name__
+    db_prefix + "electrode_localization", db_prefix + "ccf", linking_module=__name__
 )
 
 nrrd_filepath = find_full_path(
@@ -44,7 +45,11 @@ nrrd_filepath = find_full_path(
 )
 ontology_csv_filepath = find_full_path(get_ephys_root_data_dir(), "query.csv")
 
-if not (coordinate_framework.CCF & {"ccf_id": ccf_id}):
+if (
+    not (coordinate_framework.CCF & {"ccf_id": ccf_id})
+    and nrrd_filepath.exists()
+    and ontology_csv_filepath.exists()
+):
     coordinate_framework.load_ccf_annotation(
         ccf_id=ccf_id,
         version_name="ccf_2017",

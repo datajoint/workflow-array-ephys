@@ -1,20 +1,20 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.0
 #   kernelspec:
-#     display_name: bl_dev
+#     display_name: Python 3.10.4 64-bit ('python3p10')
 #     language: python
-#     name: bl_dev
+#     name: python3
 # ---
 
 # + [markdown] tags=[]
-# # DataJoint U24 - Workflow Array Electrophysiology
+# # DataJoint configuration
 #
 # ## Setup - Working Directory
 #
@@ -87,10 +87,14 @@ dj.config["custom"]["ephys_root_data_dir"] = ["/tmp/test_data1", "/tmp/test_data
 
 dj.config
 
-# + In the database, every path for the ephys raw data is **relative to root path(s)**. The benefit is that the absolute path could be configured for each machine, and when data transfer happens, we just need to change the root directory in the config file.
-# + The workflow supports **multiple root directories**. If there are multiple possible root directories, specify the `ephys_root_data_dir` as a list.
-# + The root path(s) are **specific to each machine**, as the name of drive mount could be different for different operating systems or machines.
-# + In the context of the workflow, all the paths saved into the database or saved in the config file need to be in the **POSIX standards** (Unix/Linux), with `/`. The path conversion for machines of any operating system is taken care of inside the elements.
+[markdown]
+# # + In the database, every path for the ephys raw data is **relative to root path(s)**. The benefit is that the absolute path could be configured for each machine, and when data transfer happens, we just need to change the root directory in the config file.
+#
+# # + The workflow supports **multiple root directories**. If there are multiple possible root directories, specify the `ephys_root_data_dir` as a list.
+#
+# # + The root path(s) are **specific to each machine**, as the name of mounted drive could be different for different operating systems or machines.
+#
+# # + In the context of the workflow, all the paths saved into the database or saved in the config file need to be in the **POSIX standards** (Unix/Linux), with `/`. The path conversion for machines of any operating system is taken care of inside the elements.
 
 # ### Ephys Mode
 #

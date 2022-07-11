@@ -1,19 +1,20 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.0
 #   kernelspec:
-#     display_name: Python 3.8.11 ('ele')
+#     display_name: Python 3.10.4 64-bit ('python3p10')
 #     language: python
 #     name: python3
 # ---
 
 # + [markdown] tags=[]
-# # DataJoint U24 - Workflow Array Electrophysiology
+# # Export workflow to Neurodata Without Borders file and upload to DANDI
 # -
 
 # ## Setup
@@ -28,6 +29,7 @@ if os.path.basename(os.getcwd()) == "notebooks":
 assert os.path.basename(os.getcwd()) == "workflow-array-ephys", (
     "Please move to the " + "workflow directory"
 )
+
 # We'll be working with long tables, so we'll make visualization easier with a limit
 import datajoint as dj
 
@@ -60,7 +62,7 @@ session_key = {"subject": "subject5", "session_datetime": "2018-07-03 20:32:28"}
 #
 # - **Element Lab** `element_lab_to_nwb_dict` exports NWB-relevant items to `dict` format.
 # - **Element Animal** `subject_to_nwb` returns an NWB file with subject information.
-# - **Element Session** `session_to_nwb` returns an NWB files with subject and session information.
+# - **Element Session** `session_to_nwb` returns an NWB file with subject and session information.
 #
 # Note: `pynwb` will display a warning regarding timezone information - datetime fields are assumed to be in local time, and will be converted to UTC.
 #

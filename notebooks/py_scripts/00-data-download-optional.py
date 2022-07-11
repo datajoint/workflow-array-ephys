@@ -1,18 +1,20 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py_scripts//py
+#     formats: ipynb,py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
 #       jupytext_version: 1.14.0
 #   kernelspec:
-#     display_name: ephys_workflow_runner
+#     display_name: Python 3.10.4 64-bit ('python3p10')
 #     language: python
-#     name: ephys_workflow_runner
+#     name: python3
 # ---
 
+# # Download example data
+#
 # This workflow will need Ephys data collected from either SpikeGLX or OpenEphys and the output from kilosort2. We provided an example dataset to be downloaded to run through the pipeline. This notebook walks you through the process to download the dataset.
 
 # ## Install djarchive-client
@@ -42,19 +44,12 @@ list(client.revisions())
 
 os.mkdir("/tmp/test_data")
 
-# Get the dataset revision with the current version of the workflow:
-
-from workflow_array_ephys import version
-
-revision = version.__version__.replace(".", "_")
-revision
-
 # Then run download for a given set and the revision:
 
 client.download(
-    "workflow-array-ephys-test-set",
+    "workflow-array-ephys-benchmark",
     target_directory="/tmp/test_data",
-    revision=revision,
+    revision="v1",
 )
 
 # ## Directory organization
