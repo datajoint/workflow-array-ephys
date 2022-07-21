@@ -28,7 +28,10 @@ services:
       - ../../element-lab:/main/element-lab
       - ../../element-animal:/main/element-animal
       - ../../element-session:/main/element-session
+      - ../../element-event:/main/element-event
+      - ../../element-electrode-localization:/main/element-electrode-localization
       - ../../element-array-ephys:/main/element-array-ephys
+      - ../../element-interface:/main/element-interface
       - ..:/main/workflow-array-ephys
     depends_on:
       db:
