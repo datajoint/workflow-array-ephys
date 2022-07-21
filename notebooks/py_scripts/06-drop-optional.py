@@ -1,14 +1,13 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.0
+#       jupytext_version: 1.13.7
 #   kernelspec:
-#     display_name: Python 3.10.4 64-bit ('python3p10')
+#     display_name: Python 3.9.12 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -22,8 +21,7 @@
 # Change into the parent directory to find the `dj_local_conf.json` file.
 
 import os
-
-os.chdir("..")
+if os.path.basename(os.getcwd()) == "notebooks": os.chdir("..")
 
 from workflow_array_ephys.pipeline import *
 
