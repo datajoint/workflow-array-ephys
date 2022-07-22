@@ -16,6 +16,7 @@ from .paths import (
     get_electrode_localization_dir,
 )
 
+
 if "custom" not in dj.config:
     dj.config["custom"] = {}
 
@@ -28,6 +29,13 @@ if ephys_mode == "acute":
 elif ephys_mode == "chronic":
     from element_array_ephys import ephys_chronic as ephys
 elif ephys_mode == "no-curation":
+    from .export import (
+        element_lab_to_nwb_dict,
+        subject_to_nwb,
+        session_to_nwb,
+        ecephys_session_to_nwb,
+        write_nwb,
+    )
     from element_array_ephys import ephys_no_curation as ephys
 elif ephys_mode == "precluster":
     from element_array_ephys import ephys_precluster as ephys
