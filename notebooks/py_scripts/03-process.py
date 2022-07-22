@@ -2,14 +2,13 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.0
+#       jupytext_version: 1.13.7
 #   kernelspec:
-#     display_name: Python 3.10.4 64-bit ('python3p10')
+#     display_name: Python 3.9.12 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -25,8 +24,7 @@
 # Let's will change the directory to the package root to load configuration and also import relevant schemas.
 
 import os
-
-os.chdir("..")
+if os.path.basename(os.getcwd()) == "notebooks": os.chdir("..")
 
 import datajoint as dj
 from workflow_array_ephys.pipeline import lab, subject, session, probe, ephys
@@ -129,7 +127,7 @@ ephys.ProbeInsertion()
 # ingest_subjects()
 # ingest_sessions()
 # ```
-# `ingest_sessions` also extracts probe and probe insertion information automatically from the meta file.
+# `ingest_sessions` also extracts probe and probe insertion information automatically from the meta files.
 #
 # This is the regular routine for daily data processing, illustrated in notebook [04-automate](04-automate[optional].ipynb).
 

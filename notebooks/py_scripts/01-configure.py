@@ -1,14 +1,13 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.0
+#       jupytext_version: 1.13.7
 #   kernelspec:
-#     display_name: Python 3.10.4 64-bit ('python3p10')
+#     display_name: Python 3.9.12 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -28,11 +27,7 @@
 import os
 
 # change to the upper level folder
-if os.path.basename(os.getcwd()) == "notebooks":
-    os.chdir("..")
-assert os.path.basename(os.getcwd()) == "workflow-array-ephys", (
-    "Please move to the " + "workflow directory"
-)
+if os.path.basename(os.getcwd()) == "notebooks": os.chdir("..")
 import datajoint as dj
 
 # ## Setup - Credentials
@@ -40,8 +35,7 @@ import datajoint as dj
 # Now let's set up the host, user and password in the `dj.config` global variable
 
 import getpass
-
-dj.config["database.host"] = "{YOUR_HOST}"
+dj.config["database.host"] = "{YOUR_HOST}" # CodeBook users should omit this
 dj.config["database.user"] = "{YOUR_USERNAME}"
 dj.config["database.password"] = getpass.getpass()  # enter the password securily
 
@@ -57,9 +51,10 @@ dj.conn()
 #
 # Giving a prefix to schema could help on the configuration of privilege settings. For example, if we set prefix `neuro_`, every schema created with the current workflow will start with `neuro_`, e.g. `neuro_lab`, `neuro_subject`, `neuro_ephys` etc.
 #
-# The prefix could be configurated as follows in `dj.config`:
+# The prefix could be configurated in `dj.config` as follows. CodeBook users should keep their username as the prefix for schema for declaration permissions.
 
-dj.config["custom"] = {"database.prefix": "neuro_"}
+username_as_prefix = dj.config["database.user"] + "_"
+dj.config["custom"] = {"database.prefix": username_as_prefix}
 
 # ### Root directories for raw/processed data
 #
@@ -69,10 +64,10 @@ dj.config["custom"] = {"database.prefix": "neuro_"}
 #
 # The root path typically **do not** contain information of subjects or sessions, all data from subjects/sessions should be subdirectories in the root path.
 #
-# In the example dataset downloaded with [these instructions](00-data-download-optional.ipynb), `/tmp/test_data` will be the root
+# - In the example dataset downloaded with [these instructions](00-data-download-optional.ipynb), `/tmp/test_data` will be the root. 
+# - For CodeBook users, the root is `/home/inbox/`
 #
 # ```
-# /tmp/test_data/
 # - subject6
 #     - session1
 #         - towersTask_g0_imec0
@@ -83,18 +78,13 @@ dj.config["custom"] = {"database.prefix": "neuro_"}
 # If there is only one root path.
 dj.config["custom"]["ephys_root_data_dir"] = "/tmp/test_data"
 # If there are multiple possible root paths:
-dj.config["custom"]["ephys_root_data_dir"] = ["/tmp/test_data1", "/tmp/test_data2"]
+dj.config["custom"]["ephys_root_data_dir"] = ["/tmp/test_data", "/home/inbox/"]
 
 dj.config
 
-[markdown]
-# # + In the database, every path for the ephys raw data is **relative to root path(s)**. The benefit is that the absolute path could be configured for each machine, and when data transfer happens, we just need to change the root directory in the config file.
+# + In the database, every path for the ephys raw data is **relative to root path(s)** to allow for the absolute path to be configured for **each machine**. When transferring data, we just need to change the root directory in the config file.
 #
-# # + The workflow supports **multiple root directories**. If there are multiple possible root directories, specify the `ephys_root_data_dir` as a list.
-#
-# # + The root path(s) are **specific to each machine**, as the name of mounted drive could be different for different operating systems or machines.
-#
-# # + In the context of the workflow, all the paths saved into the database or saved in the config file need to be in the **POSIX standards** (Unix/Linux), with `/`. The path conversion for machines of any operating system is taken care of inside the elements.
+# + DataJoint Elements use `pathlib.Path()` to maintain path information in **POSIX standards** (Unix/Linux), with `/`. The path conversion for machines of any operating system is taken care of inside the elements.
 
 # ### Ephys Mode
 #

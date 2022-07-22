@@ -6,9 +6,9 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.0
+#       jupytext_version: 1.13.7
 #   kernelspec:
-#     display_name: Python 3.10.4 64-bit ('python3p10')
+#     display_name: Python 3.9.12 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -16,6 +16,8 @@
 # # Download example data
 #
 # This workflow will need Ephys data collected from either SpikeGLX or OpenEphys and the output from kilosort2. We provided an example dataset to be downloaded to run through the pipeline. This notebook walks you through the process to download the dataset.
+#
+# [CodeBook](codebook.datajoint.io) users can skip this step.
 
 # ## Install djarchive-client
 
@@ -49,7 +51,7 @@ os.mkdir("/tmp/test_data")
 client.download(
     "workflow-array-ephys-benchmark",
     target_directory="/tmp/test_data",
-    revision="v1",
+    revision='v1',
 )
 
 # ## Directory organization
