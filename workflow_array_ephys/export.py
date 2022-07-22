@@ -1,8 +1,9 @@
 # For didactic purposes, import upstream NWB export functions
+import os
+import datajoint as dj
 from element_lab.export.nwb import element_lab_to_nwb_dict
 from element_animal.export.nwb import subject_to_nwb
 from element_session.export.nwb import session_to_nwb
-from .pipeline import ephys_mode
 
 __all__ = [
     "element_lab_to_nwb_dict",
@@ -11,6 +12,7 @@ __all__ = [
 ]
 
 # Import ephys NWB export functions
+ephys_mode = os.getenv("EPHYS_MODE", dj.config["custom"].get("ephys_mode", "acute"))
 if ephys_mode == "no-curation":
     from element_array_ephys.export.nwb import ecephys_session_to_nwb, write_nwb
 else:
