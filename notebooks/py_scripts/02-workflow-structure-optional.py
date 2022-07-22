@@ -74,7 +74,7 @@ dj.Diagram(ephys) + dj.Diagram(session) - 1
 #
 # - `<table>()` show table contents
 # - `heading` shows attribute definitions
-# - `describe()` show table defintiion with foreign key references
+# - `describe()` show table definition with foreign key references
 
 # + Each datajoint table class inside the module corresponds to a table inside the schema. For example, the class `ephys.EphysRecording` correponds to the table `_ephys_recording` in the schema `neuro_ephys` in the database.
 # preview table columns and contents in a table
