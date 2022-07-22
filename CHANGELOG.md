@@ -3,6 +3,12 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
+## [0.2.1] - 2022-07-22
++ Add - Mention CodeBook data directory in notebooks
++ Add - Mention of config items in notebook 09
++ Update - Remove directory assertion in notebooks for CodeBook deployment
++ Update - Move all export functions from `pipeline` to `export` script
+
 ## [0.2.0] - 2022-07-08
 
 + Add - Adopt black formatting into code base

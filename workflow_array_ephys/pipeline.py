@@ -16,9 +16,6 @@ from .paths import (
     get_electrode_localization_dir,
 )
 
-# session and ephys nwb exports check for these in linking_module
-from .export import element_lab_to_nwb_dict, subject_to_nwb, session_to_nwb
-
 if "custom" not in dj.config:
     dj.config["custom"] = {}
 
