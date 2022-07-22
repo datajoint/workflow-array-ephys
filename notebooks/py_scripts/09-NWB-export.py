@@ -5,9 +5,9 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.0
 #   kernelspec:
-#     display_name: Python 3.10.4 64-bit ('python3p10')
+#     display_name: Python 3.9.12 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -27,6 +27,16 @@ if os.path.basename(os.getcwd())=='notebooks': os.chdir('..')
 # We'll be working with long tables, so we'll make visualization easier with a limit
 import datajoint as dj
 dj.config['display.limit']=10
+
+# CodeBook users should also set a couple additional config parameters.
+
+username_as_prefix = dj.config["database.user"] + "_"
+if not dj.config['custom']:
+    dj.config['custom'] = {}
+dj.config['custom'].update({
+        "ephys_mode": "no-curation",
+        "database.prefix": username_as_prefix,
+        })
 
 # If you haven't already populated the `lab`, `subject`, `session`, `probe`, and `ephys` schemas, please do so now with [04-automate](./04-automate-optional.ipynb). Note: exporting `ephys` data is currently only supported on the `no_curation` schema. 
 
