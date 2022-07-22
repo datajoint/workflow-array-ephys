@@ -5,6 +5,7 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 
 ## [0.2.1] - 2022-07-22
 + Add - Mention CodeBook data directory in notebooks
++ Add - Mention of config items in notebook 09
 + Update - Remove directory assertion in notebooks for CodeBook deployment
 + Update - Move all export functions from `pipeline` to `export` script
 
