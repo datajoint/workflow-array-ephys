@@ -2,8 +2,13 @@
 
 name: u24_workflow_before_release
 on:
-  push:
   pull_request:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+  workflow_dispatch:
 
 ### For act testing locally
 anchor-dev-if: &dev-if

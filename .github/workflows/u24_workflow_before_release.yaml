@@ -1,8 +1,13 @@
 #
 name: u24_workflow_before_release
 on:
-  push:
   pull_request:
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+  workflow_dispatch:
 jobs:
   # get_meta:
   #   runs-on: ubuntu-latest
