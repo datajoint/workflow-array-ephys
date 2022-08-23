@@ -1,4 +1,3 @@
-#
 name: u24_workflow_before_release
 on:
   pull_request:
@@ -9,31 +8,6 @@ on:
       - '**'
   workflow_dispatch:
 jobs:
-  # get_meta:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - id: get_version
-  #       name: Get build metadata
-  #       run: |
-  #         ## Get workflow version as codebook env image version
-  #         PACKAGE_DIR=$(ls | grep workflow)
-  #         echo "::set-output name=workflow_version::$(cat ${PKG_NAME}/version.py | grep -oP '\d+\.\d+\.[a-z0-9]+')"
-  #     - id: create_release
-  #       name: Create release
-  #       !!merge <<: *dev-if
-  #       uses: actions/create-release@v1
-  #       env:
-  #         GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
-  #       with:
-  #         tag_name: ${{steps.get_version.outputs.workflow_version}}
-  #         release_name: Release ${{steps.get_version.outputs.workflow_version}}
-  #         body: Release ${{steps.get_version.outputs.workflow_version}}
-  #         draft: false
-  #         prerelease: false
-  #   outputs:
-  #     workflow_version: ${{steps.get_version.outputs.workflow_version}}
-  #     release_upload_url: ${{steps.create_release.outputs.upload_url}}
   call_context_check:
     uses: dj-sciops/djsciops-cicd/.github/workflows/context_check.yaml@main
   call_u24_docker_image_py39:
