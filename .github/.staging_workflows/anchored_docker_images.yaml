@@ -12,7 +12,7 @@ anchor-dev-if: &dev-if
     startsWith(github.ref, 'refs/tags') &&
     github.repository_owner == 'yambottle'
 anchor-dev-workflow: &dev-workflow
-  uses: Yambottle/djsciops-cicd/.github/workflows/u24_docker_images.yaml@main
+  uses: Yambottle/djsciops-cicd/.github/workflows/u24_workflow_build.yaml@main
 ### For Github Action run in your own fork with release
 anchor-test-if: &test-if
   if: |
@@ -20,7 +20,7 @@ anchor-test-if: &test-if
     startsWith(github.ref, 'refs/tags') &&
     github.repository_owner == 'yambottle'
 anchor-test-workflow: &test-workflow
-  uses: dj-sciops/djsciops-cicd/.github/workflows/u24_docker_images.yaml@main
+  uses: dj-sciops/djsciops-cicd/.github/workflows/u24_workflow_build.yaml@main
 ### For Github Action run in datajoint
 anchor-prod-if: &prod-if
   if: |
@@ -28,7 +28,7 @@ anchor-prod-if: &prod-if
     startsWith(github.ref, 'refs/tags') &&
     github.repository_owner == 'datajoint'
 anchor-prod-workflow: &prod-workflow
-  uses: dj-sciops/djsciops-cicd/.github/workflows/u24_docker_images.yaml@main
+  uses: dj-sciops/djsciops-cicd/.github/workflows/u24_workflow_build.yaml@main
 ### Common anchor
 anchor-workflow-secrets: &workflow-secrets
   secrets:
@@ -46,7 +46,7 @@ jobs:
         run: |
           ## Get workflow version as codebook env image version
           PACKAGE_DIR=$(ls | grep workflow)
-          echo "::set-output name=workflow_version::$(cat ${PACKAGE_DIR}/version.py | tail -1 | awk -F\' '{print $2}')"
+          echo "::set-output name=workflow_version::$(cat ${PKG_NAME}/version.py | grep -oP '\d+\.\d+\.[a-z0-9]+')"
       - id: create_release
         name: Create release
         !!merge <<: *$STAGE-if
@@ -70,18 +70,7 @@ jobs:
       jhub_ver: 1.4.2
       py_ver: 3.9
       dist: debian
+      codebook_base_hash: 561b765
       workflow_version: ${{needs.get_meta.outputs.workflow_version}}
       release_upload_url: ${{needs.get_meta.outputs.release_upload_url}}
     !!merge <<: *workflow-secrets
-  call_u24_docker_image_py38:
-    needs: [get_meta]
-    !!merge <<: *$STAGE-workflow
-    with:
-      jhub_ver: 1.4.2
-      py_ver: 3.8
-      dist: debian
-      workflow_version: ${{needs.get_meta.outputs.workflow_version}}
-      release_upload_url: ${{needs.get_meta.outputs.release_upload_url}}
-    !!merge <<: *workflow-secrets
-
-#
