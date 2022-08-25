@@ -7,7 +7,7 @@ on:
 jobs:
   call_context_check:
     uses: dj-sciops/djsciops-cicd/.github/workflows/context_check.yaml@main
-  call_u24_elements_release_alpine:
+  call_u24_workflow_release_debian:
     if: >-
       github.event.workflow_run.conclusion == 'success' && github.repository_owner == 'yambottle'
     uses: yambottle/djsciops-cicd/.github/workflows/u24_workflow_release.yaml@main
