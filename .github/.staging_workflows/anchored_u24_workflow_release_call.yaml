@@ -34,7 +34,7 @@ jobs:
   call_context_check:
     uses: dj-sciops/djsciops-cicd/.github/workflows/context_check.yaml@main
   
-  call_u24_elements_release_alpine:
+  call_u24_workflow_release_debian:
     !!merge <<: *$STAGE-release-if
     !!merge <<: *$STAGE-release-call
     with:
