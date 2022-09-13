@@ -1,4 +1,4 @@
-name: u24_workflow_tag_to_release
+name: u24_workflow_tag_to_release_0.0.1
 
 on:
   push:
@@ -24,4 +24,3 @@ jobs:
       jhub_ver: 1.4.2
       py_ver: 3.9
       dist: debian
-      codebook_base_hash: 561b765
