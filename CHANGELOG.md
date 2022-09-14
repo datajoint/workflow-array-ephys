@@ -53,5 +53,6 @@ specific forks for tests.
 
 + Add - Version
 
-[0.2.0]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.0
+[0.2.1]: https://github.com/datajoint/workflow-array-ephys/compare/0.2.1...0.2.0
+[0.2.0]: https://github.com/datajoint/workflow-array-ephys/compare/0.2.0...0.1.0
 [0.1.0]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.1.0
