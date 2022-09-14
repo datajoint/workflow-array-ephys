@@ -20,64 +20,6 @@ from element_interface.utils import (
 )
 
 
-def ingest_lab(
-    lab_csv_path="./user_data/lab/labs.csv",
-    project_csv_path="./user_data/lab/projects.csv",
-    publication_csv_path="./user_data/lab/publications.csv",
-    keyword_csv_path="./user_data/lab/keywords.csv",
-    protocol_csv_path="./user_data/lab/protocols.csv",
-    users_csv_path="./user_data/lab/users.csv",
-    project_user_csv_path="./user_data/lab/project_users.csv",
-    skip_duplicates=True,
-    verbose=True,
-):
-    """
-    Inserts data from a CSVs into their corresponding lab schema tables.
-    By default, uses data from workflow/user_data/lab/
-    :param lab_csv_path:      relative path of lab csv
-    :param project_csv_path:  relative path of project csv
-    :param publication_csv_path:     relative path of publication csv
-    :param keyword_csv_path:     relative path of keyword csv
-    :param protocol_csv_path: relative path of protocol csv
-    :param users_csv_path:    relative path of users csv
-    :param project_user_csv_path: relative path of project users csv
-    :param skip_duplicates=True: datajoint insert function param
-    :param verbose: print number inserted (i.e., table length change)
-    """
-
-    # List with repeats for when mult dj.tables fed by same CSV
-    csvs = [
-        lab_csv_path,
-        lab_csv_path,
-        project_csv_path,
-        project_csv_path,
-        publication_csv_path,
-        keyword_csv_path,
-        protocol_csv_path,
-        protocol_csv_path,
-        users_csv_path,
-        users_csv_path,
-        users_csv_path,
-        project_user_csv_path,
-    ]
-    tables = [
-        lab.Lab(),
-        lab.Location(),
-        lab.Project(),
-        lab.ProjectSourceCode(),
-        lab.ProjectPublication(),
-        lab.ProjectKeywords(),
-        lab.ProtocolType(),
-        lab.Protocol(),
-        lab.UserRole(),
-        lab.User(),
-        lab.LabMembership(),
-        lab.ProjectUser(),
-    ]
-
-    ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose)
-
-
 def ingest_subjects(subject_csv_path="./user_data/subjects.csv", verbose=True):
     """
     Ingest subjects listed in the subject column of ./user_data/subjects.csv
@@ -108,7 +50,7 @@ def ingest_sessions(session_csv_path="./user_data/sessions.csv", verbose=True):
         [],
         [],
     )
-    session_note_list, session_experimenter_list = [], []
+    session_note_list, session_experimenter_list, lab_user_list = [], [], []
     probe_list, probe_insertion_list = [], []
 
     for sess in input_sessions:
@@ -194,11 +136,13 @@ def ingest_sessions(session_csv_path="./user_data/sessions.csv", verbose=True):
                 {**session_key, "session_note": sess["session_note"]}
             )
             session_experimenter_list.append({**session_key, "user": sess["user"]})
+            lab_user_list.append((sess["user"], "", ""))  # empty email/phone
             probe_insertion_list.extend(
                 [{**session_key, **insertion} for insertion in insertions]
             )
 
     session.Session.insert(session_list)
+    lab.User.insert(lab_user_list, skip_duplicates=True)
     session.SessionDirectory.insert(session_dir_list)
     session.SessionNote.insert(session_note_list)
     session.SessionExperimenter.insert(session_experimenter_list)
