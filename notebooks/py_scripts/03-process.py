@@ -6,9 +6,9 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.1
 #   kernelspec:
-#     display_name: Python 3.9.12 ('ele')
+#     display_name: Python 3.9.13 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -211,7 +211,7 @@ params_ks = {
     "useRAM": 0,
 }
 ephys.ClusteringParamSet.insert_new_params(
-    processing_method="kilosort2",
+    clustering_method="kilosort2",
     paramset_idx=0,
     params=params_ks,
     paramset_desc="Spike sorting using Kilosort2",
@@ -245,43 +245,16 @@ ephys.Clustering() & session_key
 
 # ## Import clustering results and manually curated results
 
-# We are now ready to ingest the clustering results (spike times etc.) into the database. These clustering results are either directly from Kilosort2 or with manual curation. Both ways share the same format of files. In the element, there is a `Curation` table that saves this information.
+# We are now ready to ingest the clustering results (spike times etc.) into the database. For the `no-curation` mode, these clustering results directly from Kilosort2. For more information on manual curation, please visit the [electrophysiology description page](https://elements.datajoint.org/description/array_ephys/).
 
 (
     dj.Diagram(ephys.ClusteringTask)
     + dj.Diagram(ephys.Clustering)
-    + dj.Diagram(ephys.Curation)
     + dj.Diagram(ephys.CuratedClustering)
     + dj.Diagram(ephys.CuratedClustering.Unit)
 )
 
-ephys.Curation.describe()
-
-ephys.Curation.heading
-
-ephys.Curation.insert1(
-    dict(
-        session_key,
-        insertion_number=0,
-        paramset_idx=0,
-        curation_id=1,
-        curation_time="2021-04-28 15:47:01",
-        curation_output_dir="subject6/session1/towersTask_g0_imec0",
-        quality_control=0,
-        manual_curation=0,
-    )
-)
-
-# In this case, the curation results are directly from Kilosort2 outputs, so the `curation_output_dir` is identical to `clustering_output_dir` in the table `ephys.ClusteringTask`. The `element-array-ephys` provides a helper function `ephys.Curation().create1_from_clustering_task` to conveniently insert an entry without manual curation.
-#
-# Example usage:
-#
-# ```python
-# key = (ephys.ClusteringTask & session_key).fetch1('KEY')
-# ephys.Curation().create1_from_clustering_task(key)
-# ```
-
-# Then we could populate table `CuratedClustering`, ingesting either the output of Kilosort2 or the curated results.
+# Next, we populate `CuratedClustering`, ingesting the output of Kilosort2.
 
 ephys.CuratedClustering.populate(session_key, display_progress=True)
 

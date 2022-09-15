@@ -5,7 +5,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.1
 #   kernelspec:
 #     display_name: Python 3.9.12 ('ele')
 #     language: python
@@ -70,47 +70,47 @@ ephys.ProbeInsertion & session_key
 
 ephys.EphysRecording & session_key
 
-# ### `ephys.ClusteringTask` , `ephys.Clustering`, `ephys.Curation`, and `ephys.CuratedClustering`
+# ### `ephys.ClusteringTask` , `ephys.Clustering`, and `ephys.CuratedClustering`
 #
 # + Spike-sorting is performed on a per-probe basis with the details stored in `ClusteringTask` and `Clustering`
 #
-# + After the spike sorting, the results may go through curation process.
-#     + If it did not go through curation, a copy of `ClusteringTask` entry was inserted into table `ephys.Curation` with the `curation_ouput_dir` identicial to the `clustering_output_dir`.
-#     + If it did go through a curation, a new entry will be inserted into `ephys.Curation`, with a `curation_output_dir` specified.
-#     + `ephys.Curation` supports multiple curations of a clustering task.
+# + After the spike sorting, a copy of `Clustering` entry was inserted into `CuratedClustering`.
+#
+# + For manual curation options, please visit the [electrophysiology description page](https://elements.datajoint.org/description/array_ephys/)
 
-ephys.ClusteringTask * ephys.Clustering & session_key
+ephys.ClusteringTask & session_key
 
 # In our example workflow, `curation_output_dir` is the same as `clustering_output_dir`
 
-ephys.Curation * ephys.CuratedClustering & session_key
+ephys.CuratedClustering & session_key
 
-# ### Spike-sorting results are stored in `ephys.CuratedClustering`,  `ephys.WaveformSet.Waveform`
+# ### Waveform
+#
+# Spike-sorting results are stored in `ephys.CuratedClustering` and `ephys.WaveformSet.Waveform`
 
 ephys.CuratedClustering.Unit & session_key
 
-# Let's pick one probe insertion and one `curation_id`, and further inspect the clustering results.
+# Let's pick one probe insertion and one `insertion_number`, and further inspect the clustering results.
 
-curation_key = (
-    ephys.CuratedClustering & session_key & "insertion_number = 0" & "curation_id=1"
+insertion_key = (
+    ephys.CuratedClustering & session_key & "insertion_number = 0"
 ).fetch1("KEY")
 
-ephys.CuratedClustering.Unit & curation_key
+ephys.CuratedClustering.Unit & insertion_key
 
 # ### Generate a raster plot
 
-# Let's try a raster plot - just the "good" units
+# Let's try a raster plot for a subset of units
 
-ephys.CuratedClustering.Unit & curation_key & 'cluster_quality_label = "good"'
+subset = ephys.CuratedClustering.Unit & 'unit IN ("6","7","9","14","15","17","19")'
+subset
 
-units, unit_spiketimes = (
-    ephys.CuratedClustering.Unit & curation_key & 'cluster_quality_label = "good"'
-).fetch("unit", "spike_times")
+units, unit_spiketimes = (subset).fetch("unit", "spike_times")
 
 x = np.hstack(unit_spiketimes)
 y = np.hstack([np.full_like(s, u) for u, s in zip(units, unit_spiketimes)])
 
-fig, ax = plt.subplots(1, 1, figsize=(32, 16))
+fig, ax = plt.subplots(1, 1, figsize=(32, 8))
 ax.plot(x, y, "|")
 ax.set_xlabel("Time (s)")
 ax.set_ylabel("Unit")
@@ -119,7 +119,7 @@ ax.set_ylabel("Unit")
 
 # Let's pick one unit and further inspect
 
-unit_key = (ephys.CuratedClustering.Unit & curation_key & "unit = 15").fetch1("KEY")
+unit_key = (subset & "unit = 15").fetch1("KEY")
 
 ephys.CuratedClustering.Unit * ephys.WaveformSet.Waveform & unit_key
 
@@ -129,7 +129,7 @@ unit_data = (
 
 unit_data
 
-sampling_rate = (ephys.EphysRecording & curation_key).fetch1(
+sampling_rate = (ephys.EphysRecording & insertion_key).fetch1(
     "sampling_rate"
 ) / 1000  # in kHz
 plt.plot(
