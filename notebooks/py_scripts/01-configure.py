@@ -80,8 +80,8 @@ dj.config["custom"]["ephys_root_data_dir"] = "/tmp/test_data"
 # If there are multiple possible root paths:
 dj.config["custom"]["ephys_root_data_dir"] = [
     "/tmp/test_data", 
-    "/0.1.0a4/workflow_ephys_data1",
-    "/0.1.0a4/workflow_ephys_data2"
+    "home/inbox/0.1.0a4/workflow_ephys_data1",
+    "home/inbox/0.1.0a4/workflow_ephys_data2"
 ]
 
 dj.config
