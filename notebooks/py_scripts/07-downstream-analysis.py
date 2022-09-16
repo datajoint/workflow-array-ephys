@@ -1,13 +1,14 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.1
 #   kernelspec:
-#     display_name: Python 3.9.12 ('ele')
+#     display_name: Python 3.9.13 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -30,8 +31,7 @@ dj.config["display.limit"] = 10
 
 # Next, we populate the python namespace with the required schemas
 
-from workflow_array_ephys.pipeline import session, ephys, trial, event
-from workflow_array_ephys import analysis
+from workflow_array_ephys.pipeline import session, ephys, trial, event, analysis
 
 # + [markdown] jp-MarkdownHeadingCollapsed=true jp-MarkdownHeadingCollapsed=true tags=[]
 # ## Trial and Event schemas
@@ -206,3 +206,6 @@ alignment_condition = {
     "trial_condition": "stim_center_button",
 }
 analysis.SpikesAlignment().plot(alignment_condition, unit=2)
+# -
+
+
