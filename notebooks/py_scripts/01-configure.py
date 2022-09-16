@@ -1,6 +1,7 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
@@ -17,16 +18,12 @@
 #
 # ## Setup - Working Directory
 #
-# To run the array ephys workflow, we need to properly set up the DataJoint configuration. The configuration will be saved in a file called `dj_local_conf.json` on each machine and this notebook walks you through the process.
+# To run the array ephys workflow, we need to properly set up the DataJoint configuration. The configuration can be saved in a local directory as `dj_local_conf.json` or at your root directory as a hidden file. This notebook walks you through the setup process.
 #
 # **The configuration only needs to be set up once**, if you have gone through the configuration before, directly go to [02-workflow-structure](02-workflow-structure-optional.ipynb).
-#
-# As a convention, we set the configuration up in the root directory of the workflow package and always starts importing datajoint and pipeline modules from there.
 # -
 
 import os
-
-# change to the upper level folder
 if os.path.basename(os.getcwd()) == "notebooks": os.chdir("..")
 import datajoint as dj
 
@@ -79,9 +76,12 @@ dj.config["custom"] = {"database.prefix": username_as_prefix}
 dj.config["custom"]["ephys_root_data_dir"] = "/tmp/test_data"
 # If there are multiple possible root paths:
 dj.config["custom"]["ephys_root_data_dir"] = [
-    "/tmp/test_data", 
-    "home/inbox/0.1.0a4/workflow_ephys_data1",
-    "home/inbox/0.1.0a4/workflow_ephys_data2"
+    "/tmp/test_data/workflow_ephys_data1/",
+    "/tmp/test_data/workflow_ephys_data2/",
+    "/tmp/test_data/workflow_localization/", 
+    "/home/inbox/0.1.0a4/workflow_ephys_data1/",
+    "/home/inbox/0.1.0a4/workflow_ephys_data2/",
+    "/home/inbox/0.1.0a4/workflow_localization/"
 ]
 
 dj.config
