@@ -16,6 +16,8 @@ from .paths import (
     get_electrode_localization_dir,
 )
 
+from . import analysis
+
 
 if "custom" not in dj.config:
     dj.config["custom"] = {}
@@ -77,7 +79,7 @@ Experimenter = lab.User
 session.activate(db_prefix + "session", linking_module=__name__)
 
 
-# Activate "event" and "trial" schema ---------------------------------
+# Activate "event" and "trial" schema -----------------------------------------
 
 trial.activate(db_prefix + "trial", db_prefix + "event", linking_module=__name__)
 
@@ -96,3 +98,7 @@ class SkullReference(dj.Lookup):
 # Activate "ephys" schema -----------------------------------------------------
 
 ephys.activate(db_prefix + "ephys", db_prefix + "probe", linking_module=__name__)
+
+# Activate "analysis" schema --------------------------------------------------
+
+analysis.activate(db_prefix + "analysis", linking_module=__name__)
