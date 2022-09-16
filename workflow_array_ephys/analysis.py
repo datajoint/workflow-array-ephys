@@ -22,7 +22,7 @@ def activate(
                               database if they do not yet exist.
         :param linking_module: a module name or a module containing the
          required dependencies to activate the `subject` element:
-             Upstream schema: scan, session, trial
+             Upstream schema: ephys, trial
     """
     if isinstance(linking_module, str):
         linking_module = importlib.import_module(linking_module)
