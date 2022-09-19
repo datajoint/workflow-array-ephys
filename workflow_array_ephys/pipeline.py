@@ -16,6 +16,9 @@ from .paths import (
     get_electrode_localization_dir,
 )
 
+from . import analysis
+
+
 if "custom" not in dj.config:
     dj.config["custom"] = {}
 
@@ -28,6 +31,10 @@ if ephys_mode == "acute":
 elif ephys_mode == "chronic":
     from element_array_ephys import ephys_chronic as ephys
 elif ephys_mode == "no-curation":
+    from element_lab.export.nwb import element_lab_to_nwb_dict
+    from element_animal.export.nwb import subject_to_nwb
+    from element_session.export.nwb import session_to_nwb
+    from element_array_ephys.export.nwb import ecephys_session_to_nwb, write_nwb
     from element_array_ephys import ephys_no_curation as ephys
 elif ephys_mode == "precluster":
     from element_array_ephys import ephys_precluster as ephys
@@ -58,10 +65,6 @@ __all__ = [
     "get_ephys_root_data_dir",
     "get_session_directory",
     "get_electrode_localization_dir",
-    # export
-    "subject_to_nwb",
-    "session_to_nwb",
-    "element_lab_to_nwb_dict",
 ]
 
 
@@ -76,7 +79,7 @@ Experimenter = lab.User
 session.activate(db_prefix + "session", linking_module=__name__)
 
 
-# Activate "event" and "trial" schema ---------------------------------
+# Activate "event" and "trial" schema -----------------------------------------
 
 trial.activate(db_prefix + "trial", db_prefix + "event", linking_module=__name__)
 
@@ -95,3 +98,7 @@ class SkullReference(dj.Lookup):
 # Activate "ephys" schema -----------------------------------------------------
 
 ephys.activate(db_prefix + "ephys", db_prefix + "probe", linking_module=__name__)
+
+# Activate "analysis" schema --------------------------------------------------
+
+analysis.activate(db_prefix + "analysis", linking_module=__name__)

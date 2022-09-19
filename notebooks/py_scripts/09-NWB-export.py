@@ -1,13 +1,14 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.0
+#       jupytext_version: 1.14.1
 #   kernelspec:
-#     display_name: Python 3.9.12 ('ele')
+#     display_name: Python 3.9.13 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -67,13 +68,28 @@ session_key={"subject": "subject5",
 # Note: `pynwb` will display a warning regarding timezone information - datetime fields are assumed to be in local time, and will be converted to UTC.
 #
 
+## If you don't already have data in the Element Lab
+lab.Lab.insert1(
+    {
+        **lab_key,
+        "lab_name": "LabA",
+        "institution": "",
+        "address": "",
+        "time_zone": "UTC+0",
+    },
+    skip_duplicates=True,
+)
+lab.ProtocolType.insert1({"protocol_type": "A"})
+lab.Protocol.insert1({**protocol_key, "protocol_type": "A"}, skip_duplicates=True)
+lab.Project.insert1(project_key, skip_duplicates=True)
+
 print('Lab:\n')
-element_lab_to_nwb_dict(lab_key=lab_key, protocol_key=protocol_key, 
-                        project_key=project_key)
+print(element_lab_to_nwb_dict(lab_key=lab_key, protocol_key=protocol_key, 
+                              project_key=project_key))
 print('\nAnimal:\n')
-subject_to_nwb(session_key=session_key)
+print(subject_to_nwb(session_key=session_key))
 print('\nSession:\n')
-session_to_nwb(session_key=session_key)
+print(session_to_nwb(session_key=session_key))
 
 # ### Element Array Electrophysiology
 #
@@ -96,11 +112,10 @@ nwbfile
 
 # `write_nwb` can then be used to write this file to disk. The following cell will include a timestamp in the filename.
 
-# +
 import time
-    
-write_nwb(nwbfile, f'./temp_nwb/{time.strftime("_test_%Y%m%d-%H%M%S.nwb")}')
-# -
+my_path = "./"
+my_path = f"/home/{dj.config['database.user']}/" # for codebook users
+write_nwb(nwbfile, my_path+time.strftime("_test_%Y%m%d-%H%M%S.nwb"))
 
 # ## DANDI Upload
 #

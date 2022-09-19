@@ -1,7 +1,7 @@
-name: u24_workflow_release_call
+name: u24_workflow_release_call_0.0.1
 on:
   workflow_run:
-    workflows: ["u24_workflow_tag_to_release"]
+    workflows: ["u24_workflow_tag_to_release_0.0.1"]
     types:
       - completed
 jobs:
@@ -15,7 +15,6 @@ jobs:
       jhub_ver: 1.4.2
       py_ver: 3.9
       dist: debian
-      codebook_base_hash: 561b765
     secrets:
       REGISTRY_USERNAME: ${{secrets.DOCKER_USERNAME}}
       REGISTRY_PASSWORD: ${{secrets.DOCKER_PASSWORD}}

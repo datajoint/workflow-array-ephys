@@ -3,6 +3,11 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
+## [0.2.2] - 2022-09-18
++ Update - config ephys roots in notebooks for codebook deployment
++ Update - requirements.txt to add element electrode localization
++ Update - add lab.User insert to ingest.py for users with empty element-lab schemas
+
 ## [0.2.1] - 2022-07-22
 + Add - Mention CodeBook data directory in notebooks
 + Add - Mention of config items in notebook 09

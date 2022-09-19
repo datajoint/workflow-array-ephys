@@ -1,11 +1,44 @@
 import datajoint as dj
 import numpy as np
+import importlib
+import inspect
 
-from .pipeline import db_prefix, ephys, trial, event
+schema = dj.schema()
 
-__all__ = ["db_prefix", "ephys", "trial", "event"]
+_linking_module = None
 
-schema = dj.schema(db_prefix + "analysis")
+
+def activate(
+    schema_name, *, create_schema=True, create_tables=True, linking_module=None
+):
+    """
+    activate(schema_name, *, create_schema=True, create_tables=True,
+             linking_module=None)
+        :param schema_name: schema name on the database server to activate the
+                            `subject` element
+        :param create_schema: when True (default), create schema in the
+                              database if it does not yet exist.
+        :param create_tables: when True (default), create tables in the
+                              database if they do not yet exist.
+        :param linking_module: a module name or a module containing the
+         required dependencies to activate the `subject` element:
+             Upstream schema: ephys, trial
+    """
+    if isinstance(linking_module, str):
+        linking_module = importlib.import_module(linking_module)
+    assert inspect.ismodule(linking_module), (
+        "The argument 'dependency' must " + "be a module's name or a module"
+    )
+
+    global _linking_module
+    _linking_module = linking_module
+
+    schema.activate(
+        schema_name,
+        create_schema=create_schema,
+        create_tables=create_tables,
+        add_objects=linking_module.__dict__,
+    )
 
 
 @schema
@@ -51,13 +84,13 @@ class SpikesAlignment(dj.Computed):
         """
 
     def make(self, key):
-        unit_keys, unit_spike_times = (ephys.CuratedClustering.Unit & key).fetch(
+        unit_keys, unit_spike_times = (_linking_module.ephys.CuratedClustering.Unit & key).fetch(
             "KEY", "spike_times", order_by="unit"
         )
         bin_size = (SpikesAlignmentCondition & key).fetch1("bin_size")
 
-        trialized_event_times = trial.get_trialized_alignment_event_times(
-            key, trial.Trial & (SpikesAlignmentCondition.Trial & key)
+        trialized_event_times = _linking_module.trial.get_trialized_alignment_event_times(
+            key, _linking_module.trial.Trial & (SpikesAlignmentCondition.Trial & key)
         )
 
         min_limit = (trialized_event_times.event - trialized_event_times.start).max()

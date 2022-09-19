@@ -5,9 +5,9 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.1
 #   kernelspec:
-#     display_name: Python 3.9.12 ('ele')
+#     display_name: Python 3.9.13 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -78,11 +78,14 @@ ephys.ClusteringParamSet.insert_new_params(
 
 # ## Trigger autoprocessing of the remaining ephys pipeline
 
+# First, we'll select a session and add a `ProbeInsertion` from file metadata.
+
+session_key = (session.Session & 'subject="subject6"').fetch1("KEY")
+ephys.ProbeInsertion.auto_generate_entries(session_key)
+
+# The `process.run()` function in the workflow populates every automated table in the workflow. If a table is dependent on a manual table upstream, it will not get populated until the manual table is inserted.
+
 from workflow_array_ephys import process
-
-# The `process.run()` function in the workflow populates every auto-processing table in the workflow. If a table is dependent on a manual table upstream, it will not get populated until the manual table is inserted.
-
-# At this stage, process script populates through the table upstream of `ClusteringTask`
 process.run()
 
 # ## Insert new ClusteringTask to trigger ingestion of clustering results
@@ -91,7 +94,6 @@ process.run()
 # + the `paramset_idx` used for the clustering job
 # + the output directory storing the clustering results
 
-session_key = session.Session.fetch1("KEY")
 ephys.ClusteringTask.insert1(
     dict(
         session_key,
@@ -105,13 +107,13 @@ ephys.ClusteringTask.insert1(
 # run populate again for table Clustering
 process.run()
 
-# ## Insert new Curation to trigger ingestion of curated results
-
-key = (ephys.ClusteringTask & session_key).fetch1("KEY")
-ephys.Curation().create1_from_clustering_task(key)
-
-# run populate for the rest of the tables in the workflow, takes a while
-process.run()
+# If you're running an `ephys-mode` with curation, you could use the following to populate the `Curation` table
+#
+# ```python
+# key = (ephys.ClusteringTask & session_key).fetch1("KEY")
+# ephys.Curation().create1_from_clustering_task(key)
+# process.run()
+# ```
 
 # ## Summary and next step
 #

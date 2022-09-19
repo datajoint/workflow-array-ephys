@@ -1,13 +1,14 @@
 # ---
 # jupyter:
 #   jupytext:
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.13.7
+#       jupytext_version: 1.14.1
 #   kernelspec:
-#     display_name: Python 3.9.12 ('ele')
+#     display_name: Python 3.9.13 ('ele')
 #     language: python
 #     name: python3
 # ---
@@ -17,16 +18,12 @@
 #
 # ## Setup - Working Directory
 #
-# To run the array ephys workflow, we need to properly set up the DataJoint configuration. The configuration will be saved in a file called `dj_local_conf.json` on each machine and this notebook walks you through the process.
+# To run the array ephys workflow, we need to properly set up the DataJoint configuration. The configuration can be saved in a local directory as `dj_local_conf.json` or at your root directory as a hidden file. This notebook walks you through the setup process.
 #
 # **The configuration only needs to be set up once**, if you have gone through the configuration before, directly go to [02-workflow-structure](02-workflow-structure-optional.ipynb).
-#
-# As a convention, we set the configuration up in the root directory of the workflow package and always starts importing datajoint and pipeline modules from there.
 # -
 
 import os
-
-# change to the upper level folder
 if os.path.basename(os.getcwd()) == "notebooks": os.chdir("..")
 import datajoint as dj
 
@@ -65,7 +62,7 @@ dj.config["custom"] = {"database.prefix": username_as_prefix}
 # The root path typically **do not** contain information of subjects or sessions, all data from subjects/sessions should be subdirectories in the root path.
 #
 # - In the example dataset downloaded with [these instructions](00-data-download-optional.ipynb), `/tmp/test_data` will be the root. 
-# - For CodeBook users, the root is `/home/inbox/`
+# - For CodeBook users, the root is `/home/inbox/0.1.0a4/`
 #
 # ```
 # - subject6
@@ -78,7 +75,14 @@ dj.config["custom"] = {"database.prefix": username_as_prefix}
 # If there is only one root path.
 dj.config["custom"]["ephys_root_data_dir"] = "/tmp/test_data"
 # If there are multiple possible root paths:
-dj.config["custom"]["ephys_root_data_dir"] = ["/tmp/test_data", "/home/inbox/"]
+dj.config["custom"]["ephys_root_data_dir"] = [
+    "/tmp/test_data/workflow_ephys_data1/",
+    "/tmp/test_data/workflow_ephys_data2/",
+    "/tmp/test_data/workflow_localization/", 
+    "/home/inbox/0.1.0a4/workflow_ephys_data1/",
+    "/home/inbox/0.1.0a4/workflow_ephys_data2/",
+    "/home/inbox/0.1.0a4/workflow_localization/"
+]
 
 dj.config
 
@@ -95,18 +99,13 @@ dj.config["custom"]["ephys_mode"] = "no-curation"  # or acute or chronic
 # ## Save configuration
 #
 # With the proper configurations, we could save this as a file, either as a local json file, or a global file.
-
-dj.config.save_local()
-
-# ls
-
-# Local configuration file is saved as `dj_local_conf.json` in the root directory of this package `workflow-array-ephys`. Next time if you change your directory to `workflow-array-ephys` before importing datajoint and the pipeline packages, the configurations will get properly loaded.
 #
-# If saved globally, there will be a hidden configuration file saved in your root directory. The configuration will be loaded no matter where the directory is.
+# Local configuration file is saved as `dj_local_conf.json` in current directory, which is great for project-specific settings.
+#
+# For first-time and CodeBook users, we recommend saving globally. This will create a hidden configuration file saved in your root directory, loaded whenever there is no local version to override it.
 
-# +
-# dj.config.save_global()
-# -
+# dj.config.save_local()
+dj.config.save_global()
 
 # ## Next Step
 
