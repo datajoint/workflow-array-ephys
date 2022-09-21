@@ -6,24 +6,25 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.14.0
+#       jupytext_version: 1.14.1
 #   kernelspec:
-#     display_name: Python 3.7.9 ('workflow-calcium-imaging')
+#     display_name: Python 3.9.13 ('ele')
 #     language: python
 #     name: python3
 # ---
 
 # # Allen Institute Ephys Workshop
 # September 22, 2022
+#
 # + In this notebook, we will show how to interact with a database in Python and how export data into a Neurodata Without Borders (NWB) file.
 #
 # + Other notebooks in this directory describe the process for running the analysis steps in more detail.
 #
 # + This notebook is meant to be run on CodeBook (`https://codebook.datajoint.io`) which contains example data.
-#
-# + First run the `01-configure` and `04-automate` notebooks to set up your environment and load example data into the database, respectively.
 
 # ## Configuration
+
+# These steps are taken from [01-configure](01-configure.ipynb). If you've already saved a config file, you can skip to the next section.
 
 import datajoint as dj
 import numpy as np
@@ -32,21 +33,94 @@ from matplotlib import pyplot
 # Enter database credentials.  A DataJoint workflow requires a connection to an existing relational database. The connection setup parameters are defined in the `dj.config` python dictionary.
 
 # + tags=[]
-dj.config['custom'] = {'database.prefix': '<username>_allen_ephys_',
-                       'ephys_root_data_dir': ["/tmp/test_data/workflow_ephys_data1/",
-                                            "/tmp/test_data/workflow_ephys_data2/",
-                                            "/tmp/test_data/workflow_localization/", 
-                                            "/home/inbox/0.1.0a4/workflow_ephys_data1/",
-                                            "/home/inbox/0.1.0a4/workflow_ephys_data2/",
-                                            "/home/inbox/0.1.0a4/workflow_localization/"
-                                            ]}
+username_as_prefix = dj.config["database.user"] + "_allen_ephys_"
+dj.config['custom'] = {
+    'database.prefix': username_as_prefix,
+    'ephys_root_data_dir': [
+        "/home/inbox/0.1.0a4/workflow_ephys_data1/",
+        "/home/inbox/0.1.0a4/workflow_ephys_data2/",
+        "/home/inbox/0.1.0a4/workflow_localization/"
+    ],
+    "ephys_mode": "no-curation"
+}
 # -
 
-# Import the workflow.  The current workflow is composed of multiple database schemas, each of them corresponding to a module within the `workflow_array_ephys.pipeline` file.
+# Next, we'll use a prompt to securely save your password.
+
+import getpass
+dj.config["database.password"] = getpass.getpass()
+
+# ## Populating the database
+
+# Next, we'll populate these schema using steps from [04-automate](04-automate-optional.ipynb). If your schema are already populated, you can skip this step. For more details on each of these steps, please visit [that notebook](04-automate-optional.ipynb).
+
+# +
+from workflow_array_ephys.pipeline import session, ephys # import schemas
+from workflow_array_ephys.ingest import ingest_subjects, ingest_sessions # csv loaders
+
+ingest_subjects()
+ingest_sessions()
+
+params_ks = {
+    "fs": 30000,
+    "fshigh": 150,
+    "minfr_goodchannels": 0.1,
+    "Th": [10, 4],
+    "lam": 10,
+    "AUCsplit": 0.9,
+    "minFR": 0.02,
+    "momentum": [20, 400],
+    "sigmaMask": 30,
+    "ThPr": 8,
+    "spkTh": -6,
+    "reorder": 1,
+    "nskip": 25,
+    "GPU": 1,
+    "Nfilt": 1024,
+    "nfilt_factor": 4,
+    "ntbuff": 64,
+    "whiteningRange": 32,
+    "nSkipCov": 25,
+    "scaleproc": 200,
+    "nPCs": 3,
+    "useRAM": 0,
+}
+ephys.ClusteringParamSet.insert_new_params(
+    clustering_method="kilosort2",
+    paramset_idx=0,
+    params=params_ks,
+    paramset_desc="Spike sorting using Kilosort2",
+)
+session_key = (session.Session & 'subject="subject6"').fetch1("KEY")
+ephys.ProbeInsertion.auto_generate_entries(session_key)
+# -
+
+# Next, we'll trigger the relevant `populate` commands.
+
+# +
+from workflow_array_ephys import process 
+
+process.run()
+ephys.ClusteringTask.insert1(
+    dict(
+        session_key,
+        insertion_number=0,
+        paramset_idx=0,
+        clustering_output_dir="subject6/session1/towersTask_g0_imec0",
+    ),
+    skip_duplicates=True,
+)
+process.run()
+# -
+
+# ## Exploring the workflow
+
+# ### Import the workflow.
+# The current workflow is composed of multiple database schemas, each of them corresponding to a module within the `workflow_array_ephys.pipeline` file.
 
 from workflow_array_ephys.pipeline import lab, subject, session, probe, ephys
 
-# ## Workflow diagram
+# ### Diagrams and table design
 #
 # Plot the workflow diagram.  In relational databases, the entities (i.e. rows) in different tables are connected to each other. Visualization of this relationship helps one to write accurate queries. For the array ephys workflow, this connection is as follows:
 
@@ -61,7 +135,9 @@ ephys.EphysRecording()
 
 ephys.CuratedClustering.Unit()
 
-# ## Fetch data from the database and generate a raster plot
+# ### Fetch data
+#
+# We'll fetch data from the database and generate a raster plot
 
 subset=ephys.CuratedClustering.Unit & 'unit IN ("6","7","9","14","15","17","19")'
 subset
@@ -77,11 +153,11 @@ x = np.hstack(unit_spiketimes)
 y = np.hstack([np.full_like(s, u) for u, s in zip(units, unit_spiketimes)])
 
 pyplot.plot(x, y, "|")
-pyplot.set_xlabel("Time (s)")
-pyplot.set_ylabel("Unit")
+pyplot.xlabel("Time (s)")
+pyplot.ylabel("Unit")
 # -
 
-# ## Export to NWB
+# ### Export to NWB
 #
 # The Element's `ecephys_session_to_nwb` function provides a full export mechanism, returning an NWB file with raw data, spikes, and LFP. Optional arguments determine which pieces are exported. For demonstration purposes, we recommend limiting `end_frame`.
 
