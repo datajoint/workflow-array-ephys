@@ -64,8 +64,8 @@ dj.config.save_global()
 from workflow_array_ephys.pipeline import session, ephys # import schemas
 from workflow_array_ephys.ingest import ingest_subjects, ingest_sessions # csv loaders
 
-ingest_subjects()
-ingest_sessions()
+ingest_subjects(subject_csv_path="/home/user_data/subjects.csv")
+ingest_sessions(session_csv_path="/home/user_data/sessions.csv")
 
 params_ks = {
     "fs": 30000,
@@ -103,10 +103,9 @@ ephys.ProbeInsertion.auto_generate_entries(session_key)
 
 # Next, we'll trigger the relevant `populate` commands.
 
-# +
-from workflow_array_ephys import process 
-
-process.run()
+populate_settings = {"display_progress": True}
+ephys.EphysRecording.populate(**populate_settings)
+ephys.LFP.populate(**populate_settings)
 ephys.ClusteringTask.insert1(
     dict(
         session_key,
@@ -116,8 +115,16 @@ ephys.ClusteringTask.insert1(
     ),
     skip_duplicates=True,
 )
-process.run()
-# -
+ephys.Clustering.populate(**populate_settings)
+ephys.CuratedClustering.populate(**populate_settings)
+# ephys.WaveformSet.populate(**populate_settings) # Time-consuming process
+
+# **Notes:** 
+# + `ephys.WaveformSet.populate` takes significant time to populate with current CodeBook hardware allocations. The output will not be used directly in this notebook.
+# + The `process` script runs through all `populate` commands in order and could be used instead of the commands above. It could be used as follows
+# ```python
+# from workflow_array_ephys import process; process.run(display_progress=True)
+# ```
 
 # ## Exploring the workflow
 
@@ -172,7 +179,9 @@ from workflow_array_ephys.export import ecephys_session_to_nwb, write_nwb
 
 help(ecephys_session_to_nwb)
 
-# Select an experimental session to export.
+# Note that a subset of arguments (`lab_key`, `project_key`, and `protocol_key`) take keys from upstream Elements. To populate this information, see [09-NWB-Export](09-NWB-Export.ipynb).
+#
+# Next, select an experimental session to export.
 
 dj.Diagram(subject.Subject) + dj.Diagram(session.Session) + \
 dj.Diagram(probe) + dj.Diagram(ephys)
@@ -184,12 +193,9 @@ session_key=dict(subject="subject5",
 
 nwbfile = ecephys_session_to_nwb(session_key=session_key,
                                  raw=True,
-                                 spikes=True,
+                                 spikes=False, # True requires WaveformSet.populate()
                                  lfp="dj",
                                  end_frame=100,
-                                 lab_key=dict(lab='LabA'),
-                                 project_key=dict(project='ProjA'),
-                                 protocol_key=dict(protocol='ProtA'),
                                  nwbfile_kwargs=None)
 
 nwbfile
@@ -203,7 +209,7 @@ nwb_filename = f"/home/{dj.config['database.user']}/"+time.strftime("_test_%Y%m%
 write_nwb(nwbfile, nwb_filename)
 # -
 
-# Next, the NWB file can be uploaded to DANDI.  See the `09-NWB-Export` notebook for more details.
+# Next, the NWB file can be uploaded to DANDI.  See the [09-NWB-Export](09-NWB-Export.ipynb) notebook for more details.
 
 # ## Summary and next steps
 #
