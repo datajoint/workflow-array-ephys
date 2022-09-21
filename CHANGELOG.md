@@ -3,9 +3,9 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
-## [0.2.3] - 2022-09-20
+## [0.2.4] - 2022-09-20
 
-+ Add - Notebook for Allen Institute workshop
++ Add - Add (0.2.3) and revise (0.2.4) notebook for Allen Institute workshop
 
 ## [0.2.2] - 2022-09-18
 
@@ -64,6 +64,7 @@ specific forks for tests.
 
 + Add - Version
 
+[0.2.4]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.4
 [0.2.3]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.3
 [0.2.2]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.2
 [0.2.1]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.1
