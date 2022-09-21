@@ -21,19 +21,22 @@
 # + Other notebooks in this directory describe the process for running the analysis steps in more detail.
 #
 # + This notebook is meant to be run on CodeBook (`https://codebook.datajoint.io`) which contains example data.
+#
+# First, some packages we'll use in this notebook...
+
+import datajoint as dj
+import numpy as np
+from matplotlib import pyplot
+import getpass
 
 # ## Configuration
 
 # These steps are taken from [01-configure](01-configure.ipynb). If you've already saved a config file, you can skip to the next section.
 
-import datajoint as dj
-import numpy as np
-from matplotlib import pyplot
-
 # Enter database credentials.  A DataJoint workflow requires a connection to an existing relational database. The connection setup parameters are defined in the `dj.config` python dictionary.
 
 # + tags=[]
-username_as_prefix = dj.config["database.user"] + "_allen_ephys_"
+username_as_prefix = dj.config["database.user"] + "_"
 dj.config['custom'] = {
     'database.prefix': username_as_prefix,
     'ephys_root_data_dir': [
@@ -47,8 +50,11 @@ dj.config['custom'] = {
 
 # Next, we'll use a prompt to securely save your password.
 
-import getpass
 dj.config["database.password"] = getpass.getpass()
+
+# Now to save these credentials.
+
+dj.config.save_global()
 
 # ## Populating the database
 
@@ -115,14 +121,15 @@ process.run()
 
 # ## Exploring the workflow
 
-# ### Import the workflow.
+# ### Import the workflow
+#
 # The current workflow is composed of multiple database schemas, each of them corresponding to a module within the `workflow_array_ephys.pipeline` file.
 
 from workflow_array_ephys.pipeline import lab, subject, session, probe, ephys
 
 # ### Diagrams and table design
 #
-# Plot the workflow diagram.  In relational databases, the entities (i.e. rows) in different tables are connected to each other. Visualization of this relationship helps one to write accurate queries. For the array ephys workflow, this connection is as follows:
+# We can plot the workflow diagram.  In relational databases, the entities (i.e. rows) in different tables are connected to each other. Visualization of this relationship helps one to write accurate queries. For the array ephys workflow, this connection is as follows:
 
 # + tags=[]
 dj.Diagram(lab.Lab) + dj.Diagram(subject.Subject) + dj.Diagram(session.Session) + \
@@ -137,7 +144,7 @@ ephys.CuratedClustering.Unit()
 
 # ### Fetch data
 #
-# We'll fetch data from the database and generate a raster plot
+# Here, we fetch data from the database and generate a raster plot
 
 subset=ephys.CuratedClustering.Unit & 'unit IN ("6","7","9","14","15","17","19")'
 subset
