@@ -17,7 +17,7 @@ from .paths import (
 )
 
 from . import analysis
-
+from . import report
 
 if "custom" not in dj.config:
     dj.config["custom"] = {}
@@ -102,3 +102,7 @@ ephys.activate(db_prefix + "ephys", db_prefix + "probe", linking_module=__name__
 # Activate "analysis" schema --------------------------------------------------
 
 analysis.activate(db_prefix + "analysis", linking_module=__name__)
+
+# Activate "report" schema --------------------------------------------------
+
+report.activate(db_prefix + "report", linking_module=__name__)

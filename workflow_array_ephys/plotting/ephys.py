@@ -3,8 +3,23 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sns
-from ..pipeline import ephys, probe
 import pandas as pd
+import datajoint as dj
+import pathlib
+
+
+def plot_raster(units, spike_times) -> matplotlib.figure.Figure:
+
+    units = np.arange(1, len(units) + 1)
+    x = np.hstack(spike_times)
+    y = np.hstack([np.full_like(s, u) for u, s in zip(units, spike_times)])
+    fig, ax = plt.subplots(1, 1, figsize=(32, 8), dpi=100)
+    ax.plot(x, y, "|")
+    ax.set(xlabel="Time (s)", ylabel="Unit", xlim=[0, x[-1]], ylim=(0, len(units)))
+    sns.despine()
+    fig.tight_layout()
+
+    return fig
 
 
 def plot_driftmap(
@@ -29,7 +44,7 @@ def plot_driftmap(
     depth_edges = depth_edges[:-1]
 
     # Canvas setup
-    fig = plt.figure(figsize=(12, 5))
+    fig = plt.figure(figsize=(12, 5), dpi=200)
     grid = plt.GridSpec(15, 12)
 
     ax_cbar = plt.subplot(grid[0, 0:10])
@@ -68,28 +83,27 @@ def plot_driftmap(
     return fig
 
 
-def plot_waveform(waveform, sampling_rate, ax=None, save_as_dict=False):
-
-    import mpld3
+def plot_waveform(
+    waveform, sampling_rate, ax=None, fig=None
+) -> matplotlib.figure.Figure:
 
     waveform_df = pd.DataFrame(data={"waveform": waveform})
     waveform_df["timestamp"] = waveform_df.index / sampling_rate
     waveform_df.set_index("timestamp", inplace=True)
+
     if ax is None:
         fig, ax = plt.subplots(1, 1, figsize=(3, 3))
-    else:
-        save_as_dict = False
 
     ax.plot(waveform_df, "k")
     ax.set(xlabel="Time (ms)", ylabel="Voltage ($\mu$V)", title="Avg. waveform")
     sns.despine()
-    if save_as_dict:
-        fig_dict = mpld3.fig_to_dict(fig)
-        plt.close()
-        return fig_dict
+
+    return fig
 
 
-def plot_correlogram(spike_times, bin_size=0.001, window_size=1, ax=None):
+def plot_correlogram(
+    spike_times, bin_size=0.001, window_size=1, ax=None, fig=None
+) -> matplotlib.figure.Figure:
 
     from brainbox.singlecell import acorr
 
@@ -104,6 +118,10 @@ def plot_correlogram(spike_times, bin_size=0.001, window_size=1, ax=None):
             step=bin_size * 1e3,
         ),
     )
+
+    if ax is None:
+        fig, ax = plt.subplots(1, 1, figsize=(3, 3))
+
     df["lags"] = df.index  # in ms
     ax.plot(df["lags"], df["correlogram"], color="royalblue", linewidth=0.5)
     ymax = round(correlogram.max() / 10) * 10
@@ -112,4 +130,4 @@ def plot_correlogram(spike_times, bin_size=0.001, window_size=1, ax=None):
     ax.set(xlabel="Lags (ms)", ylabel="Count", title="Auto Correlogram")
     sns.despine()
 
-    return ax
+    return fig

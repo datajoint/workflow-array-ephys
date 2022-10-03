@@ -84,13 +84,16 @@ class SpikesAlignment(dj.Computed):
         """
 
     def make(self, key):
-        unit_keys, unit_spike_times = (_linking_module.ephys.CuratedClustering.Unit & key).fetch(
-            "KEY", "spike_times", order_by="unit"
-        )
+        unit_keys, unit_spike_times = (
+            _linking_module.ephys.CuratedClustering.Unit & key
+        ).fetch("KEY", "spike_times", order_by="unit")
         bin_size = (SpikesAlignmentCondition & key).fetch1("bin_size")
 
-        trialized_event_times = _linking_module.trial.get_trialized_alignment_event_times(
-            key, _linking_module.trial.Trial & (SpikesAlignmentCondition.Trial & key)
+        trialized_event_times = (
+            _linking_module.trial.get_trialized_alignment_event_times(
+                key,
+                _linking_module.trial.Trial & (SpikesAlignmentCondition.Trial & key),
+            )
         )
 
         min_limit = (trialized_event_times.event - trialized_event_times.start).max()
