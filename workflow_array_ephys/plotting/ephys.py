@@ -6,6 +6,10 @@ import seaborn as sns
 import pandas as pd
 import datajoint as dj
 import pathlib
+from workflow_array_ephys.pipeline import ephys, probe, report
+
+
+_kwargs = {"ax": None, "fig": None}
 
 
 def plot_raster(units, spike_times) -> matplotlib.figure.Figure:
@@ -15,7 +19,12 @@ def plot_raster(units, spike_times) -> matplotlib.figure.Figure:
     y = np.hstack([np.full_like(s, u) for u, s in zip(units, spike_times)])
     fig, ax = plt.subplots(1, 1, figsize=(32, 8), dpi=100)
     ax.plot(x, y, "|")
-    ax.set(xlabel="Time (s)", ylabel="Unit", xlim=[0, x[-1]], ylim=(0, len(units)))
+    ax.set(
+        xlabel="Time (s)",
+        ylabel="Unit",
+        xlim=[0 - 0.5, x[-1] + 0.5],
+        ylim=(1, len(units)),
+    )
     sns.despine()
     fig.tight_layout()
 
@@ -83,9 +92,7 @@ def plot_driftmap(
     return fig
 
 
-def plot_waveform(
-    waveform, sampling_rate, ax=None, fig=None
-) -> matplotlib.figure.Figure:
+def plot_waveform(waveform, sampling_rate, **_kwargs) -> matplotlib.figure.Figure:
 
     waveform_df = pd.DataFrame(data={"waveform": waveform})
     waveform_df["timestamp"] = waveform_df.index / sampling_rate
@@ -102,7 +109,7 @@ def plot_waveform(
 
 
 def plot_correlogram(
-    spike_times, bin_size=0.001, window_size=1, ax=None, fig=None
+    spike_times, bin_size=0.001, window_size=1, **_kwargs
 ) -> matplotlib.figure.Figure:
 
     from brainbox.singlecell import acorr
@@ -123,11 +130,104 @@ def plot_correlogram(
         fig, ax = plt.subplots(1, 1, figsize=(3, 3))
 
     df["lags"] = df.index  # in ms
+    
     ax.plot(df["lags"], df["correlogram"], color="royalblue", linewidth=0.5)
     ymax = round(correlogram.max() / 10) * 10
     ax.set_ylim(0, ymax)
     # ax.axvline(x=0, color="k", linewidth=0.5, ls="--")
     ax.set(xlabel="Lags (ms)", ylabel="Count", title="Auto Correlogram")
     sns.despine()
+
+    return fig
+
+
+def plot_depth_waveforms(
+    probe_type: str, unit_id: int, sampling_rate: float, y_range: int = 50, **_kwargs
+):
+
+    peak_electrode = (ephys.CuratedClustering.Unit & f"unit={unit_id}").fetch1(
+        "electrode"
+    )  # electrode where the peak waveform was found
+
+    peak_coord_y = (
+        probe.ProbeType.Electrode()
+        & f"probe_type='{probe_type}'"
+        & f"electrode={peak_electrode}"
+    ).fetch1("y_coord")
+
+    coord_y = (probe.ProbeType.Electrode).fetch(
+        "y_coord"
+    )  # y-coordinate for all electrodes
+    coord_ylim_low = (
+        coord_y.min()
+        if (peak_coord_y - y_range) <= coord_y.min()
+        else peak_coord_y - y_range
+    )
+    coord_ylim_high = (
+        coord_y.max()
+        if (peak_coord_y + y_range) >= coord_y.max()
+        else peak_coord_y + y_range
+    )
+
+    tbl = (
+        (probe.ProbeType.Electrode)
+        & f"probe_type = '{probe_type}'"
+        & f"y_coord BETWEEN {coord_ylim_low} AND {coord_ylim_high}"
+    )
+    electrodes_to_plot = tbl.fetch("electrode")
+
+    coords = np.array(tbl.fetch("x_coord", "y_coord")).T  # x, y coordinates
+
+    waveforms = (
+        ephys.WaveformSet.Waveform
+        & f"unit = {unit_id}"
+        & f"electrode IN {tuple(electrodes_to_plot)}"
+    ).fetch("waveform_mean")
+    waveforms = np.stack(waveforms)  # all mean waveforms of a given neuron
+
+    if ax is None:
+        fig, ax = plt.subplots(1, 1, frameon=True, figsize=[1.5, 2], dpi=200)
+
+    x_min, x_max = np.min(coords[:, 0]), np.max(coords[:, 0])
+    y_min, y_max = np.min(coords[:, 1]), np.max(coords[:, 1])
+
+    # Spacing between channels (in um)
+    x_inc = np.abs(np.diff(coords[:, 0])).min()
+    y_inc = np.unique((np.abs(np.diff(coords[:, 1])))).max()
+
+    time = np.arange(waveforms.shape[1]) * (1 / sampling_rate)
+
+    x_scale_factor = x_inc / (time + (1 / sampling_rate))[-1]
+    time_scaled = time * x_scale_factor
+
+    wf_amps = waveforms.max(axis=1) - waveforms.min(axis=1)
+    max_amp = wf_amps.max()
+    y_scale_factor = y_inc / max_amp
+
+    unique_x_loc = np.sort(np.unique(coords[:, 0]))
+    xtick_label = list(map(str, map(int, unique_x_loc)))
+    xtick_loc = time_scaled[int(len(time_scaled) / 2) + 1] + unique_x_loc
+
+    # Plot the mean waveform for each electrode
+    for electrode, wf, coord in zip(electrodes_to_plot, waveforms, coords):
+
+        wf_scaled = wf * y_scale_factor
+        wf_scaled -= wf_scaled.mean()
+
+        color = "r" if electrode == peak_electrode else [0.2, 0.3, 0.8]
+        ax.plot(
+            time_scaled + coord[0], wf_scaled + coord[1], color=color, linewidth=0.5
+        )
+
+    ax.set(xlabel="($\mu$m)", ylabel="Distance from the probe tip ($\mu$m)")
+    ax.set_ylim([y_min - y_inc * 2, y_max + y_inc * 2])
+    ax.set_ylim([y_min - y_inc * 2, y_max + y_inc * 2])
+    ax.xaxis.get_label().set_fontsize(8)
+    ax.yaxis.get_label().set_fontsize(8)
+    ax.tick_params(axis="both", which="major", labelsize=7)
+    ax.set_xticks(xtick_loc)
+    ax.set_xticklabels(xtick_label)
+    sns.despine()
+    sns.set_style("white")
 
     return fig
