@@ -1,4 +1,3 @@
-import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib
@@ -6,10 +5,7 @@ import seaborn as sns
 import pandas as pd
 import datajoint as dj
 import pathlib
-from workflow_array_ephys.pipeline import ephys, probe, report
-
-
-_kwargs = {"ax": None, "fig": None}
+from ..pipeline import ephys, probe
 
 
 def plot_raster(units, spike_times) -> matplotlib.figure.Figure:
@@ -92,7 +88,9 @@ def plot_driftmap(
     return fig
 
 
-def plot_waveform(waveform, sampling_rate, **_kwargs) -> matplotlib.figure.Figure:
+def plot_waveform(
+    waveform: np.array, sampling_rate: float, fig=None, ax=None
+) -> matplotlib.figure.Figure:
 
     waveform_df = pd.DataFrame(data={"waveform": waveform})
     waveform_df["timestamp"] = waveform_df.index / sampling_rate
@@ -109,7 +107,7 @@ def plot_waveform(waveform, sampling_rate, **_kwargs) -> matplotlib.figure.Figur
 
 
 def plot_correlogram(
-    spike_times, bin_size=0.001, window_size=1, **_kwargs
+    spike_times, bin_size=0.001, window_size=1, fig=None, ax=None
 ) -> matplotlib.figure.Figure:
 
     from brainbox.singlecell import acorr
@@ -130,7 +128,7 @@ def plot_correlogram(
         fig, ax = plt.subplots(1, 1, figsize=(3, 3))
 
     df["lags"] = df.index  # in ms
-    
+
     ax.plot(df["lags"], df["correlogram"], color="royalblue", linewidth=0.5)
     ymax = round(correlogram.max() / 10) * 10
     ax.set_ylim(0, ymax)
@@ -142,7 +140,12 @@ def plot_correlogram(
 
 
 def plot_depth_waveforms(
-    probe_type: str, unit_id: int, sampling_rate: float, y_range: int = 50, **_kwargs
+    probe_type: str,
+    unit_id: int,
+    sampling_rate: float,
+    y_range: float = 50,
+    fig=None,
+    ax=None,
 ):
 
     peak_electrode = (ephys.CuratedClustering.Unit & f"unit={unit_id}").fetch1(
@@ -214,13 +217,12 @@ def plot_depth_waveforms(
         wf_scaled = wf * y_scale_factor
         wf_scaled -= wf_scaled.mean()
 
-        color = "r" if electrode == peak_electrode else [0.2, 0.3, 0.8]
+        color = "r" if electrode == peak_electrode else [0.2, 0.3, 0.8] * 255
         ax.plot(
             time_scaled + coord[0], wf_scaled + coord[1], color=color, linewidth=0.5
         )
 
     ax.set(xlabel="($\mu$m)", ylabel="Distance from the probe tip ($\mu$m)")
-    ax.set_ylim([y_min - y_inc * 2, y_max + y_inc * 2])
     ax.set_ylim([y_min - y_inc * 2, y_max + y_inc * 2])
     ax.xaxis.get_label().set_fontsize(8)
     ax.yaxis.get_label().set_fontsize(8)
