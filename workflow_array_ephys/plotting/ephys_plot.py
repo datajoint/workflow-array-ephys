@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 import matplotlib
 import seaborn as sns
 import pandas as pd
-import datajoint as dj
-import pathlib
-from ..pipeline import ephys, probe
+import plotly.graph_objs as go
+
+# from ..pipeline import probe, ephys
 
 
-def plot_raster(units, spike_times) -> matplotlib.figure.Figure:
+def plot_raster(units: np.ndarray, spike_times: np.ndarray) -> matplotlib.figure.Figure:
 
     units = np.arange(1, len(units) + 1)
     x = np.hstack(spike_times)
@@ -17,7 +17,7 @@ def plot_raster(units, spike_times) -> matplotlib.figure.Figure:
     ax.plot(x, y, "|")
     ax.set(
         xlabel="Time (s)",
-        ylabel="Unit",
+        ylabel="Units",
         xlim=[0 - 0.5, x[-1] + 0.5],
         ylim=(1, len(units)),
     )
@@ -88,27 +88,35 @@ def plot_driftmap(
     return fig
 
 
-def plot_waveform(
-    waveform: np.array, sampling_rate: float, fig=None, ax=None
-) -> matplotlib.figure.Figure:
+def plot_waveform(waveform: np.ndarray, sampling_rate: float) -> go.Figure:
 
     waveform_df = pd.DataFrame(data={"waveform": waveform})
     waveform_df["timestamp"] = waveform_df.index / sampling_rate
-    waveform_df.set_index("timestamp", inplace=True)
 
-    if ax is None:
-        fig, ax = plt.subplots(1, 1, figsize=(3, 3))
-
-    ax.plot(waveform_df, "k")
-    ax.set(xlabel="Time (ms)", ylabel="Voltage ($\mu$V)", title="Avg. waveform")
-    sns.despine()
-
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=waveform_df["timestamp"],
+            y=waveform_df["waveform"],
+            mode="lines",
+            line=dict(color="rgb(51, 76.5, 204)", width=2),
+            hovertemplate="%{y:.2f} μV<br>" + "%{x:.2f} ms<extra></extra>",
+        )
+    )
+    fig.update_layout(
+        title="Avg. waveform",
+        xaxis_title="Time (ms)",
+        yaxis_title="Voltage (μV)",
+        template="simple_white",
+        width=400,
+        height=400,
+    )
     return fig
 
 
 def plot_correlogram(
-    spike_times, bin_size=0.001, window_size=1, fig=None, ax=None
-) -> matplotlib.figure.Figure:
+    spike_times: np.ndarray, bin_size: float = 0.001, window_size: int = 1
+) -> go.Figure:
 
     from brainbox.singlecell import acorr
 
@@ -123,44 +131,50 @@ def plot_correlogram(
             step=bin_size * 1e3,
         ),
     )
-
-    if ax is None:
-        fig, ax = plt.subplots(1, 1, figsize=(3, 3))
-
     df["lags"] = df.index  # in ms
-
-    ax.plot(df["lags"], df["correlogram"], color="royalblue", linewidth=0.5)
     ymax = round(correlogram.max() / 10) * 10
-    ax.set_ylim(0, ymax)
-    # ax.axvline(x=0, color="k", linewidth=0.5, ls="--")
-    ax.set(xlabel="Lags (ms)", ylabel="Count", title="Auto Correlogram")
-    sns.despine()
 
+    fig = go.Figure()
+    fig.add_trace(
+        go.Scatter(
+            x=df["lags"],
+            y=df["correlogram"],
+            mode="lines",
+            line=dict(color="black", width=1),
+            hovertemplate="%{y}<br>" + "%{x:.2f} ms<extra></extra>",
+        )
+    )
+    fig.update_layout(
+        title="Auto Correlogram",
+        xaxis_title="Lags (ms)",
+        yaxis_title="Count",
+        template="simple_white",
+        width=400,
+        height=400,
+        yaxis_range=[0, ymax],
+    )
     return fig
 
 
 def plot_depth_waveforms(
-    probe_type: str,
-    unit_id: int,
-    sampling_rate: float,
+    unit_key: dict,
     y_range: float = 50,
-    fig=None,
-    ax=None,
-):
+) -> go.Figure:
 
-    peak_electrode = (ephys.CuratedClustering.Unit & f"unit={unit_id}").fetch1(
-        "electrode"
+    sampling_rate = (ephys.EphysRecording & unit_key).fetch1(
+        "sampling_rate"
+    ) / 1e3  # in kHz
+
+    probe_type, peak_electrode = (ephys.CuratedClustering.Unit & unit_key).fetch1(
+        "probe_type", "electrode"
     )  # electrode where the peak waveform was found
 
-    peak_coord_y = (
-        probe.ProbeType.Electrode()
-        & f"probe_type='{probe_type}'"
-        & f"electrode={peak_electrode}"
-    ).fetch1("y_coord")
+    electrodes, coord_y = (
+        probe.ProbeType.Electrode & f"probe_type='{probe_type}'"
+    ).fetch("electrode", "y_coord")
 
-    coord_y = (probe.ProbeType.Electrode).fetch(
-        "y_coord"
-    )  # y-coordinate for all electrodes
+    peak_coord_y = coord_y[electrodes == peak_electrode][0]
+
     coord_ylim_low = (
         coord_y.min()
         if (peak_coord_y - y_range) <= coord_y.min()
@@ -183,13 +197,10 @@ def plot_depth_waveforms(
 
     waveforms = (
         ephys.WaveformSet.Waveform
-        & f"unit = {unit_id}"
+        & unit_key
         & f"electrode IN {tuple(electrodes_to_plot)}"
     ).fetch("waveform_mean")
     waveforms = np.stack(waveforms)  # all mean waveforms of a given neuron
-
-    if ax is None:
-        fig, ax = plt.subplots(1, 1, frameon=True, figsize=[1.5, 2], dpi=200)
 
     x_min, x_max = np.min(coords[:, 0]), np.max(coords[:, 0])
     y_min, y_max = np.min(coords[:, 1]), np.max(coords[:, 1])
@@ -211,25 +222,59 @@ def plot_depth_waveforms(
     xtick_label = list(map(str, map(int, unique_x_loc)))
     xtick_loc = time_scaled[int(len(time_scaled) / 2) + 1] + unique_x_loc
 
-    # Plot the mean waveform for each electrode
+    # Plot figure
+    fig = go.Figure()
     for electrode, wf, coord in zip(electrodes_to_plot, waveforms, coords):
 
         wf_scaled = wf * y_scale_factor
         wf_scaled -= wf_scaled.mean()
+        color = "red" if electrode == peak_electrode else "rgb(51, 76.5, 204)"
 
-        color = "r" if electrode == peak_electrode else [0.2, 0.3, 0.8] * 255
-        ax.plot(
-            time_scaled + coord[0], wf_scaled + coord[1], color=color, linewidth=0.5
+        fig.add_trace(
+            go.Scatter(
+                x=time_scaled + coord[0],
+                y=wf_scaled + coord[1],
+                mode="lines",
+                line=dict(color=color, width=1),
+                hovertemplate=f"electrode {electrode}<br>"
+                + f"x ={coord[0]: .0f} μm<br>"
+                + f"y ={coord[1]: .0f} μm<extra></extra>",
+            )
+        )
+        fig.update_layout(
+            title="Depth Waveforms",
+            xaxis_title="Electrode position (μm)",
+            yaxis_title="Distance from the probe tip (μm)",
+            template="simple_white",
+            width=350,
+            height=400,
+            xaxis_range=[x_min - x_inc / 2, x_max + x_inc * 1.2],
+            yaxis_range=[y_min - y_inc * 2, y_max + y_inc * 2],
         )
 
-    ax.set(xlabel="($\mu$m)", ylabel="Distance from the probe tip ($\mu$m)")
-    ax.set_ylim([y_min - y_inc * 2, y_max + y_inc * 2])
-    ax.xaxis.get_label().set_fontsize(8)
-    ax.yaxis.get_label().set_fontsize(8)
-    ax.tick_params(axis="both", which="major", labelsize=7)
-    ax.set_xticks(xtick_loc)
-    ax.set_xticklabels(xtick_label)
-    sns.despine()
-    sns.set_style("white")
+    fig.update_layout(showlegend=False)
+    fig.update_xaxes(tickvals=xtick_loc, ticktext=xtick_label)
 
+    # Add a scale bar
+    x0 = xtick_loc[0] / 6
+    y0 = y_min - y_inc * 1.5
+
+    fig.add_trace(
+        go.Scatter(
+            x=[x0, xtick_loc[0] + x_scale_factor],
+            y=[y0, y0],
+            mode="lines",
+            line=dict(color="black", width=2),
+            hovertemplate=f"1 ms<extra></extra>",
+        )
+    )
+    fig.add_trace(
+        go.Scatter(
+            x=[x0, x0],
+            y=[y0, y0 + y_inc],
+            mode="lines",
+            line=dict(color="black", width=2),
+            hovertemplate=f"{max_amp: .2f} μV<extra></extra>",
+        )
+    )
     return fig

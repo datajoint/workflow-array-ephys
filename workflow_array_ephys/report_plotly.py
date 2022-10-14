@@ -5,16 +5,7 @@ import datajoint as dj
 import importlib
 import inspect
 import typing as T
-import numpy as np
-from .plotting.ephys_plot import (
-    plot_driftmap,
-    plot_waveform,
-    plot_correlogram,
-    plot_depth_waveforms,
-)
-
-from workflow_array_ephys.pipeline import probe
-
+from .plotting.ephys_plot import *
 
 schema = dj.schema()
 
@@ -57,62 +48,40 @@ def activate(
 class ProbeLevelReport(dj.Computed):
     definition = """
     -> ephys.CuratedClustering
-    shank         : tinyint unsigned
     ---
     drift_map_plot: attach
     """
 
     def make(self, key):
 
-        save_dir = _make_save_dir()
-
-        units = (
+        spike_times, spike_depths = (
             _linking_module.ephys.CuratedClustering.Unit
             & key
             & "cluster_quality_label='good'"
-        )  # only the good units to be plotted
+        ).fetch("spike_times", "spike_depths", order_by="unit")
 
-        shanks: np.ndarray = np.unique(
-            (probe.ProbeType.Electrode.proj("shank") & units).fetch("shank")
+        # Get the figure
+        fig = plot_driftmap(spike_times, spike_depths, colormap="gist_heat_r")
+        fig_prefix = "-".join(
+            [
+                v.strftime("%Y%m%d%H%M%S")
+                if isinstance(v, datetime.datetime)
+                else str(v)
+                for v in key.values()
+            ]
         )
 
-        for shank_no in shanks:
+        # Save fig and insert
+        save_dir = _make_save_dir()
+        fig_dict = _save_figs(
+            figs=(fig,),
+            fig_names=("drift_map_plot",),
+            save_dir=save_dir,
+            fig_prefix=fig_prefix,
+            extension=".png",
+        )
 
-            table = (
-                units
-                * _linking_module.ephys.ProbeInsertion.proj()
-                * probe.ProbeType.Electrode.proj("shank")
-                & {"shank": shank_no}
-            )
-
-            spike_times, spike_depths = table.fetch(
-                "spike_times", "spike_depths", order_by="unit"
-            )
-
-            # Get the figure
-            fig = plot_driftmap(spike_times, spike_depths, colormap="gist_heat_r")
-            fig_prefix = (
-                "-".join(
-                    [
-                        v.strftime("%Y%m%d%H%M%S")
-                        if isinstance(v, datetime.datetime)
-                        else str(v)
-                        for v in key.values()
-                    ]
-                )
-                + f"-{shank_no}"
-            )
-
-            # Save fig and insert
-            fig_dict = _save_figs(
-                figs=(fig,),
-                fig_names=("drift_map_plot",),
-                save_dir=save_dir,
-                fig_prefix=fig_prefix,
-                extension=".png",
-            )
-
-            self.insert1({**key, **fig_dict, "shank": shank_no})
+        self.insert1({**key, **fig_dict})
 
 
 @schema
@@ -138,30 +107,31 @@ class UnitLevelReport(dj.Computed):
         ).fetch1("peak_electrode_waveform", "spike_times", "cluster_quality_label")
 
         # Get the figure
-        fig_waveform = plot_waveform(
+        fig = plot_waveform(
             waveform=peak_electrode_waveform, sampling_rate=sampling_rate
         )
-        fig_correlogram = plot_correlogram(
-            spike_times=spike_times, bin_size=0.001, window_size=1
-        )
+        fig_waveform = json.loads(fig.to_json())
 
-        fig_depth_waveform = plot_depth_waveforms(unit_key=key, y_range=50)
+        fig = plot_correlogram(spike_times=spike_times, bin_size=0.001, window_size=1)
+        fig_correlogram = json.loads(fig.to_json())
+
+        fig = plot_depth_waveforms(unit_key=key, y_range=50)
+        fig_depth_waveform = json.loads(fig.to_json())
 
         self.insert1(
             {
                 **key,
                 "cluster_quality_label": cluster_quality_label,
-                "waveform_plotly": fig_waveform.to_json(),
+                "waveform_plotly": fig_waveform,
                 "autocorrelogram_plotly": fig_correlogram,
                 "depth_waveform_plotly": fig_depth_waveform,
             }
         )
 
 
-def _make_save_dir(root_dir: pathlib.Path = None) -> pathlib.Path:
-    if root_dir is None:
-        root_dir = pathlib.Path().absolute()
-    save_dir = root_dir / "figures"
+def _make_save_dir() -> pathlib.Path:
+
+    save_dir = pathlib.Path().absolute() / "figures"
     save_dir.mkdir(parents=True, exist_ok=True)
     return save_dir
 
