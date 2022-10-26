@@ -1,3 +1,4 @@
+import matplotlib.pyplot as plt
 import datajoint as dj
 import numpy as np
 import importlib
@@ -11,18 +12,15 @@ _linking_module = None
 def activate(
     schema_name, *, create_schema=True, create_tables=True, linking_module=None
 ):
-    """
-    activate(schema_name, *, create_schema=True, create_tables=True,
-             linking_module=None)
-        :param schema_name: schema name on the database server to activate the
-                            `subject` element
-        :param create_schema: when True (default), create schema in the
-                              database if it does not yet exist.
-        :param create_tables: when True (default), create tables in the
-                              database if they do not yet exist.
-        :param linking_module: a module name or a module containing the
-         required dependencies to activate the `subject` element:
-             Upstream schema: ephys, trial
+    """Activate this schema.
+
+    Args:
+        schema_name (str): schema name on the database server
+        create_schema (bool): when True (default), create schema in the database if it
+                            does not yet exist.
+        create_tables (str): when True (default), create schema tables in the database
+                             if they do not yet exist.
+        linking_module (str): a module (or name) containing the required dependencies.
     """
     if isinstance(linking_module, str):
         linking_module = importlib.import_module(linking_module)
@@ -43,6 +41,17 @@ def activate(
 
 @schema
 class SpikesAlignmentCondition(dj.Manual):
+    """Alignment activity table
+
+    Attributes:
+        ephys.CuratedClustering (foreign key)
+        event.AlignmentEvent (foreign key)
+        trial_condition: varchar(128) # user-friendly name of condition
+        condition_description ( varchar(1000), nullable): condition description
+        bin_size (float, optional): Bin-size (in second) used to compute the PSTH
+            Default 0.04
+    """
+
     definition = """
     -> ephys.CuratedClustering
     -> event.AlignmentEvent
@@ -53,6 +62,8 @@ class SpikesAlignmentCondition(dj.Manual):
     """
 
     class Trial(dj.Part):
+        """Trials on which to compute event-aligned spikes and PSTH"""
+
         definition = """  # Trials on which to compute event-aligned spikes and PSTH
         -> master
         -> trial.Trial
@@ -61,11 +72,22 @@ class SpikesAlignmentCondition(dj.Manual):
 
 @schema
 class SpikesAlignment(dj.Computed):
+    """Spike alignment table pairing AlignedTrialSpikes and by-unit PSTH"""
+
     definition = """
     -> SpikesAlignmentCondition
     """
 
     class AlignedTrialSpikes(dj.Part):
+        """Spike activity aligned to the event time within the designated window
+
+        Attributes:
+            SpikesAlignmentCondition.Trial (foreign key)
+            ephys.CuratedClustering.Unit  (foreign key)
+            SpikesAlignmentCondition.Trial (foreign key)
+            aligned_spike_times (longblob): (s) spike times relative to alignment event
+        """
+
         definition = """
         -> master
         -> ephys.CuratedClustering.Unit
@@ -75,6 +97,15 @@ class SpikesAlignment(dj.Computed):
         """
 
     class UnitPSTH(dj.Part):
+        """Event-aligned spike peristimulus time histogram (PSTH) by unit
+
+        Attributes:
+            SpikesAlignment (foreign key)
+            ephys.CuratedClustering.Unit (foreign key)
+            psth (longblob): event-aligned spike peristimulus time histogram (PSTH)
+            psth_edges (longblob)
+        """
+
         definition = """
         -> master
         -> ephys.CuratedClustering.Unit
@@ -83,14 +114,22 @@ class SpikesAlignment(dj.Computed):
         psth_edges: longblob  
         """
 
-    def make(self, key):
-        unit_keys, unit_spike_times = (_linking_module.ephys.CuratedClustering.Unit & key).fetch(
-            "KEY", "spike_times", order_by="unit"
-        )
+    def make(self, key: dict):
+        """Populate SpikesAlignment, AlignedTrialSpikes and UnitPSTH
+
+        Args:
+            key (dict): Dict uniquely identifying one SpikesAlignmentCondition
+        """
+        unit_keys, unit_spike_times = (
+            _linking_module.ephys.CuratedClustering.Unit & key
+        ).fetch("KEY", "spike_times", order_by="unit")
         bin_size = (SpikesAlignmentCondition & key).fetch1("bin_size")
 
-        trialized_event_times = _linking_module.trial.get_trialized_alignment_event_times(
-            key, _linking_module.trial.Trial & (SpikesAlignmentCondition.Trial & key)
+        trialized_event_times = (
+            _linking_module.trial.get_trialized_alignment_event_times(
+                key,
+                _linking_module.trial.Trial & (SpikesAlignmentCondition.Trial & key),
+            )
         )
 
         min_limit = (trialized_event_times.event - trialized_event_times.start).max()
@@ -141,8 +180,18 @@ class SpikesAlignment(dj.Computed):
         self.AlignedTrialSpikes.insert(aligned_trial_spikes)
         self.UnitPSTH.insert(list(units_spike_raster.values()))
 
-    def plot(self, key, unit, axs=None):
-        import matplotlib.pyplot as plt
+    def plot(self, key: dict, unit: int, axs: tuple = None) -> plt.figure.Figure:
+        """Plot event-aligned and trial-averaged spiking
+
+        Args:
+            key (dict): key of SpikesAlignmentCondition master table
+            unit (int): ID of ephys.CuratedClustering.Unit table
+            axs (tuple, optional): Definition of axes for plot.
+                Default is plt.subplots(2, 1, figsize=(12, 8))
+
+        Returns:
+            fig (matplotlib.figure.Figure): Plot event-aligned and trial-averaged spikes
+        """
         from .plotting import plot_psth
 
         fig = None

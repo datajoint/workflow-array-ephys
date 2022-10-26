@@ -1,4 +1,7 @@
-# For didactic purposes, import upstream NWB export functions
+"""For didactic purposes, import upstream NWB export functions
+
+Real use-cases should import these functions directly.
+"""
 import os
 import datajoint as dj
 from element_lab.export.nwb import element_lab_to_nwb_dict
