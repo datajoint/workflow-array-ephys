@@ -1,7 +1,7 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,py_scripts//py,py:light
+#     formats: ipynb,py_scripts//py
 #     text_representation:
 #       extension: .py
 #       format_name: light
@@ -26,9 +26,6 @@ if os.path.basename(os.getcwd())=='notebooks': os.chdir('..')
 import datajoint as dj
 import datetime
 from workflow_array_ephys.pipeline import ephys, probe, ephys_report
-
-# ## Unit level visualization
-#
 
 # +
 # Get the unit key
@@ -98,8 +95,8 @@ shank_no = 0
 
 table = (
     units
-    * ephys.ProbeInsertion.proj()
-    * probe.ProbeType.Electrode.proj("shank")
+    * ephys.ProbeInsertion
+    * probe.ProbeType.Electrode
     & {"shank": shank_no}
 )
 
