@@ -1,15 +1,12 @@
 datajoint>=0.13.0
-element-animal>=0.1.0b0
 element-array-ephys @ git+https://github.com/datajoint/element-array-ephys@run_kilosort
-element-electrode-localization @ git+https://github.com/datajoint/element-electrode-localization
-element-event @ git+https://github.com/datajoint/element-event.git
-element-interface @ git+https://github.com/datajoint/element-interface.git
 element-lab>=0.1.0b0
+element-animal>=0.1.0b0
 element-session>=0.1.0b0
+element-event @ git+https://github.com/datajoint/element-event.git
+element-electrode-localization @ git+https://github.com/datajoint/element-electrode-localization
+element-interface @ git+https://github.com/datajoint/element-interface.git
 ipykernel>=6.0.1
-ipywidgets>=7.6
-jupyterlab>=3
-neo==0.10.2
 nwb-conversion-tools==0.11.1
-plotly==5.10.0
 spikeinterface==0.93.0
+neo==0.10.2
