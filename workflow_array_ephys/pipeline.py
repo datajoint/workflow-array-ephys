@@ -53,6 +53,7 @@ __all__ = [
     "event",
     "probe",
     "ephys",
+    "ephys_report",
     # tables
     "Subject",
     "Source",
