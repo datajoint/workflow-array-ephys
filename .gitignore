@@ -105,3 +105,6 @@ docker-compose.yml
 
 # vscode
 .vscode
+
+# temporary figures
+temp_ephys_figures/
