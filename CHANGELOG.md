@@ -3,6 +3,11 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
+## [0.2.5] - 2022-01-03
+
++ Add - notebook 10 for figures and widget for ephys results.
++ Add - Test for `ephys_report` module.
+
 ## [0.2.4] - 2022-09-20
 
 + Add - Add (0.2.3) and revise (0.2.4) notebook for Allen Institute workshop
