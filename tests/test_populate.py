@@ -333,7 +333,6 @@ def test_waveform_populate_npx3B_SpikeGLX(curations, pipeline, testdata_paths):
     assert waveforms.shape == (150, 64)
 
 
-@mark.jr
 def test_build_electrode_layouts(pipeline):
     """
     Test build_electrode_layouts function in probe.py
