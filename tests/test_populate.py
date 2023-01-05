@@ -1,4 +1,8 @@
+import json
 import numpy as np
+import pandas as pd
+from pytest import mark
+
 
 __all__ = [
     "dj_config",
@@ -327,6 +331,35 @@ def test_waveform_populate_npx3B_SpikeGLX(curations, pipeline, testdata_paths):
     )
 
     assert waveforms.shape == (150, 64)
+
+
+def test_build_electrode_layouts(pipeline):
+    """
+    Test build_electrode_layouts function in probe.py
+    """
+
+    # Load probe configuration
+    f = open("user_data/neuropixels_probes_config.json")
+    probe_configs = json.load(f)
+    # Load ground truth table for each probe type
+    truth_df = pd.read_csv("user_data/probe_type_electrode.csv")
+
+    probe = pipeline["probe"]
+
+    for probe_type, config in probe_configs.items():
+
+        test_df = pd.DataFrame(probe.build_electrode_layouts(probe_type, **config))
+
+        test_arr = np.array(test_df.drop(columns=["probe_type"]), dtype=np.int16)
+        truth_arr = np.array(
+            truth_df.loc[truth_df["probe_type"] == probe_type].drop(
+                columns=["probe_type"]
+            ),
+            dtype=np.int16,
+        )
+        assert np.array_equal(
+            test_arr, truth_arr
+        ), f"probe type '{probe_type}' electrode layout does not match"
 
 
 # ---- HELPER FUNCTIONS ----

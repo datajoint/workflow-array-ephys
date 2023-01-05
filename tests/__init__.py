@@ -144,6 +144,7 @@ def pipeline():
         "lab": pipeline.lab,
         "ephys": pipeline.ephys,
         "probe": pipeline.probe,
+        "ephys_report": pipeline.ephys_report,
         "session": pipeline.session,
         "get_ephys_root_data_dir": pipeline.get_ephys_root_data_dir,
         "ephys_mode": pipeline.ephys_mode,

@@ -98,10 +98,13 @@ temp*
 **/.#*
 Diagram.ipynb
 
-# docker, vscode
+# docker
 .env
 *.pem
+docker-compose.yml
 
 # vscode
-docker-compose.yml
-.vscode/settings.json
+.vscode
+
+# temporary figures
+temp_ephys_figures/
