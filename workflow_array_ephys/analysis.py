@@ -1,4 +1,5 @@
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 import datajoint as dj
 import numpy as np
 import importlib
@@ -180,7 +181,7 @@ class SpikesAlignment(dj.Computed):
         self.AlignedTrialSpikes.insert(aligned_trial_spikes)
         self.UnitPSTH.insert(list(units_spike_raster.values()))
 
-    def plot(self, key: dict, unit: int, axs: tuple = None) -> plt.figure.Figure:
+    def plot(self, key: dict, unit: int, axs: tuple = None) -> Figure:
         """Plot event-aligned and trial-averaged spiking
 
         Args:
