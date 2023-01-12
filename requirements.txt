@@ -1,5 +1,5 @@
 datajoint>=0.13.0
-element-array-ephys @ git+https://github.com/datajoint/element-array-ephys@run_kilosort
+element-array-ephys>=0.2.2
 element-lab>=0.1.0b0
 element-animal>=0.1.0b0
 element-session>=0.1.0b0
