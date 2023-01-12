@@ -2,4 +2,4 @@
 Package metadata
 Update the Docker image tag in `docker-compose.yaml` to match
 """
-__version__ = "0.2.4"
+__version__ = "0.2.6"
