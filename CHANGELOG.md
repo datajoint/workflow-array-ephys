@@ -3,8 +3,9 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
-## [0.2.6] - Unreleased
+## [0.2.6] - 2022-01-12
 
++ Update - Requirements to install main branch of `element-array-ephys`.
 + Add - Quality Metric plots to visualization notebook.
 
 ## [0.2.5] - 2022-01-03
