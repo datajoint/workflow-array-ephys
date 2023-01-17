@@ -1,7 +1,7 @@
 import datajoint as dj
 import os
 from element_animal import subject
-from element_lab import lab
+from element_lab import lab, project
 from element_session import session_with_datetime as session
 from element_event import trial, event
 from element_array_ephys import probe, ephys_report
@@ -17,7 +17,6 @@ from .paths import (
 )
 
 from . import analysis
-
 
 if "custom" not in dj.config:
     dj.config["custom"] = {}
@@ -72,6 +71,7 @@ __all__ = [
 # Activate "lab", "subject", "session" schema ---------------------------------
 
 lab.activate(db_prefix + "lab")
+project.activate(db_prefix + "project", linking_module=__name__)
 
 subject.activate(db_prefix + "subject", linking_module=__name__)
 
