@@ -222,15 +222,17 @@ def ingest_data(setup, pipeline, test_data):
             "func": null_function,
             "args": {},
             "content": [
-                "project,project_description,repository_url,"
-                + "repository_name,codeurl",
+                "project,project_description,project_title,project_start_date,"
+                + "repository_url,repository_name,codeurl",
                 "ProjA,Example project to populate element-lab,"
+                + "Example project to populate element-lab,2020-01-01,"
                 + "https://github.com/datajoint/element-lab/,"
                 + "element-lab,https://github.com/datajoint/element"
                 + "-lab/tree/main/element_lab",
-                "ProjB,Other example project to populate element-"
-                + "lab,https://github.com/datajoint/element-session"
-                + "/,element-session,https://github.com/datajoint/"
+                "ProjB,Other example project to populate element-lab,"
+                + "Other example project to populate element-lab,2020-01-02,"
+                + "https://github.com/datajoint/element-session/,"
+                + "element-session,https://github.com/datajoint/"
                 + "element-session/tree/main/element_session",
             ],
         },

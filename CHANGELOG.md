@@ -3,6 +3,11 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
+## [0.2.7] - Unreleased
+
++ Update - Revise pytest and docker structure to streamline testing
++ Add - pre-commit, markdown lint, and spell check config files
+
 ## [0.2.6] - 2022-01-12
 
 + Update - Requirements to install main branch of `element-array-ephys`.
@@ -15,7 +20,7 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 
 ## [0.2.4] - 2022-09-20
 
-+ Add - Add (0.2.3) and revise (0.2.4) notebook for Allen Institute workshop
++ Add - Add [0.2.3] and revise [0.2.4] notebook for Allen Institute workshop
 
 ## [0.2.2] - 2022-09-18
 
@@ -74,6 +79,7 @@ specific forks for tests.
 
 + Add - Version
 
+[0.2.7]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.7
 [0.2.6]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.6
 [0.2.5]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.5
 [0.2.4]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.4

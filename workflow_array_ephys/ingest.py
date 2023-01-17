@@ -48,7 +48,7 @@ def ingest_lab(
         verbose (str): print number inserted (i.e., table length change)
     """
 
-    # List with repeats for when mult dj.tables fed by same CSV
+    # List with repeats for when multiple dj.tables fed by same CSV
     csvs = [
         lab_csv_path,
         lab_csv_path,
