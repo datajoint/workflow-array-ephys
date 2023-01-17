@@ -1,6 +1,6 @@
 import os
-import sys
 import pathlib
+import sys
 
 from element_interface.utils import find_full_path, find_root_directory
 

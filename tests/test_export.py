@@ -1,8 +1,8 @@
-from pynwb.ecephys import ElectricalSeries
 import datetime
 import time
 
-from element_interface.utils import find_root_directory, find_full_path
+from element_interface.utils import find_full_path, find_root_directory
+from pynwb.ecephys import ElectricalSeries
 
 from workflow_array_ephys.export import (
     ecephys_session_to_nwb,

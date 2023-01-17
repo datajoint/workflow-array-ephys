@@ -1,9 +1,10 @@
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-import datajoint as dj
-import numpy as np
 import importlib
 import inspect
+
+import datajoint as dj
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.figure import Figure
 
 schema = dj.schema()
 
@@ -112,7 +113,7 @@ class SpikesAlignment(dj.Computed):
         -> ephys.CuratedClustering.Unit
         ---
         psth: longblob  # event-aligned spike peristimulus time histogram (PSTH)
-        psth_edges: longblob  
+        psth_edges: longblob
         """
 
     def make(self, key: dict):

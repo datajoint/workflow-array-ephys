@@ -8,7 +8,7 @@ addopts = "--capture=tee-sys -p no:warnings --dj-teardown False --dj-verbose Tru
 # Capturing output: -s for none, --capture=tee-sys for both log and stdout
 # Coverage: --cov={package} - package for which we're measuring coverage
 # Coverage report: --cov-report term-missing send report to stdout with line numbers of missed
-# Custom teardown: --dj-teardown {True, False} to teardown tables, 
+# Custom teardown: --dj-teardown {True, False} to teardown tables,
 # Custom verbose: --dj-verbose {True,False} print out dj info like table inserts
 testpaths = [
     "tests",

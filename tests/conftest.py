@@ -1,19 +1,18 @@
 import logging
+import os
+import pathlib
+import sys
 from collections import abc
 from contextlib import nullcontext
 from pathlib import Path
-import os
-import sys
-import pytest
-import pandas as pd
-import pathlib
+
 import datajoint as dj
+import pandas as pd
+import pytest
 from element_interface.utils import QuietStdOut, find_full_path, value_to_bool
 
+from workflow_array_ephys.ingest import ingest_lab, ingest_sessions, ingest_subjects
 from workflow_array_ephys.paths import get_ephys_root_data_dir
-from workflow_array_ephys.ingest import ingest_lab, ingest_subjects, ingest_sessions
-from element_interface.utils import find_full_path
-
 
 # ------------------- SOME CONSTANTS -------------------
 

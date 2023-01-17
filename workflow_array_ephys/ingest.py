@@ -1,23 +1,23 @@
 import csv
 import re
 
-from workflow_array_ephys.pipeline import (
-    lab,
-    project,
-    subject,
-    ephys,
-    probe,
-    session,
-    trial,
-    event,
-)
-from workflow_array_ephys.paths import get_ephys_root_data_dir
-
-from element_array_ephys.readers import spikeglx, openephys
+from element_array_ephys.readers import openephys, spikeglx
 from element_interface.utils import (
-    find_root_directory,
     find_full_path,
+    find_root_directory,
     ingest_csv_to_table,
+)
+
+from workflow_array_ephys.paths import get_ephys_root_data_dir
+from workflow_array_ephys.pipeline import (
+    ephys,
+    event,
+    lab,
+    probe,
+    project,
+    session,
+    subject,
+    trial,
 )
 
 
