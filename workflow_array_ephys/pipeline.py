@@ -1,22 +1,21 @@
-import datajoint as dj
 import os
-from element_animal import subject
-from element_lab import lab, project
-from element_session import session_with_datetime as session
-from element_event import trial, event
-from element_array_ephys import probe, ephys_report
 
+import datajoint as dj
+from element_animal import subject
 from element_animal.subject import Subject
-from element_lab.lab import Source, Lab, Protocol, User, Project
+from element_array_ephys import ephys_report, probe
+from element_event import event, trial
+from element_lab import lab, project
+from element_lab.lab import Lab, Project, Protocol, Source, User
+from element_session import session_with_datetime as session
 from element_session.session_with_datetime import Session
 
+from . import analysis
 from .paths import (
+    get_electrode_localization_dir,
     get_ephys_root_data_dir,
     get_session_directory,
-    get_electrode_localization_dir,
 )
-
-from . import analysis
 
 if "custom" not in dj.config:
     dj.config["custom"] = {}
@@ -30,11 +29,11 @@ if ephys_mode == "acute":
 elif ephys_mode == "chronic":
     from element_array_ephys import ephys_chronic as ephys
 elif ephys_mode == "no-curation":
-    from element_lab.export.nwb import element_lab_to_nwb_dict
     from element_animal.export.nwb import subject_to_nwb
-    from element_session.export.nwb import session_to_nwb
-    from element_array_ephys.export.nwb import ecephys_session_to_nwb, write_nwb
     from element_array_ephys import ephys_no_curation as ephys
+    from element_array_ephys.export.nwb import ecephys_session_to_nwb, write_nwb
+    from element_lab.export.nwb import element_lab_to_nwb_dict
+    from element_session.export.nwb import session_to_nwb
 elif ephys_mode == "precluster":
     from element_array_ephys import ephys_precluster as ephys
 else:
@@ -65,6 +64,12 @@ __all__ = [
     "get_ephys_root_data_dir",
     "get_session_directory",
     "get_electrode_localization_dir",
+    # export
+    "subject_to_nwb",
+    "ecephys_session_to_nwb",
+    "write_nwb",
+    "element_lab_to_nwb_dict",
+    "session_to_nwb",
 ]
 
 

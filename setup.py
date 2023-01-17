@@ -23,7 +23,7 @@ with open(path.join(here, pkg_name, "version.py")) as f:
 
 setup(
     name="workflow-array-ephys",
-    version=__version__,
+    version=__version__,  # noqa: F821
     description="Extracellular electrophysiology pipeline using the DataJoint elements",
     long_description=long_description,
     author="DataJoint",
