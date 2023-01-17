@@ -65,10 +65,10 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 ## 0.1.0a3 - 2022-01-18
 
 + Update - Notebooks
-+ Update - Move instructions to [datajoint-elements/install.md](
-     https://github.com/datajoint/datajoint-elements/blob/main/install.md).
++ Update - Move instructions to
+  [datajoint-elements/install.md](https://github.com/datajoint/datajoint-elements/blob/main/install.md).
 + Update - Docker and Compose files for new base image and added options to install
-specific forks for tests.
+  specific forks for tests.
 
 ## 0.1.0a2 - 2021-04-12
 
