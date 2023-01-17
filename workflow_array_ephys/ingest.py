@@ -152,8 +152,10 @@ def ingest_sessions(
     session_note_list, session_experimenter_list, lab_user_list = [], [], []
     probe_list, probe_insertion_list = [], []
 
-    for sess in input_sessions:
-        session_dir = find_full_path(get_ephys_root_data_dir(), sess["session_dir"])
+    for this_session in input_sessions:
+        session_dir = find_full_path(
+            get_ephys_root_data_dir(), this_session["session_dir"]
+        )
         session_datetimes, insertions = [], []
 
         # search session dir and determine acquisition software
@@ -219,7 +221,7 @@ def ingest_sessions(
 
         # new session/probe-insertion
         session_key = {
-            "subject": sess["subject"],
+            "subject": this_session["subject"],
             "session_datetime": min(session_datetimes),
         }
         if session_key not in session.Session():
@@ -232,10 +234,14 @@ def ingest_sessions(
                 }
             )
             session_note_list.append(
-                {**session_key, "session_note": sess["session_note"]}
+                {**session_key, "session_note": this_session["session_note"]}
             )
-            session_experimenter_list.append({**session_key, "user": sess["user"]})
-            lab_user_list.append((sess["user"], "", "", ""))  # empty email/phone/name
+            session_experimenter_list.append(
+                {**session_key, "user": this_session["user"]}
+            )
+            lab_user_list.append(
+                (this_session["user"], "", "", "")
+            )  # empty email/phone/name
             probe_insertion_list.extend(
                 [{**session_key, **insertion} for insertion in insertions]
             )
