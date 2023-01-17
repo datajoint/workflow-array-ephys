@@ -4,6 +4,8 @@ import sys
 
 from element_interface.utils import find_full_path, find_root_directory
 
+docker_root = "/main/test_data/workflow_ephys_data1"
+
 
 def test_ingest_subjects(pipeline, ingest_data):
     """Check number of subjects inserted into the `subject.Subject` table"""
@@ -29,6 +31,9 @@ def test_ingest_sessions(pipeline, ingest_data):
 
 def test_find_valid_full_path(pipeline, ingest_data):
 
+    if not os.environ.get("IS_DOCKER", False):
+        return  # It doesn't make sense to assert the root testing locally
+
     get_ephys_root_data_dir = pipeline["get_ephys_root_data_dir"]
     ephys_root_data_dir = (
         [get_ephys_root_data_dir()]
@@ -47,13 +52,7 @@ def test_find_valid_full_path(pipeline, ingest_data):
 
     session_full_path = find_full_path(ephys_root_data_dir, session_info[1])
 
-    if os.environ.get("IS_DOCKER", False):
-        full_path = pathlib.Path("docker_root/subject1/session1")
-    else:
-        full_path = (
-            find_root_directory(ephys_root_data_dir, session_info[1])
-            / "subject1/session1"
-        )
+    full_path = pathlib.Path(docker_root, "subject1/session1")
 
     assert full_path == session_full_path, str(
         "Session path does not match docker root:"
@@ -84,7 +83,6 @@ def test_find_root_directory(pipeline, ingest_data):
     session_info = ingest_data["sessions.csv"]["content"][1].split(",")
 
     if os.environ.get("IS_DOCKER", False):
-        docker_root = "/main/test_data/workflow_ephys_data1"
         session_full_path = pathlib.Path(docker_root, session_info[1])
         root_dir = find_root_directory(ephys_root_data_dir, session_full_path)
         assert (
