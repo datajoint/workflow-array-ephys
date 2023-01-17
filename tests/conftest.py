@@ -86,10 +86,6 @@ def null_function(*args, **kwargs):
     pass
 
 
-def write_csv(content: list, path: Path):
-    path.write_text("\n".join(content) + "\n")
-
-
 # ---------------------- FIXTURES ----------------------
 
 
