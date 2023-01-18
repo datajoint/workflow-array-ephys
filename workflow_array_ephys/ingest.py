@@ -1,4 +1,5 @@
 import csv
+import logging
 import re
 
 from element_array_ephys.readers import openephys, spikeglx
@@ -19,6 +20,8 @@ from workflow_array_ephys.pipeline import (
     subject,
     trial,
 )
+
+logger = logging.getLogger("datajoint")
 
 
 def ingest_lab(
@@ -251,20 +254,20 @@ def ingest_sessions(
     session.SessionDirectory.insert(session_dir_list)
     session.SessionNote.insert(session_note_list)
     session.SessionExperimenter.insert(session_experimenter_list)
+
+    log_string = "---- Inserting %d entry(s) into %s ----"
+
     if verbose:
-        print(f"\n---- Insert {len(session_list)} entry(s) into session.Session ----")
+        logger.info(log_string % (len(session_list), "session.Session"))
 
     probe.Probe.insert(probe_list)
     if verbose:
-        print(f"\n---- Insert {len(probe_list)} entry(s) into probe.Probe ----")
+        logger.info(log_string % (len(probe_list), "probe.Probe"))
 
     ephys.ProbeInsertion.insert(probe_insertion_list)
     if verbose:
-        print(
-            f"\n---- Insert {len(probe_insertion_list)} entry(s) into "
-            + "ephys.ProbeInsertion ----"
-        )
-        print("\n---- Successfully completed ingest_subjects ----")
+        logger.info(log_string % (len(probe_insertion_list), "ephys.ProbeInsertion"))
+        logger.info("---- Successfully completed ingest_subjects ----")
 
 
 def ingest_events(
