@@ -120,7 +120,7 @@ def dj_config(setup):
     return
 
 
-@pytest.fixture(autouse=True, scope="session")
+@pytest.fixture(scope="session")
 def test_data(dj_config):
     """If data does not exist or partial data is present,
     attempt download with DJArchive to the first listed root directory"""
