@@ -1,0 +1,85 @@
+// cSpell Settings
+//https://github.com/streetsidesoftware/vscode-spell-checker
+{
+    "version": "0.2", // Version of the setting file.  Always 0.2
+    "language": "en", // language - current active spelling language
+    "enabledLanguageIds": [
+        "markdown", "yaml", "python"
+    ],
+    // flagWords - list of words to be always considered incorrect
+    // This is useful for offensive words and common spelling errors.
+    // For example "hte" should be "the"
+    "flagWords": [],
+    "allowCompoundWords": true,
+    "ignorePaths": [
+        "./element_array_ephys.egg-info/*",
+        "./images/*"
+    ],
+    "words": [
+        "arange",
+        "Berens",
+        "CICD",
+        "curations",
+        "DANDI",
+        "djarchive",
+        "DJARCHIVE",
+        "dtype",
+        "ecephys",
+        "Ecker",
+        "elif",
+        "Ephys",
+        "fshigh",
+        "hdmf",
+        "Hoenselaar",
+        "IACUC",
+        "imec",
+        "inlinehilite",
+        "ipynb",
+        "iterrows",
+        "Jupytext",
+        "linenums",
+        "minfr",
+        "mkdocs",
+        "mkdocstrings",
+        "Neuralynx",
+        "neuroconv",
+        "Neuropix",
+        "Neuropixels",
+        "Nfilt",
+        "nfilt",
+        "nrrd",
+        "nskip",
+        "ntbuff",
+        "nwbfile",
+        "NWBHDF",
+        "oebin",
+        "openephys",
+        "PSTH",
+        "pymdownx",
+        "pynwb",
+        "pyplot",
+        "pyproject",
+        "pytest",
+        "pytests",
+        "Pytests",
+        "Reimer",
+        "Roboto",
+        "RRID",
+        "Rxiv",
+        "Sasaki",
+        "sglx",
+        "Shen",
+        "Siapas",
+        "Sinz",
+        "Sitonic",
+        "spikeglx",
+        "talab",
+        "Tolias",
+        "tqdm",
+        "trialized",
+        "voxel",
+        "xlim",
+        "Yatsenko",
+        "Zuckerman"
+    ]
+}

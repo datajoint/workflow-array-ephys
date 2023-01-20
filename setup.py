@@ -1,5 +1,6 @@
-from setuptools import setup, find_packages
 from os import path
+
+from setuptools import find_packages, setup
 
 pkg_name = "workflow_array_ephys"
 here = path.abspath(path.dirname(__file__))
@@ -22,7 +23,8 @@ with open(path.join(here, pkg_name, "version.py")) as f:
 
 setup(
     name="workflow-array-ephys",
-    version=__version__,
+    python_requires=">=3.7",
+    version=__version__,  # noqa: F821
     description="Extracellular electrophysiology pipeline using the DataJoint elements",
     long_description=long_description,
     author="DataJoint",

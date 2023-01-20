@@ -1,24 +1,22 @@
 """Load CCF files.
 
-When imported, checks to see that CCF (nrrd and query.csv) files in the 
-ephys_root_data_dir have been loaded into 
+When imported, checks to see that CCF (nrrd and query.csv) files in the
+ephys_root_data_dir have been loaded into
 element_electrode_localization.coordinate_framework. Default voxel resolution is 100.
 To load other resolutions, please modify this script.
 """
 
 import datajoint as dj
-from element_interface.utils import find_full_path
 from element_electrode_localization import coordinate_framework, electrode_localization
 from element_electrode_localization.coordinate_framework import load_ccf_annotation
+from element_interface.utils import find_full_path
 
-
-from .pipeline import ephys, probe
 from .paths import (
+    get_electrode_localization_dir,
     get_ephys_root_data_dir,
     get_session_directory,
-    get_electrode_localization_dir,
 )
-
+from .pipeline import ephys, probe
 
 if "custom" not in dj.config:
     dj.config["custom"] = {}

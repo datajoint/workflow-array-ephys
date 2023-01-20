@@ -1,50 +1,136 @@
 import csv
+import logging
 import re
 
-from workflow_array_ephys.pipeline import (
-    lab,
-    subject,
-    ephys,
-    probe,
-    session,
-    trial,
-    event,
-)
-from workflow_array_ephys.paths import get_ephys_root_data_dir
-
-from element_array_ephys.readers import spikeglx, openephys
+from element_array_ephys.readers import openephys, spikeglx
 from element_interface.utils import (
-    find_root_directory,
     find_full_path,
+    find_root_directory,
     ingest_csv_to_table,
 )
 
+from workflow_array_ephys.paths import get_ephys_root_data_dir
+from workflow_array_ephys.pipeline import (
+    ephys,
+    event,
+    lab,
+    probe,
+    project,
+    session,
+    subject,
+    trial,
+)
+
+logger = logging.getLogger("datajoint")
+
+
+def ingest_lab(
+    lab_csv_path="./user_data/lab/labs.csv",
+    project_csv_path="./user_data/lab/projects.csv",
+    publication_csv_path="./user_data/lab/publications.csv",
+    keyword_csv_path="./user_data/lab/keywords.csv",
+    protocol_csv_path="./user_data/lab/protocols.csv",
+    users_csv_path="./user_data/lab/users.csv",
+    project_user_csv_path="./user_data/lab/project_users.csv",
+    skip_duplicates=True,
+    verbose=True,
+):
+    """Inserts data from a CSVs into their corresponding lab schema tables.
+
+    By default, uses data from workflow/user_data/lab/
+
+    Args:
+        lab_csv_path (str): relative path of lab csv
+        project_csv_path (str): relative path of project csv
+        publication_csv_path (str): relative path of publication csv
+        keyword_csv_path (str): relative path of keyword csv
+        protocol_csv_path (str): relative path of protocol csv
+        users_csv_path (str): relative path of users csv
+        project_user_csv_path (str): relative path of project users csv
+        skip_duplicates=True (str): datajoint insert function param
+        verbose (str): print number inserted (i.e., table length change)
+    """
+
+    # List with repeats for when multiple dj.tables fed by same CSV
+    csvs = [
+        lab_csv_path,
+        lab_csv_path,
+        lab_csv_path,
+        lab_csv_path,
+        project_csv_path,
+        project_csv_path,
+        publication_csv_path,
+        keyword_csv_path,
+        protocol_csv_path,
+        protocol_csv_path,
+        users_csv_path,
+        users_csv_path,
+        users_csv_path,
+        project_user_csv_path,
+    ]
+    tables = [
+        lab.Organization(),
+        lab.Lab(),
+        lab.Lab.Organization(),
+        lab.Location(),
+        lab.Project(),
+        lab.ProjectSourceCode(),
+        lab.ProjectPublication(),
+        lab.ProjectKeywords(),
+        lab.ProtocolType(),
+        lab.Protocol(),
+        lab.UserRole(),
+        lab.User(),
+        lab.LabMembership(),
+        lab.ProjectUser(),
+    ]
+
+    ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose)
+
+    # For project schema
+    project_csvs = [
+        project_csv_path,
+        project_user_csv_path,
+        keyword_csv_path,
+        publication_csv_path,
+        project_csv_path,
+    ]
+
+    project_tables = [
+        project.Project(),
+        project.ProjectPersonnel(),
+        project.ProjectKeywords(),
+        project.ProjectPublication(),
+        project.ProjectSourceCode(),
+    ]
+
+    ingest_csv_to_table(
+        project_csvs, project_tables, skip_duplicates=skip_duplicates, verbose=verbose
+    )
+
 
 def ingest_subjects(
-    subject_csv_path: str = "./user_data/subjects.csv", verbose: bool = True
+    subject_csv_path: str = "./user_data/subjects.csv",
+    skip_duplicates: bool = True,
+    verbose: bool = True,
 ):
     """Ingest subjects listed in the subject column of ./user_data/subjects.csv
 
     Args:
         subject_csv_path (str, optional): Relative path to subject csv.
             Defaults to "./user_data/subjects.csv".
+        skip_duplicates (bool, optional): See DataJoint `insert` function. Default True.
         verbose (bool, optional): Print number inserted (i.e., table length change).
             Defaults to True.
     """
-    # -------------- Insert new "Subject" --------------
-    with open(subject_csv_path, newline="") as f:
-        input_subjects = list(csv.DictReader(f, delimiter=","))
-    if verbose:
-        previous_length = len(subject.Subject.fetch())
-    subject.Subject.insert(input_subjects, skip_duplicates=True)
-    if verbose:
-        insert_length = len(subject.Subject.fetch()) - previous_length
-        print(f"\n---- Insert {insert_length} entry(s) into " + "subject.Subject ----")
-        print("\n---- Successfully completed ingest_subjects ----")
+    csvs = [subject_csv_path]
+    tables = [subject.Subject()]
+
+    ingest_csv_to_table(csvs, tables, skip_duplicates=skip_duplicates, verbose=verbose)
 
 
 def ingest_sessions(
-    session_csv_path: str = "./user_data/sessions.csv", verbose: bool = True
+    session_csv_path: str = "./user_data/sessions.csv", verbose: bool = True, **_
 ):
     """Ingest SpikeGLX and OpenEphys files from directories listed in csv
 
@@ -65,15 +151,14 @@ def ingest_sessions(
         input_sessions = list(csv.DictReader(f, delimiter=","))
 
     # Folder structure: root / subject / session / probe / .ap.meta
-    session_list, session_dir_list, = (
-        [],
-        [],
-    )
+    (session_list, session_dir_list) = ([], [])
     session_note_list, session_experimenter_list, lab_user_list = [], [], []
     probe_list, probe_insertion_list = [], []
 
-    for sess in input_sessions:
-        session_dir = find_full_path(get_ephys_root_data_dir(), sess["session_dir"])
+    for this_session in input_sessions:
+        session_dir = find_full_path(
+            get_ephys_root_data_dir(), this_session["session_dir"]
+        )
         session_datetimes, insertions = [], []
 
         # search session dir and determine acquisition software
@@ -139,7 +224,7 @@ def ingest_sessions(
 
         # new session/probe-insertion
         session_key = {
-            "subject": sess["subject"],
+            "subject": this_session["subject"],
             "session_datetime": min(session_datetimes),
         }
         if session_key not in session.Session():
@@ -152,10 +237,14 @@ def ingest_sessions(
                 }
             )
             session_note_list.append(
-                {**session_key, "session_note": sess["session_note"]}
+                {**session_key, "session_note": this_session["session_note"]}
             )
-            session_experimenter_list.append({**session_key, "user": sess["user"]})
-            lab_user_list.append((sess["user"], "", ""))  # empty email/phone
+            session_experimenter_list.append(
+                {**session_key, "user": this_session["user"]}
+            )
+            lab_user_list.append(
+                (this_session["user"], "", "", "")
+            )  # empty email/phone/name
             probe_insertion_list.extend(
                 [{**session_key, **insertion} for insertion in insertions]
             )
@@ -165,20 +254,20 @@ def ingest_sessions(
     session.SessionDirectory.insert(session_dir_list)
     session.SessionNote.insert(session_note_list)
     session.SessionExperimenter.insert(session_experimenter_list)
+
+    log_string = "---- Inserting %d entry(s) into %s ----"
+
     if verbose:
-        print(f"\n---- Insert {len(session_list)} entry(s) into session.Session ----")
+        logger.info(log_string % (len(session_list), "session.Session"))
 
     probe.Probe.insert(probe_list)
     if verbose:
-        print(f"\n---- Insert {len(probe_list)} entry(s) into probe.Probe ----")
+        logger.info(log_string % (len(probe_list), "probe.Probe"))
 
     ephys.ProbeInsertion.insert(probe_insertion_list)
     if verbose:
-        print(
-            f"\n---- Insert {len(probe_insertion_list)} entry(s) into "
-            + "ephys.ProbeInsertion ----"
-        )
-        print("\n---- Successfully completed ingest_subjects ----")
+        logger.info(log_string % (len(probe_insertion_list), "ephys.ProbeInsertion"))
+        logger.info("---- Successfully completed ingest_subjects ----")
 
 
 def ingest_events(
@@ -271,7 +360,6 @@ def ingest_alignment(
 
 
 if __name__ == "__main__":
-    ingest_lab()
     ingest_subjects()
     ingest_sessions()
     ingest_events()

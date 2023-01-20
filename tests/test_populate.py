@@ -1,40 +1,7 @@
 import json
+
 import numpy as np
 import pandas as pd
-from pytest import mark
-
-
-__all__ = [
-    "dj_config",
-    "pipeline",
-    "test_data",
-    "subjects_csv",
-    "ingest_subjects",
-    "sessions_csv",
-    "ingest_sessions",
-    "testdata_paths",
-    "kilosort_paramset",
-    "ephys_recordings",
-    "clustering_tasks",
-    "clustering",
-    "curations",
-]
-
-from . import (
-    dj_config,
-    pipeline,
-    test_data,
-    subjects_csv,
-    ingest_subjects,
-    sessions_csv,
-    ingest_sessions,
-    testdata_paths,
-    kilosort_paramset,
-    ephys_recordings,
-    clustering_tasks,
-    clustering,
-    curations,
-)
 
 
 def test_ephys_recording_populate(pipeline, ephys_recordings):

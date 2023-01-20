@@ -1,6 +1,3 @@
-from . import dj_config, pipeline
-
-
 def test_generate_pipeline(pipeline):
     subject = pipeline["subject"]
     session = pipeline["session"]

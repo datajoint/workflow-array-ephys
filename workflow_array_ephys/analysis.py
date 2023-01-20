@@ -1,9 +1,10 @@
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
-import datajoint as dj
-import numpy as np
 import importlib
 import inspect
+
+import datajoint as dj
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.figure import Figure
 
 schema = dj.schema()
 
@@ -45,8 +46,8 @@ class SpikesAlignmentCondition(dj.Manual):
     """Alignment activity table
 
     Attributes:
-        ephys.CuratedClustering (foreign key)
-        event.AlignmentEvent (foreign key)
+        ephys.CuratedClustering (foreign key): CuratedClustering foreign key
+        event.AlignmentEvent (foreign key): AlignmentEvent foreign key
         trial_condition: varchar(128) # user-friendly name of condition
         condition_description ( varchar(1000), nullable): condition description
         bin_size (float, optional): Bin-size (in second) used to compute the PSTH
@@ -83,9 +84,9 @@ class SpikesAlignment(dj.Computed):
         """Spike activity aligned to the event time within the designated window
 
         Attributes:
-            SpikesAlignmentCondition.Trial (foreign key)
-            ephys.CuratedClustering.Unit  (foreign key)
-            SpikesAlignmentCondition.Trial (foreign key)
+            SpikesAlignmentCondition.Trial (foreign key): Trial foreign key
+            ephys.CuratedClustering.Unit (foreign key): Unit foreign key
+            SpikesAlignmentCondition.Trial (foreign key): Trial foreign key
             aligned_spike_times (longblob): (s) spike times relative to alignment event
         """
 
@@ -101,10 +102,10 @@ class SpikesAlignment(dj.Computed):
         """Event-aligned spike peristimulus time histogram (PSTH) by unit
 
         Attributes:
-            SpikesAlignment (foreign key)
-            ephys.CuratedClustering.Unit (foreign key)
+            SpikesAlignment (foreign key): SpikesAlignment foreign key
+            ephys.CuratedClustering.Unit (foreign key): Unit foreign key
             psth (longblob): event-aligned spike peristimulus time histogram (PSTH)
-            psth_edges (longblob)
+            psth_edges (longblob): set of PSTH edges
         """
 
         definition = """
@@ -112,7 +113,7 @@ class SpikesAlignment(dj.Computed):
         -> ephys.CuratedClustering.Unit
         ---
         psth: longblob  # event-aligned spike peristimulus time histogram (PSTH)
-        psth_edges: longblob  
+        psth_edges: longblob
         """
 
     def make(self, key: dict):

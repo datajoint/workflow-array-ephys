@@ -1,60 +1,8 @@
-from pynwb.ecephys import ElectricalSeries
 import datetime
 import time
 
-from element_interface.utils import find_root_directory, find_full_path
-
-from . import (
-    dj_config,
-    verbose,
-    QuietStdOut,
-    pipeline,
-    test_data,
-    lab_csv,
-    lab_project_csv,
-    lab_user_csv,
-    lab_publications_csv,
-    lab_keywords_csv,
-    lab_protocol_csv,
-    lab_project_users_csv,
-    ingest_lab,
-    subjects_csv,
-    ingest_subjects,
-    sessions_csv,
-    ingest_sessions,
-    testdata_paths,
-    ephys_insertionlocation,
-    kilosort_paramset,
-    ephys_recordings,
-    clustering_tasks,
-    clustering,
-    curations,
-)
-
-__all__ = [
-    "dj_config",
-    "pipeline",
-    "test_data",
-    "lab_csv",
-    "lab_project_csv",
-    "lab_user_csv",
-    "lab_publications_csv",
-    "lab_keywords_csv",
-    "lab_protocol_csv",
-    "lab_project_users_csv",
-    "ingest_lab",
-    "subjects_csv",
-    "ingest_subjects",
-    "sessions_csv",
-    "ingest_sessions",
-    "testdata_paths",
-    "ephys_insertionlocation",
-    "kilosort_paramset",
-    "ephys_recordings",
-    "clustering_tasks",
-    "clustering",
-    "curations",
-]
+from element_interface.utils import find_full_path, find_root_directory
+from pynwb.ecephys import ElectricalSeries
 
 from workflow_array_ephys.export import (
     ecephys_session_to_nwb,
@@ -63,22 +11,21 @@ from workflow_array_ephys.export import (
 )
 
 
-def test_session_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions):
-    session_kwargs = {
-        "session_key": {
-            "subject": "subject5",
-            "session_datetime": datetime.datetime(2018, 7, 3, 20, 32, 28),
-        },
-        "lab_key": {"lab": "LabA"},
-        "protocol_key": {"protocol": "ProtA"},
-        "project_key": {"project": "ProjA"},
-    }
+def test_session_to_nwb(setup, pipeline, ingest_data):
+    verbose_context, _ = setup
 
-    if verbose:
-        nwbfile = session_to_nwb(**session_kwargs)
-    else:
-        with QuietStdOut():
-            nwbfile = session_to_nwb(**session_kwargs)
+    with verbose_context:
+        nwbfile = session_to_nwb(
+            **{
+                "session_key": {
+                    "subject": "subject5",
+                    "session_datetime": datetime.datetime(2018, 7, 3, 20, 32, 28),
+                },
+                "lab_key": {"lab": "LabA"},
+                "protocol_key": {"protocol": "ProtA"},
+                "project_key": {"project": "ProjA"},
+            }
+        )
 
     assert nwbfile.session_id == "subject5_2018-07-03T20:32:28"
     assert nwbfile.session_description == "Successful data collection"
@@ -101,10 +48,9 @@ def test_session_to_nwb(pipeline, ingest_lab, ingest_subjects, ingest_sessions):
 
 
 def test_write_to_nwb(
+    setup,
     pipeline,
-    ingest_lab,
-    ingest_subjects,
-    ingest_sessions,
+    ingest_data,
     ephys_insertionlocation,
     kilosort_paramset,
     ephys_recordings,
@@ -112,6 +58,7 @@ def test_write_to_nwb(
     clustering,
     curations,
 ):
+    verbose_context, verbose = setup
     ephys = pipeline["ephys"]
 
     session_key = dict(subject="subject5", session_datetime="2018-07-03 20:32:28")
@@ -125,13 +72,11 @@ def test_write_to_nwb(
         "raw": True,
         "spikes": True,
         "lfp": "dj",
+        "end_frame": 250,
     }
 
-    if verbose:
+    with verbose_context:
         nwbfile = ecephys_session_to_nwb(**ecephys_kwargs)
-    else:
-        with QuietStdOut():
-            nwbfile = ecephys_session_to_nwb(**ecephys_kwargs)
 
     root_dirs = pipeline["get_ephys_root_data_dir"]()
     root_dir = find_root_directory(
@@ -146,10 +91,9 @@ def test_write_to_nwb(
 
 
 def test_convert_to_nwb(
+    setup,
     pipeline,
-    ingest_lab,
-    ingest_subjects,
-    ingest_sessions,
+    ingest_data,
     ephys_insertionlocation,
     kilosort_paramset,
     ephys_recordings,
@@ -157,6 +101,7 @@ def test_convert_to_nwb(
     clustering,
     curations,
 ):
+    verbose_context, verbose = setup
     ephys = pipeline["ephys"]
 
     session_key = dict(subject="subject5", session_datetime="2018-07-03 20:32:28")
@@ -166,18 +111,15 @@ def test_convert_to_nwb(
 
     ecephys_kwargs = {
         "session_key": session_key,
-        "end_frame": 1000,
+        "end_frame": 250,
         "spikes": True,
         "lab_key": {"lab": "LabA"},
         "protocol_key": {"protocol": "ProtA"},
         "project_key": {"project": "ProjA"},
     }
 
-    if verbose:
+    with verbose_context:
         nwbfile = ecephys_session_to_nwb(**ecephys_kwargs)
-    else:
-        with QuietStdOut():
-            nwbfile = ecephys_session_to_nwb(**ecephys_kwargs)
 
     for x in ("262716621", "714000838"):
         assert x in nwbfile.devices

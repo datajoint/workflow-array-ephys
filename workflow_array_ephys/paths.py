@@ -1,5 +1,6 @@
-import datajoint as dj
 import pathlib
+
+import datajoint as dj
 from element_interface.utils import find_full_path
 
 
