@@ -1,6 +1,6 @@
 datajoint>=0.13.0
 element-animal>=0.1.0b0
-element-array-ephys>=0.2.2
+element-array-ephys @ git+https://github.com/datajoint/element-array-ephys.git
 element-electrode-localization
 element-event
 element-interface>=0.5.0

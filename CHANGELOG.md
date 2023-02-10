@@ -7,6 +7,7 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 
 + Update - Revise pytest and docker structure to streamline testing
 + Add - pre-commit, markdown lint, and spell check config files
++ Bugfix - `element-array-ephys` version error when installing via requirements.txt
 
 ## [0.2.6] - 2022-01-12
 
