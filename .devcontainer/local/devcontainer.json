@@ -12,8 +12,6 @@
 	"features": {
 		"ghcr.io/devcontainers/features/docker-in-docker:2": {},
 		"ghcr.io/devcontainers/features/git:1": {},
-		"ghcr.io/eitsupi/devcontainer-features/jq-likes:1": {},
-		"ghcr.io/guiyomh/features/vim:0": {}
 	},
 	"onCreateCommand": "pip install -e .",
 	"postStartCommand": "docker volume prune -f && MYSQL_VER=8.0 docker compose down && MYSQL_VER=8.0 docker compose up --build --wait",
