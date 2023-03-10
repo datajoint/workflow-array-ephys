@@ -1,6 +1,6 @@
 datajoint>=0.13.0
 element-animal>=0.1.5
-element-array-ephys>=0.2.3
+element-array-ephys>=0.2.4
 element-electrode-localization>=0.1.2
 element-event>=0.1.2
 element-interface>=0.5.0
