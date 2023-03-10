@@ -5,7 +5,7 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 
 ## [0.3.0] - 2023-03-09
 
-+ Add - Demo capabilities using GitHub Codespaces
++ Add - Demo notebooks and capabilities using GitHub Codespaces
 + Add - pre-commit, markdown lint, and spell check config files
 + Update - Revise pytest and docker structure to streamline testing
 + Fix - `element-array-ephys` version error when installing via requirements.txt
