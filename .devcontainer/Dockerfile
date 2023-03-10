@@ -18,6 +18,5 @@ ENV DJ_USER root
 ENV DJ_PASS simple
 
 ENV DJ_PUBLIC_S3_MOUNT_PATH /workspaces/workflow-array-ephys/example_data
-ENV RAW_ROOT_DATA_DIR /workspaces/workflow-array-ephys/example_data/raw
-ENV PROCESSED_ROOT_DATA_DIR /workspaces/workflow-array-ephys/example_data/processed
+ENV EPHYS_ROOT_DATA_DIR /workspaces/workflow-array-ephys/example_data
 ENV DATABASE_PREFIX neuro_
