@@ -13,6 +13,10 @@ dj.config['custom']['database.prefix'] = os.getenv(
 
 dj.config['custom']['ephys_root_data_dir'] = os.getenv(
     'RAW_ROOT_DATA_DIR',
-    dj.config['custom'].get('ephys_root_data_dir', ''))
+    dj.config['custom'].get('raw_root_data_dir', ''))
+
+dj.config['custom']['ephys_processed_data_dir'] = os.getenv(
+    'PROCESSED_ROOT_DATA_DIR',
+    dj.config['custom'].get('processed_root_data_dir', ''))
 
 db_prefix = dj.config["custom"].get("database.prefix", "")
