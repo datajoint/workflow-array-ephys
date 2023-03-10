@@ -14,16 +14,6 @@ def get_ephys_root_data_dir():
     return pathlib.Path(data_dir) if data_dir else None
 
 
-def get_processed_root_data_dir():
-    """Return root directory for all processed data from 'ephys_processed_data_dir' in dj.config
-
-    Returns:
-        path (posixpath): Absolute path if available or None
-    """
-    data_dir = dj.config.get("custom", {}).get("ephys_processed_data_dir", None)
-    return pathlib.Path(data_dir) if data_dir else None
-
-
 def get_session_directory(session_key: dict) -> str:
     """Return relative path from SessionDirectory table given key
 
