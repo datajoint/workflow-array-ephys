@@ -1,113 +1,45 @@
 # DataJoint Workflow - Array Electrophysiology
 
-Workflow for extracellular array electrophysiology data acquired with a polytrode probe
+DataJoint Workflow for extracellular array electrophysiology combines multiple DataJoint Elements to process data acquired with a polytrode probe
 (e.g. [Neuropixels](https://www.neuropixels.org), Neuralynx) using the
 [SpikeGLX](https://github.com/billkarsh/SpikeGLX) or
 [OpenEphys](https://open-ephys.org/gui) acquisition software and processed with
 [MATLAB-based Kilosort](https://github.com/MouseLand/Kilosort) or [python-based
-Kilosort](https://github.com/MouseLand/pykilosort) spike sorting software.
+Kilosort](https://github.com/MouseLand/pykilosort) spike sorting software. DataJoint Elements collectively standardize and automate data collection and analysis for neuroscience experiments. Each Element is a modular pipeline for data storage and processing with corresponding database tables that can be combined with other Elements to assemble a fully functional pipeline.
 
-A complete electrophysiology workflow can be built using the DataJoint Elements.
+To get started, see below for an [interactive tutorial](#interactive-tutorial) on GitHub Codespaces.  More information can be found at the
+[Element documentation page](https://datajoint.com/docs/elements/element-array-ephys).
 
-+ [element-lab](https://github.com/datajoint/element-lab)
-+ [element-animal](https://github.com/datajoint/element-animal)
-+ [element-session](https://github.com/datajoint/element-session)
-+ [element-array-ephys](https://github.com/datajoint/element-array-ephys)
+## Experiment flowchart
 
-This repository provides demonstrations for:
+![flowchart](https://raw.githubusercontent.com/datajoint/element-array-ephys/main/images/diagram_flowchart.svg)
 
-1. Set up a workflow using DataJoint Elements (see
-   [workflow_array_ephys/pipeline.py](workflow_array_ephys/pipeline.py))
+## Data pipeline for acute experiment
 
-2. Ingestion of data/metadata based on a predefined file structure, file naming
-   convention, and directory lookup methods (see
-   [workflow_array_ephys/paths.py](workflow_array_ephys/paths.py)).
+![datajoint](https://raw.githubusercontent.com/datajoint/workflow-array-ephys/main/images/attached_array_ephys_element.svg)
 
-3. Ingestion of clustering results.
+## Interactive tutorial
 
-4. Export of `no_curation` schema to NWB and DANDI (see
-   [notebooks/09-NWB-export.ipynb](notebooks/09-NWB-export.ipynb)).
+The easiest way to learn about DataJoint Elements is to use the tutorial notebook within a [GitHub Codespace](https://docs.github.com/en/codespaces/overview). Please follow the steps below for the best experience:
 
-See the [Element Array Electrophysiology documentation](https://elements.datajoint.org/description/array_ephys/)
-for the background information and development timeline.
+1. Fork this repository to your GitHub account.
 
-For more information on the DataJoint Elements project, please visit
-<https://elements.datajoint.org>. This work is supported by the National Institutes of
-Health.
+2. Select the green `Code` button.
 
-## Workflow architecture
+3. Within the dropdown menu, select the `Codespaces` tab.
 
-The electrophysiology workflow presented here uses components from 4 DataJoint Elements
-([element-lab](https://github.com/datajoint/element-lab),
-[element-animal](https://github.com/datajoint/element-animal),
-[element-session](https://github.com/datajoint/element-session),
-[element-array-ephys](https://github.com/datajoint/element-array-ephys)) assembled
-together to form a fully functional workflow. Note that element-array-ephys offers three
-schema options, selected via the DataJoint config file, with
-`dj.config['custom']['ephys_mode']`
+4. Select the green `Create codespace on main` button.
 
-+ `acute` probe insertion, with curated clustering
-+ `chronic` probe insertion, with curated clustering
-+ `no-curation`, acute probe insertion with kilosort triggered clustering and supported
-  NWB export
-+ `precluster`, acute probe insertion with pre-processing steps prior to clustering and
-  curated clustering
+5. The environment is ready when a Visual Studio Code window is rendered within your browser.  This takes ~5 minutes the first time being launched, and ~1 minute if you revisit this Codespace.
 
-![Ephys Diagram](https://raw.githubusercontent.com/datajoint/workflow-array-ephys/main/images/attached_array_ephys_element.svg)
+6. Navigate to the `notebooks` directory on the left panel and open the `tutorial.ipynb` Jupyter notebook. Execute the cells in this notebook to begin your walk through the tutorial.
 
-Optionally, this can be used in conjunction with
-[element-event](https://github.com/datajoint/element-event)
-and [element-electrode-localization](https://github.com/datajoint/element-electrode-localization/).
+7. Once you are done, GitHub will automatically stop the Codespace after 30 minutes of inactivity or you can manually stop the Codespace.
 
-![Diagram with trial schema](https://raw.githubusercontent.com/datajoint/workflow-array-ephys/main/images/attached_trial_analysis.svg)
+8. After stopping the Codespace, we recommend deleting the Codespace to save on storage costs, which are free for the first 15 GB-month.
 
-![Diagram with localization schema](https://raw.githubusercontent.com/datajoint/workflow-array-ephys/main/images/attached_electrode_localization.svg)
++ If you are new to GitHub and run into any errors, please contact us via email at support@datajoint.com. If you are experienced with GitHub, please create an issue on the upstream repository or issue a pull request with a thorough explanantion of the error and proposed solution.
 
-## Installation instructions
+**Please Note:**
 
-The installation instructions can be found at the
-[DataJoint Elements documentation](https://elements.datajoint.org/usage/install/).
-
-## Interacting with the DataJoint workflow
-
-Please refer to the workflow-specific
-[Jupyter notebooks](/notebooks)
-for an in-depth explanation of how to ...
-
-1. Run the workflow ([03-process.ipynb](notebooks/03-process.ipynb)).
-
-2. Explore the data ([05-explore.ipynb](notebooks/05-explore.ipynb)).
-
-3. Examine trialized analyses, and establish downstream analyses
-   ([07-downstream-analysis.ipynb](notebooks/07-downstream-analysis.ipynb))
-
-4. Locate probes within the
-   [Common Coordinate Framework](https://www.sciencedirect.com/science/article/pii/S0092867420304025)
-   ([08-electrode-localization.ipynb](notebooks/08-electrode-localization.ipynb))
-
-5. Export to NWB and DANDI ([09-NWB-export.ipynb](notebooks/09-NWB-export.ipynb))
-
-See our YouTube tutorial for a walkthrough of the schemas and functions:
-  [![YouTube tutorial](https://img.youtube.com/vi/KQlGYOBq7ow/0.jpg)](https://www.youtube.com/watch?v=KQlGYOBq7ow)
-
-## Citation
-
-If your work uses DataJoint and DataJoint Elements, please cite the respective Research
-Resource Identifiers (RRIDs) and manuscripts.
-
-+ DataJoint for Python or MATLAB
-  + Yatsenko D, Reimer J, Ecker AS, Walker EY, Sinz F, Berens P, Hoenselaar A, Cotton
-    RJ, Siapas AS, Tolias AS. DataJoint: managing big scientific data using MATLAB or
-    Python. bioRxiv. 2015 Jan 1:031658. doi: <https://doi.org/10.1101/031658>
-
-  + DataJoint ([RRID:SCR_014543](https://scicrunch.org/resolver/SCR_014543)) - DataJoint
-    for `<Select Python or MATLAB>` (version `<Enter version number>`)
-
-+ DataJoint Elements
-  + Yatsenko D, Nguyen T, Shen S, Gunalan K, Turner CA, Guzman R, Sasaki M, Sitonic D,
-    Reimer J, Walker EY, Tolias AS. DataJoint Elements: Data Workflows for
-    Neurophysiology. bioRxiv. 2021 Jan 1. doi:
-    <https://doi.org/10.1101/2021.03.30.437358>
-
-  + DataJoint Elements ([RRID:SCR_021894](https://scicrunch.org/resolver/SCR_021894)) -
-    Element Array Electrophysiology (version `<Enter version number>`)
++ GitHub Codespaces are limited to 120 core-hours per month and 15 GB-month for free users. Once you exceed this limit, you will have to wait for the hours to reset or pay to use Codespaces.

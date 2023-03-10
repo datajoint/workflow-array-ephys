@@ -14,6 +14,7 @@ from . import analysis
 from .paths import (
     get_electrode_localization_dir,
     get_ephys_root_data_dir,
+    get_processed_root_data_dir,
     get_session_directory,
 )
 

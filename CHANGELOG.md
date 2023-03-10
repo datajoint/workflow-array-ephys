@@ -3,11 +3,12 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
-## [0.2.7] - Unreleased
+## [0.3.0] - 2023-03-09
 
-+ Update - Revise pytest and docker structure to streamline testing
++ Add - Demo notebooks and capabilities using GitHub Codespaces
 + Add - pre-commit, markdown lint, and spell check config files
-+ Bugfix - `element-array-ephys` version error when installing via requirements.txt
++ Update - Revise pytest and docker structure to streamline testing
++ Fix - `element-array-ephys` version error when installing via requirements.txt
 
 ## [0.2.6] - 2022-01-12
 

@@ -1,8 +1,7 @@
 import pathlib
 
 import datajoint as dj
-from element_interface.utils import find_full_path
-
+import element_interface
 
 def get_ephys_root_data_dir():
     """Return root directory for ephys from 'ephys_root_data_dir' in dj.config
@@ -10,7 +9,19 @@ def get_ephys_root_data_dir():
     Returns:
         path (any): List of path(s) if available or None
     """
-    return dj.config.get("custom", {}).get("ephys_root_data_dir", None)
+
+    data_dir = dj.config.get("custom", {}).get("ephys_root_data_dir", None)
+    return pathlib.Path(data_dir) if data_dir else None
+
+
+def get_processed_root_data_dir():
+    """Return root directory for all processed data from 'ephys_processed_data_dir' in dj.config
+
+    Returns:
+        path (posixpath): Absolute path if available or None
+    """
+    data_dir = dj.config.get("custom", {}).get("ephys_processed_data_dir", None)
+    return pathlib.Path(data_dir) if data_dir else None
 
 
 def get_session_directory(session_key: dict) -> str:
@@ -24,8 +35,7 @@ def get_session_directory(session_key: dict) -> str:
     """
     from .pipeline import session
 
-    session_dir = (session.SessionDirectory & session_key).fetch1("session_dir")
-    return session_dir
+    return (session.SessionDirectory & session_key).fetch1("session_dir")
 
 
 def get_electrode_localization_dir(probe_insertion_key: dict) -> str:
@@ -49,13 +59,15 @@ def get_electrode_localization_dir(probe_insertion_key: dict) -> str:
                 & 'file_path LIKE "%.ap.meta"'
             ).fetch1("file_path")
         )
-        probe_dir = find_full_path(
+        probe_dir = element_interface.utils.find_full_path(
             get_ephys_root_data_dir(), spikeglx_meta_filepath.parent
         )
     elif acq_software == "Open Ephys":
         probe_path = (ephys.EphysRecording.EphysFile & probe_insertion_key).fetch1(
             "file_path"
         )
-        probe_dir = find_full_path(get_ephys_root_data_dir(), probe_path)
+        probe_dir = element_interface.utils.find_full_path(
+            get_ephys_root_data_dir(), probe_path
+        )
 
     return probe_dir

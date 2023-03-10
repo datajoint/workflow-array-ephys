@@ -108,3 +108,5 @@ docker-compose.yml
 
 # temporary figures
 temp_ephys_figures/
+
+example_data
