@@ -38,7 +38,7 @@ The easiest way to learn about DataJoint Elements is to use the tutorial noteboo
 
 8. After stopping the Codespace, we recommend deleting the Codespace to save on storage costs, which are free for the first 15 GB-month.
 
-+ If you are new to GitHub and run into any errors, please contact us via email at support@datajoint.com. If you are experienced with GitHub, please create an issue on the upstream repository or issue a pull request with a thorough explanantion of the error and proposed solution.
++ If you are new to GitHub and run into any errors, please contact us via email at support@datajoint.com. If you are experienced with GitHub, please create an issue on the upstream repository or issue a pull request with a thorough explanation of the error and proposed solution.
 
 **Please Note:**
 
