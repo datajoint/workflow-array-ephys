@@ -3,6 +3,10 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
+## [0.4.0] - 2023-03-20
+
++ Add - 60 minute tutorial notebook using GitHub Codespaces
+
 ## [0.3.0] - 2023-03-09
 
 + Add - Demo notebooks and capabilities using GitHub Codespaces
@@ -81,6 +85,8 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 
 + Add - Version
 
+[0.4.0]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.4.0
+[0.3.0]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.3.0
 [0.2.7]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.7
 [0.2.6]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.6
 [0.2.5]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.5
