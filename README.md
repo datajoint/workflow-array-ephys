@@ -42,4 +42,4 @@ The easiest way to learn about DataJoint Elements is to use the tutorial noteboo
 
 **Please Note:**
 
-+ GitHub Codespaces are limited to 120 core-hours per month and 15 GB-month for free users. Once you exceed this limit, you will have to wait for the hours to reset or pay to use Codespaces.
++ GitHub Codespaces are limited to 120 core-hours per month and 15 GB-month for free users. Once you exceed this limit, you will have to wait for the usage quota to reset or pay to use Codespaces.
