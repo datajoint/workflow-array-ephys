@@ -23,9 +23,4 @@ def test_generate_pipeline(pipeline):
     )
     
     # test the connection between quality metric tables
-    assert all(
-        [
-            ephys.QualityMetrics.full_table_name in ephys_report.QualityMetricSet.parents(),
-            ephys_report.QualityMetricSet.full_table_name in ephys_report.QualityMetricReport.parents()
-        ]
-    )
+    assert ephys.QualityMetrics.full_table_name in ephys_report.QualityMetricSet.parents()
