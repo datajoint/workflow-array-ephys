@@ -329,6 +329,18 @@ def test_build_electrode_layouts(pipeline):
         ), f"probe type '{probe_type}' electrode layout does not match"
 
 
+def test_qc_metrics_populate(pipeline):
+    """
+    Populate ephys.QualityMetrics with metrics.csv
+    """
+    
+    ephys = pipeline["ephys"]
+    key = {"subject": "subject5", "insertion_number": 2}  # used for notebook demo
+    ephys.QualityMetrics.populate(key)
+
+    assert len(ephys.QualityMetrics.Waveform & key) == len(ephys.QualityMetrics.Cluster & key) == 336
+
+
 # ---- HELPER FUNCTIONS ----
 
 
