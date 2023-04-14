@@ -329,7 +329,7 @@ def test_build_electrode_layouts(pipeline):
         ), f"probe type '{probe_type}' electrode layout does not match"
 
 
-def test_qc_metrics_populate(pipeline):
+def test_quality_metrics_populate(pipeline):
     """
     Populate ephys.QualityMetrics with metrics.csv
     """
