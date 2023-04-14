@@ -21,3 +21,6 @@ def test_generate_pipeline(pipeline):
             in ephys_report.UnitLevelReport.parents(),
         ]
     )
+    
+    # test the connection between quality metric tables
+    assert ephys.QualityMetrics.full_table_name in ephys_report.QualityMetricSet.parents()
