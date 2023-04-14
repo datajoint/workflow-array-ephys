@@ -338,7 +338,8 @@ def test_quality_metrics_populate(pipeline):
     key = {"subject": "subject5", "insertion_number": 2}  # used for notebook demo
     ephys.QualityMetrics.populate(key)
 
-    assert len(ephys.QualityMetrics.Waveform & key) == len(ephys.QualityMetrics.Cluster & key) == 336
+    assert len(ephys.QualityMetrics.Waveform & key) == 336
+    assert len(ephys.QualityMetrics.Cluster & key) == 336
 
 
 # ---- HELPER FUNCTIONS ----
