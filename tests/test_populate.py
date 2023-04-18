@@ -333,7 +333,6 @@ def test_quality_metrics_populate(pipeline):
     """
     Populate ephys.QualityMetrics with metrics.csv
     """
-    key = {"subject": "subject5", "insertion_number": 1}
     ephys = pipeline["ephys"]
     key = {"subject": "subject5", "insertion_number": 1}  # used for notebook demo
     ephys.QualityMetrics.populate(key)
