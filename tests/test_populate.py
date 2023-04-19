@@ -314,7 +314,6 @@ def test_build_electrode_layouts(pipeline):
     probe = pipeline["probe"]
 
     for probe_type, config in probe_configs.items():
-
         test_df = pd.DataFrame(probe.build_electrode_layouts(probe_type, **config))
 
         test_arr = np.array(test_df.drop(columns=["probe_type"]), dtype=np.int16)
@@ -331,14 +330,36 @@ def test_build_electrode_layouts(pipeline):
 
 def test_quality_metrics_populate(pipeline):
     """
-    Populate ephys.QualityMetrics with metrics.csv
+    Populate ephys.QualityMetrics and compare values with ground truth metrics.csv
     """
     ephys = pipeline["ephys"]
     key = {"subject": "subject5", "insertion_number": 1}  # used for notebook demo
     ephys.QualityMetrics.populate(key)
 
-    assert len(ephys.QualityMetrics.Waveform & key) == 227
-    assert len(ephys.QualityMetrics.Cluster & key) == 227
+    # Fetch from populated table. This will be compared with the ground truth metrics.csv
+    cluster_df = (ephys.QualityMetrics.Cluster & key).fetch(
+        format="frame", order_by="unit"
+    )
+    waveform_df = (ephys.QualityMetrics.Waveform & key).fetch(
+        format="frame", order_by="unit"
+    )
+    test_df = pd.concat([cluster_df, waveform_df], axis=1).reset_index()
+
+    metrics_df = pd.read_csv("user_data/metrics.csv")  # ground truth metrics.csv
+
+    for col_name in metrics_df:
+        if "cluster_id" in col_name or "epoch_name" in col_name:
+            continue
+        try:
+            assert np.allclose(
+                metrics_df[col_name].values,
+                test_df[col_name].values,
+                rtol=1e-03,
+                atol=1e-03,
+                equal_nan=True,
+            ), f"values in '{col_name}' do not match!"
+        except KeyError as e:
+            raise KeyError(f"Attribute {e} does not exist in ephys.QualityMetrics")
 
 
 # ---- HELPER FUNCTIONS ----
