@@ -345,7 +345,7 @@ def test_quality_metrics_populate(pipeline):
     )
     test_df = pd.concat([cluster_df, waveform_df], axis=1).reset_index()
 
-    metrics_df = pd.read_csv("user_data/metrics.csv")  # ground truth metrics.csv
+    metrics_df = pd.read_csv("/workspaces/workflow-array-ephys/example_data/processed")  # ground truth metrics.csv
 
     for col_name in metrics_df:
         if "cluster_id" in col_name or "epoch_name" in col_name:
