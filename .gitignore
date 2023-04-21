@@ -110,3 +110,4 @@ docker-compose.yml
 temp_ephys_figures/
 
 example_data
+*.code-workspace

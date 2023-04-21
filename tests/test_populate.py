@@ -314,7 +314,6 @@ def test_build_electrode_layouts(pipeline):
     probe = pipeline["probe"]
 
     for probe_type, config in probe_configs.items():
-
         test_df = pd.DataFrame(probe.build_electrode_layouts(probe_type, **config))
 
         test_arr = np.array(test_df.drop(columns=["probe_type"]), dtype=np.int16)
@@ -331,14 +330,51 @@ def test_build_electrode_layouts(pipeline):
 
 def test_quality_metrics_populate(pipeline):
     """
-    Populate ephys.QualityMetrics with metrics.csv
+    Populate the ephys.QualityMetrics table and compare values with the `metrics.csv` file.
+    Run the `demo_prepare.ipynb` notebook, prior to running this test.
     """
-    
     ephys = pipeline["ephys"]
-    key = {"subject": "subject5", "insertion_number": 2}  # used for notebook demo
+    key = {"subject": "subject5", "insertion_number": 1}
     ephys.QualityMetrics.populate(key)
 
-    assert len(ephys.QualityMetrics.Waveform & key) == len(ephys.QualityMetrics.Cluster & key) == 336
+    rename_dict = {
+        "isi_viol": "isi_violation",
+        "num_viol": "number_violation",
+        "contam_rate": "contamination_rate",
+    }
+
+    cluster_df = (ephys.QualityMetrics.Cluster & key).fetch(
+        format="frame", order_by="unit"
+    )
+    waveform_df = (ephys.QualityMetrics.Waveform & key).fetch(
+        format="frame", order_by="unit"
+    )
+    test_df = pd.concat([cluster_df, waveform_df], axis=1).reset_index()
+
+    metrics_df = pd.read_csv(
+        "/workspaces/workflow-array-ephys/example_data/processed/subject5/session1/probe_1/kilosort2-5_1/metrics.csv"
+    )
+    metrics_df.rename(columns=rename_dict, inplace=True)
+    metrics_df.columns = metrics_df.columns.str.lower()
+
+    for col_name in metrics_df:
+        if (
+            "cluster_id" in col_name
+            or "epoch_name" in col_name
+            or "peak_channel" in col_name
+        ):
+            continue
+
+        try:
+            assert np.allclose(
+                metrics_df[col_name].values.astype(float),
+                test_df[col_name].values.astype(float),
+                rtol=1e-03,
+                atol=1e-03,
+                equal_nan=True,
+            ), f"values in '{col_name}' do not match!"
+        except KeyError as e:
+            raise KeyError(f"Attribute {e} does not exist in ephys.QualityMetrics")
 
 
 # ---- HELPER FUNCTIONS ----
