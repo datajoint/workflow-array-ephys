@@ -336,8 +336,8 @@ def ingest_data(setup, pipeline, test_data):
 def testdata_paths():
     """Paths for test data 'subjectX/sessionY/probeZ/etc'"""
     return {
-        "npx3A-p1-ks": "subject5/session1/probe_1/ks2.1_01",
-        "npx3A-p2-ks": "subject5/session1/probe_2/ks2.1_01",
+        "npx3A-p1-ks": "subject5/session1/probe_1/kilosort2-5_1",
+        "npx3A-p2-ks": "subject5/session1/probe_2/kilosort2-5_1",
         "oe_npx3B-ks": "subject4/experiment1/recording1/continuous/"
         + "Neuropix-PXI-100.0/ks",
         "sglx_npx3A-p1": "subject5/session1/probe_1",
