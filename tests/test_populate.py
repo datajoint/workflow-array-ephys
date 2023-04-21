@@ -336,8 +336,6 @@ def test_quality_metrics_populate(pipeline):
     key = {"subject": "subject5", "insertion_number": 1}  # used for notebook demo
     ephys.QualityMetrics.populate(key)
 
-    # Fetch from populated table. This will be compared with metrics.csv
-
     rename_dict = {
         "isi_viol": "isi_violation",
         "num_viol": "number_violation",
