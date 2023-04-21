@@ -330,7 +330,8 @@ def test_build_electrode_layouts(pipeline):
 
 def test_quality_metrics_populate(pipeline):
     """
-    Populate ephys.QualityMetrics and compare values with metrics.csv
+    Populate the ephys.QualityMetrics table and compare values with the `metrics.csv` file.
+    Run the `demo_prepare.ipynb` notebook, prior to running this test.
     """
     ephys = pipeline["ephys"]
     key = {"subject": "subject5", "insertion_number": 1}  # used for notebook demo
