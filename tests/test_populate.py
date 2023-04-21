@@ -330,7 +330,7 @@ def test_build_electrode_layouts(pipeline):
 
 def test_quality_metrics_populate(pipeline):
     """
-    Populate ephys.QualityMetrics and compare values with ground truth metrics.csv
+    Populate ephys.QualityMetrics and compare values with metrics.csv
     """
     ephys = pipeline["ephys"]
     key = {"subject": "subject5", "insertion_number": 1}  # used for notebook demo
