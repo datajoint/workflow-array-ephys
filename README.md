@@ -33,7 +33,7 @@ Here are some options that provide a great experience:
   - *Tip*: Each month, GitHub renews a [free-tier](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces#monthly-included-storage-and-core-hours-for-personal-accounts) quota of compute and storage. Typically we run into the storage limits before anything else since Codespaces consume storage while stopped. It is best to delete Codespaces when not actively in use and recreate when needed. We'll soon be creating prebuilds to avoid larger build times. Once any portion of your quota is reached, you will need to wait for it to be reset at the end of your cycle or add billing info to your GitHub account to handle overages.
   - *Tip*: GitHub auto names the codespace but you can rename the codespace so that it is easier to identify later.
 - Local Development Environment:
-  - Note: On Windows, running the tutorial notebook with the example data in a Dev Container is not currently possible due to an s3fs mounting issue.  Please use GitHub Codespaces in the browser.
+  - Note: On Windows, running the tutorial notebook with the example data in a Dev Container is not currently possible due to a s3fs mounting issue.  Please use the `Cloud-based Development Environment` option above.
   - Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
   - Install [Docker](https://docs.docker.com/get-docker/)
   - Install [VSCode](https://code.visualstudio.com/)
