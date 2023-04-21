@@ -334,7 +334,7 @@ def test_quality_metrics_populate(pipeline):
     Run the `demo_prepare.ipynb` notebook, prior to running this test.
     """
     ephys = pipeline["ephys"]
-    key = {"subject": "subject5", "insertion_number": 1}  # used for notebook demo
+    key = {"subject": "subject5", "insertion_number": 1}
     ephys.QualityMetrics.populate(key)
 
     rename_dict = {
