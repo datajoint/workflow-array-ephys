@@ -336,7 +336,14 @@ def test_quality_metrics_populate(pipeline):
     key = {"subject": "subject5", "insertion_number": 1}  # used for notebook demo
     ephys.QualityMetrics.populate(key)
 
-    # Fetch from populated table. This will be compared with the ground truth metrics.csv
+    # Fetch from populated table. This will be compared with metrics.csv
+
+    rename_dict = {
+        "isi_viol": "isi_violation",
+        "num_viol": "number_violation",
+        "contam_rate": "contamination_rate",
+    }
+
     cluster_df = (ephys.QualityMetrics.Cluster & key).fetch(
         format="frame", order_by="unit"
     )
@@ -345,15 +352,24 @@ def test_quality_metrics_populate(pipeline):
     )
     test_df = pd.concat([cluster_df, waveform_df], axis=1).reset_index()
 
-    metrics_df = pd.read_csv("/workspaces/workflow-array-ephys/example_data/processed")  # ground truth metrics.csv
+    metrics_df = pd.read_csv(
+        "/workspaces/workflow-array-ephys/example_data/processed/subject5/session1/probe_1/kilosort2-5_1/metrics.csv"
+    )
+    metrics_df.rename(columns=rename_dict, inplace=True)
+    metrics_df.columns = metrics_df.columns.str.lower()
 
     for col_name in metrics_df:
-        if "cluster_id" in col_name or "epoch_name" in col_name:
+        if (
+            "cluster_id" in col_name
+            or "epoch_name" in col_name
+            or "peak_channel" in col_name
+        ):
             continue
+
         try:
             assert np.allclose(
-                metrics_df[col_name].values,
-                test_df[col_name].values,
+                metrics_df[col_name].values.astype(float),
+                test_df[col_name].values.astype(float),
                 rtol=1e-03,
                 atol=1e-03,
                 equal_nan=True,
