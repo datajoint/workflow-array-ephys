@@ -25,11 +25,14 @@ RUN \
     # dircolors -b >> /home/vscode/.bashrc && \  # somehow fix colors
     apt-get clean
 COPY ./requirements.txt /tmp/
+COPY ./requirements_dev.txt /tmp/
 RUN \
     # workflow dependencies
     apt-get install gcc ffmpeg libsm6 libxext6 -y && \
     pip install --no-cache-dir -r /tmp/requirements.txt && \
+    pip install --no-cache-dir -r /tmp/requirements_dev.txt && \
     rm /tmp/requirements.txt && \
+    rm /tmp/requirements_dev.txt && \
     apt-get clean
 
 ENV DJ_HOST fakeservices.datajoint.io
