@@ -3,6 +3,12 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
+## [0.3.2] - 2023-04-14
+
++ Add - `quality_metrics.ipynb` for visualizing quality metrics.
++ Add - Documentation for attributes in `ephys.QualityMetrics.Waveform`.
++ Update - pytest for `ephys.QualityMetrics.populate`.
+
 ## [0.3.1] - 2023-04-12
 
 + Add - pytest for new `QCmetric` tables.
@@ -87,6 +93,7 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 
 + Add - Version
 
+[0.3.2]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.3.2
 [0.3.1]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.3.1
 [0.3.0]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.3.0
 [0.2.6]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.2.6
