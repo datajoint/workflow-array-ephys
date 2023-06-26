@@ -1,3 +1,5 @@
+> ⚠️ This repository is no longer maintained. The notebooks, environment, and tests in this repository have been integrated within [datajoint/element-array-ephys](https://github.com/datajoint/element-array-ephys).
+
 # DataJoint Workflow - Array Electrophysiology
 
 DataJoint Workflow for extracellular array electrophysiology combines multiple DataJoint Elements to process data acquired with a polytrode probe
