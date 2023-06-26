@@ -12,21 +12,21 @@ Kilosort](https://github.com/MouseLand/pykilosort) spike sorting software. DataJ
 To get started, see below for an [interactive tutorial](#interactive-tutorial) on GitHub Codespaces.  More information can be found at the
 [Element documentation page](https://datajoint.com/docs/elements/element-array-ephys).
 
-## Experiment Flowchart
+## Experiment flowchart
 
 ![flowchart](https://raw.githubusercontent.com/datajoint/element-array-ephys/main/images/diagram_flowchart.svg)
 
-## Data Pipeline for Acute Experiment
+## Data pipeline for acute experiment
 
 ![datajoint](https://raw.githubusercontent.com/datajoint/workflow-array-ephys/main/images/attached_array_ephys_element.svg)
 
-## Interactive Tutorial on GitHub Codespaces
+## Interactive Tutorial
 
 The easiest way to learn about DataJoint Elements is to use the tutorial notebooks within the included interactive environment configured using [DevContainer](https://containers.dev/).
 
 ### Launch Environment
 
-- Launch using [GitHub Codespaces](https://github.com/features/codespaces) using the `+` option which will `Create codespace on main` in the codebase repository on your fork with default options. For more control, see the `...` where you may create `New with options...`.
+Here are some options that provide a great experience:
 
 - Cloud-based Development Environment: (*recommended*)
   - Launch using [GitHub Codespaces](https://github.com/features/codespaces) using the `+` option which will `Create codespace on main` in the codebase repository on your fork with default options. For more control, see the `...` where you may create `New with options...`.
@@ -43,13 +43,7 @@ The easiest way to learn about DataJoint Elements is to use the tutorial noteboo
   - `git clone` the codebase repository and open it in VSCode
   - Use the `Dev Containers extension` to `Reopen in Container` (More info in the `Getting started` included with the extension)
 
-- Start time for a codespace is **~30s**. This will pull the built codespace from cache when you need it.
-
-- You will know your environment has finished loading once you either see a terminal open related to `Running postStartCommand` with a final message: `Done` or the `README.md` is opened in `Preview`.
-
-- *Tip*: Each month, GitHub renews a [free-tier](https://docs.github.com/en/billing/managing-billing-for-github-codespaces/about-billing-for-github-codespaces#monthly-included-storage-and-core-hours-for-personal-accounts) quota of compute and storage. Typically we run into the storage limits before anything else since Codespaces consume storage while stopped. It is best to delete Codespaces when not actively in use and recreate when needed. We'll soon be creating prebuilds to avoid larger build times. Once any portion of your quota is reached, you will need to wait for it to be reset at the end of your cycle or add billing info to your GitHub account to handle overages.
-
-- *Tip*: GitHub auto names the codespace but you can rename the codespace so that it is easier to identify later.
+You will know your environment has finished loading once you either see a terminal open related to `Running postStartCommand` with a final message: `Done` or the `README.md` is opened in `Preview`.
 
 ### Instructions
 
@@ -57,4 +51,4 @@ The easiest way to learn about DataJoint Elements is to use the tutorial noteboo
 
 1. Once you are done, see the options available to you in the menu in the bottom-left corner. For example, in Codespace you will have an option to `Stop Current Codespace` but when running DevContainer on your own machine the equivalent option is `Reopen folder locally`. By default, GitHub will also automatically stop the Codespace after 30 minutes of inactivity.
 
-+ If you are new to GitHub and run into any errors, please contact us via email at support@datajoint.com. If you are experienced with GitHub, please create an issue on the upstream repository or issue a pull request with a thorough explanation of the error and proposed solution.
+If you are new to GitHub and run into any errors, please contact us via email at support@datajoint.com. If you are experienced with GitHub, please create an issue on the upstream repository or if you'd like help contribute, feel free to create a pull request. Please include a thorough explanantion of the error and/or proposed solution.
