@@ -6,6 +6,8 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 ## [0.3.3] - 2023-06-29
 
 + Add - Docker image ID
++ Update - `element-array-ephys` version
++ Update - Tutorial notebook to work around bug
 
 ## [0.3.2] - 2023-04-14
 
