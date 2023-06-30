@@ -3,6 +3,13 @@
 Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) convention.
 
+## [0.3.3] - 2023-06-29
+
++ Add - Docker image ID
++ Add - VS Code extensions
++ Update - `element-array-ephys` version
++ Update - Tutorial notebook to work around bug
+
 ## [0.3.2] - 2023-04-14
 
 + Add - `quality_metrics.ipynb` for visualizing quality metrics.
@@ -93,6 +100,7 @@ Observes [Semantic Versioning](https://semver.org/spec/v2.0.0.html) standard and
 
 + Add - Version
 
+[0.3.3]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.3.3
 [0.3.2]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.3.2
 [0.3.1]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.3.1
 [0.3.0]: https://github.com/datajoint/workflow-array-ephys/releases/tag/0.3.0
