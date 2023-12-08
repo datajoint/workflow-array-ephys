@@ -1,5 +1,7 @@
 # DataJoint Workflow - Array Electrophysiology
 
+> ⚠️ This repository is no longer maintained. The notebooks, environment, and tests in this repository have been integrated within [datajoint/element-array-ephys](https://github.com/datajoint/element-array-ephys).
+
 DataJoint Workflow for extracellular array electrophysiology combines multiple DataJoint Elements to process data acquired with a polytrode probe
 (e.g. [Neuropixels](https://www.neuropixels.org), Neuralynx) using the
 [SpikeGLX](https://github.com/billkarsh/SpikeGLX) or
